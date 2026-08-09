@@ -19,6 +19,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AI Institute - Learn, Build, Succeed with AI",
   description: "Learn from India's top AI experts. Practice real-world projects and get placed in top companies. Premium Learning Management System.",
+  icons: {
+    icon: [
+      { url: '/logo-icon.png', type: 'image/png' },
+      { url: '/favicon.ico' },
+    ],
+    shortcut: '/logo-icon.png',
+    apple: '/logo-icon.png',
+  },
 };
 
 export default function RootLayout({
