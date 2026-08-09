@@ -1,0 +1,3 @@
+﻿ALTER TABLE public.profiles
+ADD COLUMN IF NOT EXISTS mentor_rating DECIMAL(3,2) DEFAULT 0.0,
+ADD COLUMN IF NOT EXISTS mentor_rating_count INTEGER DEFAULT 0;
