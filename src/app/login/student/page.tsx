@@ -75,10 +75,10 @@ export default function StudentLoginPage() {
   }, [cooldownSeconds]);
 
   useEffect(() => {
-    if (authReady && isAuthenticated && currentUser?.role === 'student') {
+    if (authReady && isAuthenticated) {
       router.push('/portal?tab=dashboard');
     }
-  }, [authReady, isAuthenticated, currentUser, router]);
+  }, [authReady, isAuthenticated, router]);
 
   const COURSES = [
     { id: 'course-da', title: 'Data Analyst (Excel, SQL, Power BI, Tableau)' },
@@ -232,6 +232,7 @@ export default function StudentLoginPage() {
         setFailedAttemptsCount(0);
         setCooldownSeconds(0);
         localStorage.setItem('user_role', 'student');
+        localStorage.setItem('lms_user_logged_in', 'true');
         localStorage.setItem('granted_student_user', JSON.stringify({
           email: normalizedEmail,
           fullName: foundLocal?.fullName || remoteProfile?.full_name || normalizedEmail.split('@')[0].toUpperCase(),
@@ -361,6 +362,7 @@ export default function StudentLoginPage() {
       enrollInCourse(selectedCourse);
       recordDailyDeviceLogin(normalizedEmail);
       localStorage.setItem('user_role', 'student');
+      localStorage.setItem('lms_user_logged_in', 'true');
       localStorage.setItem('granted_student_user', JSON.stringify(studentRecord));
 
       setSuccessMsg('🎉 Student Profile Created & Photo Saved! Launching Portal...');

@@ -1187,9 +1187,31 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
       const roleOverride = typeof window !== 'undefined' ? localStorage.getItem('user_role') : null;
       const rawGUser = typeof window !== 'undefined' ? localStorage.getItem('granted_student_user') : null;
+      const rawMentorUser = typeof window !== 'undefined' ? localStorage.getItem('lms_mentor_profile') : null;
+      const rawLmsUser = typeof window !== 'undefined' ? localStorage.getItem('lms_user') : null;
+      const isLogged = typeof window !== 'undefined' ? localStorage.getItem('lms_user_logged_in') : null;
 
-      // 1. If user logged in as Student, enforce student role FIRST and return early
-      if (roleOverride === 'student') {
+      // 1. If user logged in as Mentor or Admin on this device, restore session immediately
+      if ((roleOverride === 'mentor' || roleOverride === 'admin') && (rawMentorUser || rawLmsUser || isLogged === 'true')) {
+        try {
+          const parsed = rawMentorUser ? JSON.parse(rawMentorUser) : rawLmsUser ? JSON.parse(rawLmsUser) : null;
+          if (parsed) {
+            setIsAuthenticated(true);
+            setCurrentUser({
+              id: parsed.id || 'mentor-vaibhav',
+              email: parsed.email || 'vaibhav.ahire@aiinstitute.in',
+              fullName: parsed.fullName || 'Vaibhav Ahire',
+              avatarUrl: parsed.avatarUrl || '/uploads/vaibhav_ahire.jpg',
+              role: (roleOverride || parsed.role || 'mentor') as UserRole,
+            });
+            setAuthReady(true);
+            return;
+          }
+        } catch (e) {}
+      }
+
+      // 2. If user logged in as Student on this device, restore student session immediately
+      if (roleOverride === 'student' || (rawGUser && isLogged === 'true')) {
         try {
           const gUser = rawGUser ? JSON.parse(rawGUser) : null;
           const studentEmail = gUser?.email || 'student.sample@gmail.com';
@@ -1226,7 +1248,7 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         }
       }
 
-      // 2. Otherwise check Supabase session
+      // 3. Otherwise check Supabase session
       const { data: { session } } = await supabase.auth.getSession();
 
       if (session?.user) {
@@ -1275,23 +1297,12 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         if (enrollments && enrollments.length > 0) {
           setEnrolledCourseIds(enrollments.map(e => e.course_id));
         }
-      } else if (roleOverride === 'student' && rawGUser) {
+      } else if (rawLmsUser && isLogged === 'true') {
         try {
-          const gUser = JSON.parse(rawGUser);
-          if (gUser && gUser.email) {
+          const parsed = JSON.parse(rawLmsUser);
+          if (parsed && parsed.email) {
             setIsAuthenticated(true);
-            setCurrentUser({
-              id: 'stu-' + gUser.email.replace(/[^a-zA-Z0-9]/g, ''),
-              email: gUser.email,
-              fullName: gUser.fullName || gUser.email.split('@')[0].toUpperCase(),
-              avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(gUser.email.split('@')[0])}&background=0D8ABC&color=fff`,
-              role: 'student',
-            });
-
-            if (gUser.courseId) {
-              const targetId = gUser.courseId === 'all' ? 'course-gen-ai' : gUser.courseId;
-              setEnrolledCourseIds(prev => Array.from(new Set([...prev, targetId])));
-            }
+            setCurrentUser(parsed);
           }
         } catch (e) {}
       }
@@ -1492,7 +1503,9 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setCurrentUser(DEFAULT_USER);
     if (typeof window !== 'undefined') {
       localStorage.removeItem('lms_user');
+      localStorage.removeItem('lms_user_logged_in');
       localStorage.removeItem('granted_student_user');
+      localStorage.removeItem('lms_mentor_profile');
       localStorage.removeItem('user_role');
       localStorage.removeItem('my_active_session_token');
       if (currentUser?.id) {
@@ -1636,6 +1649,10 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setCurrentUser(profile);
     setIsAuthenticated(true);
     save('lms_user', profile);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('user_role', role);
+      localStorage.setItem('lms_user_logged_in', 'true');
+    }
     registerNewDeviceSession(profile.id);
   };
 

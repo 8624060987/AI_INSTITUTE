@@ -12,10 +12,12 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sanitizeClientMessage } from '@/utils/errorHandler';
+import { useDatabase } from '@/context/DatabaseContext';
 
 
 export default function MentorLoginPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const { isAuthenticated, authReady } = useDatabase();
   
   // Existing Login States
   const [email, setEmail] = useState('');
@@ -55,14 +57,10 @@ export default function MentorLoginPage() {
   }, [cooldownSeconds]);
 
   useEffect(() => {
-    const checkSession = async () => {
-      const role = localStorage.getItem('user_role');
-      if (role === 'mentor') {
-        router.push('/portal');
-      }
-    };
-    checkSession();
-  }, [router]);
+    if (authReady && isAuthenticated) {
+      router.push('/portal');
+    }
+  }, [authReady, isAuthenticated, router]);
 
   const DOMAINS = [
     'Generative AI & LLMs',
@@ -164,6 +162,7 @@ export default function MentorLoginPage() {
         setCooldownSeconds(0);
         localStorage.removeItem('granted_student_user');
         localStorage.setItem('user_role', 'mentor');
+        localStorage.setItem('lms_user_logged_in', 'true');
         localStorage.setItem('lms_mentor_profile', JSON.stringify({
           email: normalizedEmail,
           fullName: foundLocal?.fullName || remoteProfile?.full_name || normalizedEmail.split('@')[0].toUpperCase(),
@@ -278,6 +277,7 @@ export default function MentorLoginPage() {
       recordDailyDeviceLogin(normalizedEmail);
       localStorage.removeItem('granted_student_user');
       localStorage.setItem('user_role', 'mentor');
+      localStorage.setItem('lms_user_logged_in', 'true');
       localStorage.setItem('lms_mentor_profile', JSON.stringify(mentorRecord));
 
       setSuccessMsg('🎉 Mentor Profile Configured & Password Set! Welcome to AI Institute.');
