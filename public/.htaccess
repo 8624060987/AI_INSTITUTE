@@ -1,4 +1,13 @@
-# Hostinger Apache / LiteSpeed Web Server Configuration for AI Institute
+# Hostinger Phusion Passenger & Apache Configuration for AI Institute
+PassengerAppRoot /home/u677383889/domains/aiinstitutesatana.in/hbuilds/current/nodejs
+PassengerAppType node
+PassengerNodejs /opt/alt/alt-nodejs22/root/bin/node
+PassengerStartupFile server.js
+PassengerBaseURI /
+PassengerRestartDir /home/u677383889/domains/aiinstitutesatana.in/hbuilds/current/nodejs/tmp
+SetEnv NODE_OPTIONS "--require /home/u677383889/domains/aiinstitutesatana.in/hbuilds/config/preload-timestamp.js"
+SetEnv LSNODE_CONSOLE_LOG console.log
+SetEnv TOKIO_WORKER_THREADS 2
 
 <IfModule mod_headers.c>
     # Allow Google AdSense & Search Crawlers to read ads.txt
