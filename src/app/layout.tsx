@@ -20,6 +20,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AI Institute - Learn, Build, Succeed with AI",
   description: "Learn from India's top AI experts. Practice real-world projects and get placed in top companies. Premium Learning Management System.",
+  other: {
+    'google-adsense-account': 'ca-pub-8428613200514609',
+  },
   icons: {
     icon: [
       { url: '/logo-icon.png', type: 'image/png' },
@@ -39,10 +42,10 @@ export default function RootLayout({
     <html lang="en" data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable}`}>
       <head>
         <meta name="google-adsense-account" content="ca-pub-8428613200514609" />
-        <script
-          async
+        <Script
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8428613200514609"
           crossOrigin="anonymous"
+          strategy="beforeInteractive"
         />
       </head>
       <body className="antialiased bg-[#fcfdff] dark:bg-[#080d1a] text-[#1e293b] dark:text-[#f8fafc] transition-colors duration-200">
