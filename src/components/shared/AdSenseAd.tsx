@@ -19,7 +19,7 @@ export const AdSenseAd: React.FC<AdSenseAdProps> = ({
   fullWidthResponsive = true,
   className = '',
 }) => {
-  const publisherId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-0000000000000000';
+  const publisherId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-8428613200514609';
 
   useEffect(() => {
     try {
