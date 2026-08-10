@@ -76,7 +76,7 @@ export default function StudentLoginPage() {
 
   useEffect(() => {
     if (authReady && isAuthenticated) {
-      router.push('/portal?tab=dashboard');
+      router.push('/portal?tab=classroom');
     }
   }, [authReady, isAuthenticated, router]);
 

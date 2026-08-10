@@ -14,7 +14,7 @@ export default function LoginPage() {
 
   React.useEffect(() => {
     if (authReady && isAuthenticated) {
-      router.push('/portal');
+      router.push('/portal?tab=classroom');
     }
   }, [authReady, isAuthenticated, router]);
   return (

@@ -40,7 +40,7 @@ function MarqueeLogoBadge({ company }: { company: { name: string; logo: string }
 }
 
 export default function LandingPage() {
-  const { courses, currentUser, isAuthenticated, enrolledCourseIds, addLead } = useDatabase();
+  const { courses, currentUser, isAuthenticated, authReady, enrolledCourseIds, addLead } = useDatabase();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
@@ -48,7 +48,13 @@ export default function LandingPage() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    if (typeof window !== 'undefined') {
+      const isLogged = localStorage.getItem('lms_user_logged_in') === 'true' || localStorage.getItem('user_role');
+      if (isLogged || (authReady && isAuthenticated)) {
+        router.push('/portal?tab=classroom');
+      }
+    }
+  }, [authReady, isAuthenticated, router]);
 
   // Interactive Career Estimator & Title Animation State
   const [calcBackground, setCalcBackground] = useState<'12th' | 'college' | 'non_tech' | 'pro'>('college');
