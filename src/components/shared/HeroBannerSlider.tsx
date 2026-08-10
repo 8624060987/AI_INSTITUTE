@@ -142,7 +142,7 @@ export function HeroBannerSlider({ onSelectCourse }: { onSelectCourse: (courseId
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -80 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full relative cursor-pointer overflow-hidden aspect-[21/9] sm:aspect-[24/8] md:aspect-[28/9] max-h-[360px] flex items-center justify-center bg-black"
+              className="w-full relative cursor-pointer overflow-hidden aspect-[16/9] sm:aspect-[24/8] md:aspect-[28/9] min-h-[160px] max-h-[360px] flex items-center justify-center bg-black"
               onClick={() => onSelectCourse(currentBanner.courseId)}
               onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
               onTouchEnd={(e) => {

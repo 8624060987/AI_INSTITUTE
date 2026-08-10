@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Award, ArrowRight, Search, User, Sun, Moon, BookOpen, Users, X, Sparkles } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Award, ArrowRight, Search, User, Sun, Moon, BookOpen, Users, X, Sparkles, Menu } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { EditProfileModal } from './EditProfileModal';
 import { UserProfile, useDatabase } from '@/context/DatabaseContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -15,6 +15,7 @@ interface LandingNavbarProps {
 
 export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onAccessPortal, currentUser, isAuthenticated }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -80,14 +81,14 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onAccessPortal, cu
       initial={{ y: -100 }} 
       animate={{ y: 0 }} 
       transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-      className="fixed top-0 left-0 right-0 z-30 bg-white/70 dark:bg-[#080d1a]/70 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-900/50 transition-all"
+      className="fixed top-0 left-0 right-0 z-40 bg-white/85 dark:bg-[#080d1a]/85 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60 transition-all"
     >
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img src="/logo-transparent.png" alt="AI Institute Logo" className="h-14 scale-110 ml-2 w-auto object-contain drop-shadow-md mix-blend-multiply dark:mix-blend-normal" />
+          <img src="/logo-transparent.png" alt="AI Institute Logo" className="h-12 sm:h-14 scale-110 ml-1 w-auto object-contain drop-shadow-md mix-blend-multiply dark:mix-blend-normal" />
         </div>
 
-        {/* Menu Links */}
+        {/* Desktop Menu Links */}
         <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-600 dark:text-slate-300">
           <a href="#courses" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Courses</a>
           <a href="#why-choose" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Why AI Institute</a>
@@ -108,115 +109,197 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onAccessPortal, cu
           />
           {searchQuery && (
             <button 
-              onClick={() => setSearchQuery('')} 
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400"
             >
               <X className="w-3.5 h-3.5" />
             </button>
           )}
 
-          {/* Live Search Results Overlay Dropdown */}
-          {isSearchFocused && searchQuery.trim() !== '' && (
-            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-[#0f1420] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden z-50 max-h-[70vh] flex flex-col">
-              <div className="px-4 py-2 bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-slate-500">
-                <span className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
-                  <Sparkles className="w-3.5 h-3.5" /> {totalResults} result{totalResults !== 1 ? 's' : ''} found
-                </span>
-                <span>Press Esc to close</span>
+          {/* Search Dropdown Modal */}
+          {isSearchFocused && searchQuery && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-3 z-50 max-h-[70vh] overflow-y-auto">
+              <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
+                <span className="text-[11px] font-semibold text-slate-400">Search Results ({totalResults})</span>
+                <button onClick={() => setIsSearchFocused(false)} className="text-slate-400 hover:text-slate-600 text-xs">Close</button>
               </div>
 
-              <div className="overflow-y-auto p-2 space-y-3">
-                {totalResults === 0 ? (
-                  <div className="p-6 text-center text-xs text-slate-400">
-                    No results found for "<span className="font-semibold text-slate-700 dark:text-slate-300">{searchQuery}</span>"
-                  </div>
-                ) : (
-                  <>
-                    {/* Matching Mentors */}
-                    {matchedMentors.length > 0 && (
-                      <div>
-                        <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-1">
-                          <Users className="w-3 h-3" /> Mentors ({matchedMentors.length})
-                        </div>
-                        <div className="space-y-1 mt-1">
-                          {matchedMentors.map((m, idx) => (
-                            <a
-                              key={idx}
-                              href="#mentors"
-                              onClick={() => setIsSearchFocused(false)}
-                              className="p-2 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-950/40 transition-all flex items-center justify-between cursor-pointer group"
-                            >
-                              <div className="flex items-center gap-2.5">
-                                <img src={m.image} alt={m.name} className="w-8 h-8 rounded-full object-cover shrink-0 border border-slate-200 dark:border-slate-700" />
-                                <div className="min-w-0">
-                                  <h4 className="text-xs font-bold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{m.name}</h4>
-                                  <p className="text-[10px] text-slate-500 truncate">{m.role}</p>
-                                </div>
-                              </div>
-                              <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 shrink-0">View Profile</span>
-                            </a>
-                          ))}
-                        </div>
+              {totalResults === 0 ? (
+                <div className="py-6 text-center text-slate-400 text-xs">
+                  No mentors or courses found matching &quot;{searchQuery}&quot;
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {matchedMentors.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-2">
+                        <Users className="w-3.5 h-3.5" />
+                        <span>Mentors</span>
                       </div>
-                    )}
-
-                    {/* Matching Courses */}
-                    {matchedCourses.length > 0 && (
-                      <div>
-                        <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 flex items-center gap-1">
-                          <BookOpen className="w-3 h-3" /> Courses ({matchedCourses.length})
-                        </div>
-                        <div className="space-y-1 mt-1">
-                          {matchedCourses.map((c) => (
-                            <div
-                              key={c.id}
-                              onClick={(e) => {
-                                setIsSearchFocused(false);
-                                onAccessPortal(e, c.id);
-                              }}
-                              className="p-2 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-all flex items-center justify-between cursor-pointer group"
-                            >
-                              <div className="flex items-center gap-2.5 min-w-0">
-                                <img src={c.imageUrl} alt={c.title} className="w-8 h-8 rounded-lg object-cover shrink-0" />
-                                <div className="min-w-0">
-                                  <h4 className="text-xs font-bold text-slate-800 dark:text-white truncate group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{c.title}</h4>
-                                  <p className="text-[10px] text-slate-500">
-                                    {isAuthenticated ? `₹${c.price} • ` : ''}{c.category}
-                                  </p>
-                                </div>
-                              </div>
-                              <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400 shrink-0">Enroll Now</span>
+                      <div className="space-y-1.5">
+                        {matchedMentors.map((m, idx) => (
+                          <div 
+                            key={idx}
+                            onClick={() => {
+                              setIsSearchFocused(false);
+                              const el = document.getElementById('mentors');
+                              if (el) el.scrollIntoView({ behavior: 'smooth' });
+                            }}
+                            className="p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer flex items-center gap-3 transition-colors group"
+                          >
+                            <img src={m.image} alt={m.name} className="w-8 h-8 rounded-full object-cover shrink-0 border border-blue-500/20" />
+                            <div className="min-w-0">
+                              <h4 className="text-xs font-bold text-slate-800 dark:text-white truncate group-hover:text-blue-600 transition-colors">{m.name}</h4>
+                              <p className="text-[10px] text-slate-500 truncate">{m.role}</p>
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
                       </div>
-                    )}
-                  </>
-                )}
-              </div>
+                    </div>
+                  )}
+
+                  {matchedCourses.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-2">
+                        <BookOpen className="w-3.5 h-3.5" />
+                        <span>Courses</span>
+                      </div>
+                      <div className="space-y-1.5">
+                        {matchedCourses.map((c) => (
+                          <div 
+                            key={c.id}
+                            onClick={(e) => {
+                              setIsSearchFocused(false);
+                              onAccessPortal(e, c.id);
+                            }}
+                            className="p-2 rounded-xl hover:bg-purple-50/50 dark:hover:bg-purple-950/20 cursor-pointer flex items-center justify-between gap-3 transition-colors group"
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <img src={c.imageUrl} alt={c.title} className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                              <div className="min-w-0">
+                                <h4 className="text-xs font-bold text-slate-800 dark:text-white truncate group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{c.title}</h4>
+                                <p className="text-[10px] text-slate-500">
+                                  {isAuthenticated ? `₹${c.price} • ` : ''}{c.category}
+                                </p>
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400 shrink-0">Enroll Now</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
 
-        {/* Action Button */}
-        <div className="flex items-center gap-3">
+        {/* Desktop & Mobile Header Actions */}
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all cursor-pointer"
+            className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all cursor-pointer min-w-[40px] min-h-[40px] flex items-center justify-center"
             title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
           >
-            {theme === 'light' ? <Moon className="w-4.5 h-4.5 text-blue-600" /> : <Sun className="w-4.5 h-4.5 text-amber-400" />}
+            {theme === 'light' ? <Moon className="w-4 h-4 text-blue-600" /> : <Sun className="w-4 h-4 text-amber-400" />}
           </button>
 
           <button
             onClick={onAccessPortal}
-            className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/15 transition-all hover:scale-[1.02] cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 sm:px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/15 transition-all hover:scale-[1.02] cursor-pointer"
           >
-            <span>Login</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>{isAuthenticated ? 'Student Portal' : 'Login'}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+
+          {/* Mobile Hamburger Toggle Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
+            aria-label="Toggle Navigation Menu"
+          >
+            {isMobileMenuOpen ? <X className="w-5 h-5 text-blue-600" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
+
+      {/* Mobile Drawer Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white/95 dark:bg-[#0a101f]/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 px-4 py-5 shadow-2xl"
+          >
+            <div className="space-y-4">
+              {/* Mobile Quick Search Input */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search courses or mentors..."
+                  className="w-full pl-9 pr-4 py-2.5 text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200"
+                />
+              </div>
+
+              {/* Mobile Menu Links */}
+              <nav className="flex flex-col space-y-3 font-semibold text-sm text-slate-700 dark:text-slate-200 pt-2">
+                <a 
+                  href="#courses" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center gap-2"
+                >
+                  <BookOpen className="w-4 h-4 text-blue-600" />
+                  <span>Courses</span>
+                </a>
+                <a 
+                  href="#why-choose" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center gap-2"
+                >
+                  <Sparkles className="w-4 h-4 text-indigo-600" />
+                  <span>Why AI Institute</span>
+                </a>
+                <a 
+                  href="#mentors" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center gap-2"
+                >
+                  <Users className="w-4 h-4 text-purple-600" />
+                  <span>Top Mentors</span>
+                </a>
+                <a 
+                  href="#testimonials" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors flex items-center gap-2"
+                >
+                  <Award className="w-4 h-4 text-amber-600" />
+                  <span>Testimonials</span>
+                </a>
+              </nav>
+
+              {/* Mobile Action Button */}
+              <div className="pt-2">
+                <button
+                  onClick={(e) => {
+                    setIsMobileMenuOpen(false);
+                    onAccessPortal(e);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20"
+                >
+                  <span>{isAuthenticated ? 'Go to Student Portal' : 'Login to Account'}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <EditProfileModal 
         isOpen={isEditModalOpen} 
         onClose={() => setIsEditModalOpen(false)} 
@@ -225,4 +308,3 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onAccessPortal, cu
     </motion.header>
   );
 };
-
