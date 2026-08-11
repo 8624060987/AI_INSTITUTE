@@ -19,13 +19,24 @@ const app = next({ dev, dir });
 const handle = app.getRequestHandler();
 const listenTarget = process.env.PORT || 'passenger';
 
+function findFallbackCssFile(dirPath) {
+  try {
+    if (!fs.existsSync(dirPath)) return null;
+    const files = fs.readdirSync(dirPath);
+    const cssFile = files.find(f => f.endsWith('.css'));
+    return cssFile ? path.join(dirPath, cssFile) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
 app.prepare().then(() => {
   createServer(async (req, res) => {
     try {
       const parsedUrl = parse(req.url, true);
       const pathname = parsedUrl.pathname || '';
 
-      // Direct fallback handler for .next/static files to prevent 404/403 unstyled pages
+      // Direct static asset stream handler for .next/static files to prevent 404 unstyled pages on Hostinger
       if (pathname.startsWith('/_next/static/')) {
         const relativePath = pathname.replace('/_next/static/', '');
         const filePath = path.join(dir, '.next', 'static', relativePath);
@@ -41,6 +52,16 @@ app.prepare().then(() => {
           res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
           res.setHeader('Access-Control-Allow-Origin', '*');
           return fs.createReadStream(filePath).pipe(res);
+        } else if (pathname.endsWith('.css')) {
+          // If a specific CSS chunk hash was updated during deploy, serve active CSS bundle fallback
+          const chunksDir = path.join(dir, '.next', 'static', 'chunks');
+          const fallbackCss = findFallbackCssFile(chunksDir);
+          if (fallbackCss && fs.existsSync(fallbackCss)) {
+            res.setHeader('Content-Type', 'text/css; charset=utf-8');
+            res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            return fs.createReadStream(fallbackCss).pipe(res);
+          }
         }
       }
 
