@@ -193,14 +193,6 @@ export default function LandingPage() {
 
   return (
     <div className="relative min-h-screen flex flex-col bg-slate-50 dark:bg-[#080d1a] transition-colors duration-300 selection:bg-blue-500/30">
-      <head>
-        <meta name="google-adsense-account" content="ca-pub-8428613200514609" />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8428613200514609"
-          crossOrigin="anonymous"
-        />
-      </head>
       <LandingNavbar currentUser={currentUser} isAuthenticated={isAuthenticated} onAccessPortal={(e) => handlePremiumClick(e)} />
 
       {/* TOP SLIDING PROGRAM BANNERS (Sliding from Right to Left) */}
