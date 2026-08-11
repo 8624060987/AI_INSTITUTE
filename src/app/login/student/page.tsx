@@ -246,8 +246,8 @@ export default function StudentLoginPage() {
 
         setSuccessMsg('🎉 Login successful! Welcome back.');
         setTimeout(() => {
-          router.push('/portal?tab=dashboard');
-        }, 600);
+          window.location.href = '/portal?tab=classroom';
+        }, 500);
       } else {
         setFailedAttemptsCount((prev) => prev + 1);
         throw new Error('Incorrect password. Please verify your credentials or use the Admission Form to register.');
@@ -365,10 +365,10 @@ export default function StudentLoginPage() {
       localStorage.setItem('lms_user_logged_in', 'true');
       localStorage.setItem('granted_student_user', JSON.stringify(studentRecord));
 
-      setSuccessMsg('🎉 Student Profile Created & Photo Saved! Launching Portal...');
-      setTimeout(() => {
-        router.push('/portal?tab=dashboard');
-      }, 900);
+        setSuccessMsg('🎉 Student Profile Created & Photo Saved! Launching Portal...');
+        setTimeout(() => {
+          window.location.href = '/portal?tab=classroom';
+        }, 500);
     } catch (err: any) {
       console.error('[STUDENT_ADMISSION_ERROR]', err);
       setError(sanitizeClientMessage(err?.message, 'Admission registration failed. Please try again.'));

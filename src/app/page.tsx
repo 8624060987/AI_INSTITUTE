@@ -146,16 +146,16 @@ export default function LandingPage() {
     if (isLogged) {
       // User is already logged in on this device: give direct classroom access
       if (courseId) {
-        router.push(`/portal?checkout=${courseId}`);
+        window.location.href = `/portal?checkout=${courseId}`;
       } else {
-        router.push('/portal?tab=classroom');
+        window.location.href = '/portal?tab=classroom';
       }
     } else {
       // User is NEW / not logged in: show them login page
       if (courseId) {
-        router.push(`/login/student?redirect=/portal?checkout=${courseId}`);
+        window.location.href = `/login/student?redirect=/portal?checkout=${courseId}`;
       } else {
-        router.push('/login/student');
+        window.location.href = '/login/student';
       }
     }
   };
