@@ -1,4 +1,4 @@
-# Hostinger Phusion Passenger & Apache/LiteSpeed Configuration for AI Institute Satana
+# Hostinger Phusion Passenger & Apache Server Configuration for AI Institute Satana
 PassengerAppRoot /home/u677383889/domains/aiinstitutesatana.in/hbuilds/current/nodejs
 PassengerAppType node
 PassengerNodejs /opt/alt/alt-nodejs22/root/bin/node
@@ -9,18 +9,13 @@ SetEnv NODE_OPTIONS "--require /home/u677383889/domains/aiinstitutesatana.in/hbu
 SetEnv LSNODE_CONSOLE_LOG console.log
 SetEnv TOKIO_WORKER_THREADS 2
 
-# Enable Rewrite Engine for Next.js Static Asset Routing
+# Enable Rewrite Engine - Pass All Requests To Phusion Passenger Node Server
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
-
-    # Serve static Next.js assets directly from .next/static/
-    RewriteCond %{REQUEST_URI} ^/_next/static/(.*)$
-    RewriteCond %{DOCUMENT_ROOT}/.next/static/%1 -f
-    RewriteRule ^_next/static/(.*)$ .next/static/$1 [L]
 </IfModule>
 
-# MIME Types for CSS, JS, Fonts & Media Assets (Prevents Unstyled HTML on Mobile)
+# MIME Types for CSS, JS, Fonts & Media Assets
 <IfModule mod_mime.c>
     AddType text/css .css
     AddType application/javascript .js .mjs
@@ -34,7 +29,7 @@ SetEnv TOKIO_WORKER_THREADS 2
     AddType image/x-icon .ico
 </IfModule>
 
-# Security, CORS & Caching Headers for Mobile Browsers
+# Security, CORS & Caching Headers
 <IfModule mod_headers.c>
     <FilesMatch "\.(css|js|mjs|woff2|woff|ttf|png|jpg|jpeg|svg|ico|txt)$">
         Header set Access-Control-Allow-Origin "*"
@@ -50,7 +45,7 @@ SetEnv TOKIO_WORKER_THREADS 2
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# Enable Gzip/Brotli Compression for Fast Mobile Loading
+# Enable Compression for Fast Mobile & Desktop Loading
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json image/svg+xml
 </IfModule>
