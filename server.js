@@ -19,15 +19,24 @@ const app = next({ dev, dir });
 const handle = app.getRequestHandler();
 const listenTarget = process.env.PORT || 'passenger';
 
+// Recursive helper to find any available CSS bundle if a specific chunk hash is missing
 function findFallbackCssFile(dirPath) {
   try {
     if (!fs.existsSync(dirPath)) return null;
-    const files = fs.readdirSync(dirPath);
-    const cssFile = files.find(f => f.endsWith('.css'));
-    return cssFile ? path.join(dirPath, cssFile) : null;
+    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+    for (const entry of entries) {
+      const full = path.join(dirPath, entry.name);
+      if (entry.isDirectory()) {
+        const found = findFallbackCssFile(full);
+        if (found) return found;
+      } else if (entry.name.endsWith('.css')) {
+        return full;
+      }
+    }
   } catch (e) {
     return null;
   }
+  return null;
 }
 
 app.prepare().then(() => {
@@ -53,9 +62,8 @@ app.prepare().then(() => {
           res.setHeader('Access-Control-Allow-Origin', '*');
           return fs.createReadStream(filePath).pipe(res);
         } else if (pathname.endsWith('.css')) {
-          // If a specific CSS chunk hash was updated during deploy, serve active CSS bundle fallback
-          const chunksDir = path.join(dir, '.next', 'static', 'chunks');
-          const fallbackCss = findFallbackCssFile(chunksDir);
+          // If a specific CSS chunk hash was requested from an old session, serve active CSS bundle fallback
+          const fallbackCss = findFallbackCssFile(path.join(dir, '.next', 'static'));
           if (fallbackCss && fs.existsSync(fallbackCss)) {
             res.setHeader('Content-Type', 'text/css; charset=utf-8');
             res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
