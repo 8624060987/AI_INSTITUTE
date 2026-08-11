@@ -935,7 +935,7 @@ export default function LandingPage() {
         onClose={() => setIsDemoModalOpen(false)}
         onEnrollClick={() => {
           setIsDemoModalOpen(false);
-          router.push('/login/student');
+          router.push('/portal?tab=classroom');
         }}
       />
       <ComingSoonCourseModal
