@@ -141,22 +141,30 @@ export default function LandingPage() {
   // Intro landing page stays open for users to explore. Clicking buttons will trigger login or portal access.
   
   const handlePremiumClick = (e: React.MouseEvent | React.FormEvent, courseId?: string) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     if (courseId && isUpcomingCourse(courseId)) {
       setUpcomingModalCourse(courseId);
       return;
     }
-    if (isAuthenticated) {
+    const isLogged = isAuthenticated || (typeof window !== 'undefined' && (
+      localStorage.getItem('lms_user_logged_in') === 'true' ||
+      Boolean(localStorage.getItem('user_role')) ||
+      Boolean(localStorage.getItem('granted_student_user'))
+    ));
+
+    if (isLogged) {
+      // User is already logged in on this device: give direct classroom access
       if (courseId) {
         router.push(`/portal?checkout=${courseId}`);
       } else {
         router.push('/portal?tab=classroom');
       }
     } else {
+      // User is NEW / not logged in: show them login page
       if (courseId) {
         router.push(`/login/student?redirect=/portal?checkout=${courseId}`);
       } else {
-        router.push('/login');
+        router.push('/login/student');
       }
     }
   };
@@ -174,11 +182,11 @@ export default function LandingPage() {
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
   };
 
-  if (!mounted || isLoggedOnDevice || (authReady && isAuthenticated)) {
+  if (!mounted) {
     return (
       <div className="min-h-screen bg-[#080d1a] flex flex-col items-center justify-center text-white space-y-4 selection:bg-blue-500/30">
         <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-xs font-semibold tracking-wide text-slate-400">Opening Your Classroom...</p>
+        <p className="text-xs font-semibold tracking-wide text-slate-400">Loading AI Institute...</p>
       </div>
     );
   }
