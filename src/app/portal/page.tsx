@@ -500,10 +500,9 @@ export default function PortalPage() {
         enrollInCourse(finalId);
       }
 
-      if (urlTab && currentUser?.role !== 'student' && !rawGUser) {
+      if (urlTab) {
         setActiveTab(urlTab);
       } else {
-        // Students and new users always land on dashboard
         setActiveTab('dashboard');
       }
     }
