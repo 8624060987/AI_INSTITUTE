@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -16,6 +16,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fcfdff" },
+    { media: "(prefers-color-scheme: dark)", color: "#080d1a" },
+  ],
+};
 
 export const metadata: Metadata = {
   title: "AI Institute - Learn, Build, Succeed with AI",

@@ -1,4 +1,4 @@
-# Hostinger Phusion Passenger & Apache Configuration for AI Institute
+# Hostinger Phusion Passenger & Apache/LiteSpeed Configuration for AI Institute Satana
 PassengerAppRoot /home/u677383889/domains/aiinstitutesatana.in/hbuilds/current/nodejs
 PassengerAppType node
 PassengerNodejs /opt/alt/alt-nodejs22/root/bin/node
@@ -9,8 +9,37 @@ SetEnv NODE_OPTIONS "--require /home/u677383889/domains/aiinstitutesatana.in/hbu
 SetEnv LSNODE_CONSOLE_LOG console.log
 SetEnv TOKIO_WORKER_THREADS 2
 
+# Enable Rewrite Engine for Next.js Static Asset Routing
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Serve static Next.js assets directly from .next/static/
+    RewriteCond %{REQUEST_URI} ^/_next/static/(.*)$
+    RewriteCond %{DOCUMENT_ROOT}/.next/static/%1 -f
+    RewriteRule ^_next/static/(.*)$ .next/static/$1 [L]
+</IfModule>
+
+# MIME Types for CSS, JS, Fonts & Media Assets (Prevents Unstyled HTML on Mobile)
+<IfModule mod_mime.c>
+    AddType text/css .css
+    AddType application/javascript .js .mjs
+    AddType font/woff2 .woff2
+    AddType font/woff .woff
+    AddType font/ttf .ttf
+    AddType text/plain .txt
+    AddType image/png .png
+    AddType image/jpeg .jpg .jpeg
+    AddType image/svg+xml .svg
+    AddType image/x-icon .ico
+</IfModule>
+
+# Security, CORS & Caching Headers for Mobile Browsers
 <IfModule mod_headers.c>
-    # Allow Google AdSense & Search Crawlers to read ads.txt
+    <FilesMatch "\.(css|js|mjs|woff2|woff|ttf|png|jpg|jpeg|svg|ico|txt)$">
+        Header set Access-Control-Allow-Origin "*"
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
     <Files "ads.txt">
         Header set Access-Control-Allow-Origin "*"
         Header set Content-Type "text/plain; charset=UTF-8"
@@ -21,16 +50,7 @@ SetEnv TOKIO_WORKER_THREADS 2
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# MIME Types for Images & Static Assets
-<IfModule mod_mime.c>
-    AddType text/plain .txt
-    AddType image/png .png
-    AddType image/jpeg .jpg .jpeg
-    AddType image/svg+xml .svg
-    AddType image/x-icon .ico
-</IfModule>
-
-# Enable Gzip Compression
+# Enable Gzip/Brotli Compression for Fast Mobile Loading
 <IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json image/svg+xml
 </IfModule>
