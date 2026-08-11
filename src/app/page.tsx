@@ -46,9 +46,20 @@ export default function LandingPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const [upcomingModalCourse, setUpcomingModalCourse] = useState<string | null>(null);
 
+  const [redirecting, setRedirecting] = useState(false);
+
   useEffect(() => {
     setMounted(true);
-  }, []);
+    if (typeof window !== 'undefined') {
+      const isLogged = localStorage.getItem('lms_user_logged_in') === 'true' || 
+                       Boolean(localStorage.getItem('user_role')) || 
+                       Boolean(localStorage.getItem('granted_student_user'));
+      if (isLogged || (authReady && isAuthenticated)) {
+        setRedirecting(true);
+        router.replace('/portal?tab=classroom');
+      }
+    }
+  }, [authReady, isAuthenticated, router]);
 
   // Interactive Career Estimator & Title Animation State
   const [calcBackground, setCalcBackground] = useState<'12th' | 'college' | 'non_tech' | 'pro'>('college');
@@ -164,6 +175,15 @@ export default function LandingPage() {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
   };
+
+  if (!mounted || redirecting || (authReady && isAuthenticated)) {
+    return (
+      <div className="min-h-screen bg-[#080d1a] flex flex-col items-center justify-center text-white space-y-4 selection:bg-blue-500/30">
+        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-xs font-semibold tracking-wide text-slate-400">Opening Your Classroom...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen flex flex-col bg-slate-50 dark:bg-[#080d1a] transition-colors duration-300 selection:bg-blue-500/30">
