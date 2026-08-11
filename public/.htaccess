@@ -9,10 +9,15 @@ SetEnv NODE_OPTIONS "--require /home/u677383889/domains/aiinstitutesatana.in/hbu
 SetEnv LSNODE_CONSOLE_LOG console.log
 SetEnv TOKIO_WORKER_THREADS 2
 
-# Enable Rewrite Engine - Pass All Requests To Phusion Passenger Node Server
+# Enable Rewrite Engine - Directly Serve Static Assets From public/_next/static
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
+
+    # Direct static file serving for CSS, JS & Fonts
+    RewriteCond %{REQUEST_URI} ^/_next/static/(.*)$
+    RewriteCond %{DOCUMENT_ROOT}/_next/static/%1 -f
+    RewriteRule ^_next/static/(.*)$ _next/static/$1 [L]
 </IfModule>
 
 # MIME Types for CSS, JS, Fonts & Media Assets
