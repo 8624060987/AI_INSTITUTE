@@ -46,18 +46,9 @@ export default function LandingPage() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const [upcomingModalCourse, setUpcomingModalCourse] = useState<string | null>(null);
 
-  const isLoggedOnDevice = typeof window !== 'undefined' && (
-    localStorage.getItem('lms_user_logged_in') === 'true' ||
-    Boolean(localStorage.getItem('user_role')) ||
-    Boolean(localStorage.getItem('granted_student_user'))
-  );
-
   useEffect(() => {
     setMounted(true);
-    if (typeof window !== 'undefined' && (isLoggedOnDevice || (authReady && isAuthenticated))) {
-      window.location.replace('/portal?tab=classroom');
-    }
-  }, [authReady, isAuthenticated, isLoggedOnDevice]);
+  }, []);
 
   // Interactive Career Estimator & Title Animation State
   const [calcBackground, setCalcBackground] = useState<'12th' | 'college' | 'non_tech' | 'pro'>('college');

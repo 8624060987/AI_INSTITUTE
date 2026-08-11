@@ -125,6 +125,7 @@ export default function PortalPage() {
   const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
+  const hasInitializedTab = React.useRef(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [sessionToRate, setSessionToRate] = useState<any>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -500,10 +501,11 @@ export default function PortalPage() {
         enrollInCourse(finalId);
       }
 
-      if (urlTab) {
-        setActiveTab(urlTab);
-      } else {
-        setActiveTab('dashboard');
+      if (!hasInitializedTab.current) {
+        hasInitializedTab.current = true;
+        if (urlTab) {
+          setActiveTab(urlTab);
+        }
       }
     }
   }, [isAuthenticated, currentUser, authReady]);
