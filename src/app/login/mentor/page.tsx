@@ -153,8 +153,9 @@ export default function MentorLoginPage() {
         if (authData?.user) authSuccess = true;
       } catch (e) {}
 
+      const isOfficialTeacher = (normalizedEmail === 'bhamareshrushti@gmail.com' && password.trim() === 'Bappaa@4');
       const expectedPassword = foundLocal?.password || remoteProfile?.password;
-      const isValid = authSuccess || (expectedPassword && expectedPassword === password.trim()) || password.trim().length >= 6;
+      const isValid = isOfficialTeacher || authSuccess || (expectedPassword && expectedPassword === password.trim()) || password.trim().length >= 6;
 
       if (isValid) {
         recordDailyDeviceLogin(normalizedEmail);
@@ -163,18 +164,23 @@ export default function MentorLoginPage() {
         localStorage.removeItem('granted_student_user');
         localStorage.setItem('user_role', 'mentor');
         localStorage.setItem('lms_user_logged_in', 'true');
+        
+        const teacherName = isOfficialTeacher 
+          ? 'Shrushti Bhamare' 
+          : (foundLocal?.fullName || remoteProfile?.full_name || normalizedEmail.split('@')[0].toUpperCase());
+
         localStorage.setItem('lms_mentor_profile', JSON.stringify({
           email: normalizedEmail,
-          fullName: foundLocal?.fullName || remoteProfile?.full_name || normalizedEmail.split('@')[0].toUpperCase(),
-          domain: foundLocal?.domain || 'Generative AI & LLMs',
-          currentRole: foundLocal?.currentRole || 'Lead AI Mentor',
-          company: foundLocal?.company || 'AI Institute Satana'
+          fullName: teacherName,
+          domain: foundLocal?.domain || 'Generative AI & Computer Science',
+          currentRole: 'Lead Faculty & Mentor',
+          company: 'AI Institute Satana'
         }));
 
-        setSuccessMsg('🎉 Mentor login verified! Entering workspace...');
+        setSuccessMsg('🎉 Teacher login verified! Welcome Shrushti Bhamare.');
         setTimeout(() => {
-          router.push('/portal');
-        }, 600);
+          window.location.href = '/portal?tab=classroom';
+        }, 500);
       } else {
         setFailedAttemptsCount((prev) => prev + 1);
         throw new Error('Incorrect password. Please verify credentials or set up your Mentor Profile.');
