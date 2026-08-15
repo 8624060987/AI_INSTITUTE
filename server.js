@@ -70,7 +70,7 @@ app.prepare().then(() => {
       }
 
       // Universal static asset stream handler to prevent 404 unstyled pages on Hostinger
-      if (pathname.startsWith('/_next/static/')) {
+      if (pathname.startsWith('/_next/static/') || pathname.endsWith('.css')) {
         const relativePath = pathname.replace('/_next/static/', '');
         const filePath = path.join(dir, '.next', 'static', relativePath);
 

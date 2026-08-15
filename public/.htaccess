@@ -9,6 +9,11 @@ SetEnv NODE_OPTIONS "--require /home/u677383889/domains/aiinstitutesatana.in/hbu
 SetEnv LSNODE_CONSOLE_LOG console.log
 SetEnv TOKIO_WORKER_THREADS 2
 
+# Allow Apache & LiteSpeed access to .next static assets
+<DirectoryMatch "^\.next">
+    Require all granted
+</DirectoryMatch>
+
 # Enable Rewrite Engine - Pass All Requests To Phusion Passenger Node Server
 <IfModule mod_rewrite.c>
     RewriteEngine On
