@@ -18,6 +18,11 @@ SetEnv TOKIO_WORKER_THREADS 2
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
+
+    # Fallback missing CSS chunk requests to physical Tailwind CSS bundle
+    RewriteCond %{REQUEST_URI} ^/_next/static/chunks/.*\.css$
+    RewriteCond %{DOCUMENT_ROOT}/.next/static/chunks/%1 !-f
+    RewriteRule ^_next/static/chunks/.*\.css$ .next/static/chunks/19rn6-ejd-o87.css [L]
 </IfModule>
 
 # MIME Types for CSS, JS, Fonts & Media Assets
