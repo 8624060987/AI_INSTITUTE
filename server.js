@@ -35,24 +35,33 @@ function cleanupStaleSocket(target) {
   }
 }
 
-// Recursive helper to find any available CSS bundle if a specific chunk hash is missing
+// Helper to find the largest available CSS bundle if a specific chunk hash is missing
 function findFallbackCssFile(dirPath) {
   try {
     if (!fs.existsSync(dirPath)) return null;
-    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
-    for (const entry of entries) {
-      const full = path.join(dirPath, entry.name);
-      if (entry.isDirectory()) {
-        const found = findFallbackCssFile(full);
-        if (found) return found;
-      } else if (entry.name.endsWith('.css')) {
-        return full;
+    let cssFiles = [];
+
+    function search(currentDir) {
+      const entries = fs.readdirSync(currentDir, { withFileTypes: true });
+      for (const entry of entries) {
+        const full = path.join(currentDir, entry.name);
+        if (entry.isDirectory()) {
+          search(full);
+        } else if (entry.name.endsWith('.css')) {
+          try {
+            cssFiles.push({ path: full, size: fs.statSync(full).size });
+          } catch (e) {}
+        }
       }
     }
+
+    search(dirPath);
+    if (cssFiles.length === 0) return null;
+    cssFiles.sort((a, b) => b.size - a.size);
+    return cssFiles[0].path;
   } catch (e) {
     return null;
   }
-  return null;
 }
 
 app.prepare().then(() => {
