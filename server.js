@@ -21,7 +21,21 @@ const app = next({ dev, dir });
 const handle = app.getRequestHandler();
 const listenTarget = process.env.PORT || 'passenger';
 
-// Helper to find any available CSS bundle if a specific chunk hash is missing
+// Socket File Cleanup helper for Phusion Passenger socket files
+function cleanupStaleSocket(target) {
+  if (typeof target === 'string' && isNaN(Number(target)) && !target.startsWith('\\\\')) {
+    try {
+      if (fs.existsSync(target)) {
+        fs.unlinkSync(target);
+        console.log(`[PASSENGER_SOCKET] Unlinked stale socket file: ${target}`);
+      }
+    } catch (e) {
+      console.warn('[PASSENGER_SOCKET_WARN]', e?.message || e);
+    }
+  }
+}
+
+// Recursive helper to find any available CSS bundle if a specific chunk hash is missing
 function findFallbackCssFile(dirPath) {
   try {
     if (!fs.existsSync(dirPath)) return null;
@@ -48,7 +62,7 @@ app.prepare().then(() => {
       const pathname = parsedUrl.pathname || '';
 
       // Instant 200 OK Health Check endpoint for Passenger & Uptime monitors
-      if (pathname === '/api/health' || pathname === '/healthz') {
+      if (pathname === '/api/health' || pathname === '/healthz' || pathname.includes('health')) {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.setHeader('Cache-Control', 'no-store');
@@ -97,11 +111,30 @@ app.prepare().then(() => {
   server.keepAliveTimeout = 65000;
   server.headersTimeout = 66000;
 
+  // Socket Conflict Recovery Listener for Phusion Passenger
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.warn('[PASSENGER_SOCKET_EADDRINUSE] Recovering from socket file conflict...');
+      cleanupStaleSocket(listenTarget);
+      setTimeout(() => {
+        try {
+          server.listen(listenTarget);
+        } catch (retryErr) {
+          console.error('[PASSENGER_RETRY_FATAL]', retryErr);
+        }
+      }, 500);
+    } else {
+      console.error('[PASSENGER_SERVER_ERROR]', err);
+    }
+  });
+
+  cleanupStaleSocket(listenTarget);
+
   server.listen(listenTarget, (err) => {
     if (err) throw err;
     console.log(`> AI Institute Next.js Server active & 24/7 protected on ${listenTarget}`);
 
-    // Self-Ping Heartbeat (Every 45 seconds) to prevent Passenger Idle Worker Shutdown
+    // Self-Ping Heartbeat (Every 30 seconds) to prevent Passenger Idle Worker Shutdown
     setInterval(() => {
       try {
         https.get('https://aiinstitutesatana.in/api/health', (pingRes) => {
@@ -113,7 +146,7 @@ app.prepare().then(() => {
           }).on('error', () => {});
         });
       } catch (e) {}
-    }, 45000);
+    }, 30000);
   });
 }).catch((err) => {
   console.error('[PASSENGER_PREPARE_ERROR]', err?.message || err);
