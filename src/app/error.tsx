@@ -12,6 +12,14 @@ export default function ErrorBoundary({
 }) {
   useEffect(() => {
     console.error('[NEXT_APP_ERROR]', error);
+    const msg = error?.message?.toLowerCase() || '';
+    if (msg.includes('chunk') || msg.includes('loading') || msg.includes('failed to fetch') || msg.includes('dynamically imported') || msg.includes('resource')) {
+      const hasReloaded = sessionStorage.getItem('auto_chunk_reloaded');
+      if (!hasReloaded) {
+        sessionStorage.setItem('auto_chunk_reloaded', 'true');
+        window.location.reload();
+      }
+    }
   }, [error]);
 
   return (

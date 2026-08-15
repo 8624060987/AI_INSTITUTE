@@ -10,6 +10,18 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  React.useEffect(() => {
+    console.error('[GLOBAL_APP_ERROR]', error);
+    const msg = error?.message?.toLowerCase() || '';
+    if (msg.includes('chunk') || msg.includes('loading') || msg.includes('failed to fetch') || msg.includes('dynamically imported') || msg.includes('resource')) {
+      const hasReloaded = sessionStorage.getItem('auto_global_reloaded');
+      if (!hasReloaded) {
+        sessionStorage.setItem('auto_global_reloaded', 'true');
+        window.location.reload();
+      }
+    }
+  }, [error]);
+
   return (
     <html lang="en">
       <body className="min-h-screen bg-[#fcfdff] text-[#1e293b] flex items-center justify-center p-6 antialiased font-sans">
