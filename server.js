@@ -53,6 +53,5 @@ const server = createServer(async (req, res) => {
 });
 
 const listenTarget = process.env.PORT || 'passenger';
-server.listen(listenTarget, () => {
-  console.log(`> AI Institute Server bound instantly on ${listenTarget}`);
-});
+server.listen(listenTarget);
+console.log(`> AI Institute Server bound instantly on ${listenTarget}`);
