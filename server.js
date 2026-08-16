@@ -21,9 +21,9 @@ const app = next({ dev, dir });
 const handle = app.getRequestHandler();
 const listenTarget = process.env.PORT || 'passenger';
 
-// Socket File Cleanup helper for Phusion Passenger socket files
+// Socket File Cleanup helper for Phusion Passenger domain socket paths
 function cleanupStaleSocket(target) {
-  if (typeof target === 'string' && isNaN(Number(target)) && !target.startsWith('\\\\')) {
+  if (typeof target === 'string' && target !== 'passenger' && isNaN(Number(target)) && (target.includes('/') || target.includes('\\'))) {
     try {
       if (fs.existsSync(target)) {
         fs.unlinkSync(target);
