@@ -9,15 +9,20 @@ SetEnv NODE_OPTIONS "--require /home/u677383889/domains/aiinstitutesatana.in/hbu
 SetEnv LSNODE_CONSOLE_LOG console.log
 SetEnv TOKIO_WORKER_THREADS 2
 
-# Allow Apache & LiteSpeed access to .next static assets
+# Allow Apache & LiteSpeed access to .next static assets & public directory
 <DirectoryMatch "^\.next">
     Require all granted
 </DirectoryMatch>
 
-# Enable Rewrite Engine - Pass All Requests To Phusion Passenger Node Server
+# Serve Static Files Directly from Disk via Apache (0ms Overhead)
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
+
+    # If physical file or directory exists, serve directly via Apache
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
 
     # Fallback missing CSS chunk requests to physical Tailwind CSS bundle
     RewriteCond %{REQUEST_URI} ^/_next/static/chunks/.*\.css$
