@@ -142,20 +142,6 @@ app.prepare().then(() => {
   server.listen(listenTarget, (err) => {
     if (err) throw err;
     console.log(`> AI Institute Next.js Server active & 24/7 protected on ${listenTarget}`);
-
-    // Self-Ping Heartbeat (Every 20 seconds) to prevent Passenger Idle Worker Shutdown
-    setInterval(() => {
-      try {
-        https.get('https://aiinstitutesatana.in/api/health', (pingRes) => {
-          pingRes.on('data', () => {});
-        }).on('error', () => {
-          // Internal fallback ping
-          http.get('http://127.0.0.1:3000/api/health', (localRes) => {
-            localRes.on('data', () => {});
-          }).on('error', () => {});
-        });
-      } catch (e) {}
-    }, 20000);
   });
 }).catch((err) => {
   console.error('[PASSENGER_PREPARE_ERROR]', err?.message || err);
