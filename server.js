@@ -17,32 +17,56 @@ const dir = path.resolve(__dirname);
 const app = next({ dev, dir });
 const handle = app.getRequestHandler();
 
-app.prepare().then(() => {
-  const server = createServer((req, res) => {
-    try {
-      const parsedUrl = parse(req.url, true);
-      const pathname = parsedUrl.pathname || '';
+let appReady = false;
+let prepareError = null;
 
-      if (pathname === '/api/health' || pathname === '/healthz' || pathname.includes('health')) {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Cache-Control', 'no-store');
-        return res.end(JSON.stringify({ status: 'ok', uptime: process.uptime(), timestamp: new Date().toISOString() }));
-      }
+const appPrepared = app.prepare().then(() => {
+  appReady = true;
+  console.log('> Next.js app prepared successfully');
+}).catch((err) => {
+  prepareError = err;
+  console.error('[PASSENGER_PREPARE_ERROR]', err?.message || err);
+});
 
-      handle(req, res, parsedUrl);
-    } catch (err) {
-      console.error('[PASSENGER_REQUEST_ERROR]', req.url, err?.message || err);
-      if (!res.headersSent) {
-        res.statusCode = 500;
-        res.end('Internal Server Error');
+// Create & bind server IMMEDIATELY on startup so Phusion Passenger connects in 0ms!
+const server = createServer(async (req, res) => {
+  try {
+    const parsedUrl = parse(req.url, true);
+    const pathname = parsedUrl.pathname || '';
+
+    // Instant 200 OK Health Check endpoint for Passenger & Uptime monitors
+    if (pathname === '/api/health' || pathname === '/healthz' || pathname.includes('health')) {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Cache-Control', 'no-store');
+      return res.end(JSON.stringify({ status: 'ok', appReady, uptime: process.uptime(), timestamp: new Date().toISOString() }));
+    }
+
+    if (prepareError) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      return res.end(`<h1>Server Initialization Error</h1><p>${prepareError.message || prepareError}</p>`);
+    }
+
+    if (!appReady) {
+      let waited = 0;
+      while (!appReady && !prepareError && waited < 40) {
+        await new Promise((r) => setTimeout(r, 100));
+        waited++;
       }
     }
-  });
 
-  const listenTarget = process.env.PORT || 'passenger';
-  server.listen(listenTarget);
-  console.log(`> AI Institute Server active on ${listenTarget}`);
-}).catch((err) => {
-  console.error('[PASSENGER_PREPARE_FATAL]', err?.message || err);
+    await handle(req, res, parsedUrl);
+  } catch (err) {
+    console.error('[PASSENGER_REQUEST_ERROR]', req.url, err?.message || err);
+    if (!res.headersSent) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'text/plain');
+      res.end('Internal Server Error');
+    }
+  }
 });
+
+const listenTarget = process.env.PORT || 'passenger';
+server.listen(listenTarget);
+console.log(`> AI Institute Server bound instantly on ${listenTarget}`);
