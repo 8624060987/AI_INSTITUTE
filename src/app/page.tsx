@@ -173,15 +173,6 @@ export default function LandingPage() {
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
   };
 
-  if (!mounted) {
-    return (
-      <div className="min-h-screen bg-[#080d1a] flex flex-col items-center justify-center text-white space-y-4 selection:bg-blue-500/30">
-        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-xs font-semibold tracking-wide text-slate-400">Loading AI Institute...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="relative min-h-screen flex flex-col bg-slate-50 dark:bg-[#080d1a] transition-colors duration-300 selection:bg-blue-500/30">
       <LandingNavbar currentUser={currentUser} isAuthenticated={isAuthenticated} onAccessPortal={(e) => handlePremiumClick(e)} />
