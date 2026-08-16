@@ -135,14 +135,9 @@ export function HeroBannerSlider({ onSelectCourse }: { onSelectCourse: (courseId
 
         {/* Single Ultra Clear Banner Frame - Enhanced Clarity & High Definition */}
         <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-slate-300 dark:border-slate-700 shadow-2xl bg-black group">
-          <AnimatePresence mode="wait">
-            <motion.div
+            <div
               key={currentBanner.id}
-              initial={{ opacity: 0, x: 80 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -80 }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full relative cursor-pointer overflow-hidden aspect-[16/9] sm:aspect-[24/8] md:aspect-[28/9] min-h-[160px] max-h-[360px] flex items-center justify-center bg-black"
+              className="w-full relative cursor-pointer overflow-hidden aspect-[16/9] sm:aspect-[24/8] md:aspect-[28/9] min-h-[160px] max-h-[360px] flex items-center justify-center bg-black transition-opacity duration-150"
               onClick={() => onSelectCourse(currentBanner.courseId)}
               onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
               onTouchEnd={(e) => {
@@ -158,14 +153,7 @@ export function HeroBannerSlider({ onSelectCourse }: { onSelectCourse: (courseId
               <img
                 src={currentBanner.imageSrc}
                 alt={currentBanner.name}
-                className="w-full h-full object-fill object-center rounded-2xl sm:rounded-3xl block transition-transform duration-300 group-hover:scale-[1.006]"
-                style={{
-                  imageRendering: '-webkit-optimize-contrast',
-                  filter: 'contrast(1.05) brightness(1.02) saturate(1.05)',
-                  backfaceVisibility: 'hidden',
-                  transform: 'translateZ(0)',
-                  willChange: 'transform, opacity'
-                }}
+                className="w-full h-full object-fill object-center rounded-2xl sm:rounded-3xl block"
                 loading="eager"
                 decoding="async"
                 fetchPriority="high"
@@ -183,8 +171,7 @@ export function HeroBannerSlider({ onSelectCourse }: { onSelectCourse: (courseId
                 <span>Explore Program Details</span>
                 <ArrowRight className="w-3 h-3" />
               </div>
-            </motion.div>
-          </AnimatePresence>
+            </div>
 
           {/* Nav Controls (Left & Right Arrow Buttons) */}
           <button

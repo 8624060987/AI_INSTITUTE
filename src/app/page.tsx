@@ -184,54 +184,45 @@ export default function LandingPage() {
 
       {/* 1. HERO SECTION */}
       <section className="relative pt-6 pb-24 px-6 overflow-hidden min-h-[85vh] flex items-center">
-        {/* Hardware-Accelerated Ambient Backdrop (Zero CPU/GPU Lag) */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-[10%] -right-[5%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-blue-500/15 to-purple-500/15 blur-3xl opacity-70" />
           <div className="absolute -bottom-[10%] -left-[5%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-blue-500/15 to-cyan-500/15 blur-3xl opacity-70" />
         </div>
-
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center z-10 w-full">
-          <motion.div 
-            initial="hidden" animate="show" variants={staggerContainer}
-            className="space-y-8"
-          >
-            <motion.div variants={fadeIn} className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-blue-500/20 text-blue-600 dark:text-blue-400 shadow-sm">
+          <div className="space-y-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-white/60 dark:bg-slate-900/60 border border-blue-500/20 text-blue-600 dark:text-blue-400 shadow-sm">
               <Sparkles className="w-4 h-4" /> Premium AI Institute
-            </motion.div>
+            </div>
             
-            <motion.h1 variants={fadeIn} className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] text-slate-900 dark:text-white">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] text-slate-900 dark:text-white">
               Master Future Skills &amp; Build Your <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
                 Dream Career
               </span>
-            </motion.h1>
+            </h1>
             
-            <motion.p variants={fadeIn} className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed font-medium">
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed font-medium">
               Learn from industry experts through live classes, real-world projects, internships, and guaranteed placement preparation.
-            </motion.p>
+            </p>
             
-            <motion.div variants={fadeIn} className="flex flex-wrap gap-4">
-              <motion.a 
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+            <div className="flex flex-wrap gap-4">
+              <a 
                 href="#courses" 
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-blue-600/20 transition-all"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-blue-600/20 transition-all"
               >
                 Explore Courses
                 <ArrowRight className="w-5 h-5" />
-              </motion.a>
-              <motion.button 
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+              </a>
+              <button 
                 onClick={() => setIsDemoModalOpen(true)} 
-                className="flex items-center gap-2 bg-white dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-white font-bold px-8 py-4 rounded-2xl shadow-lg transition-all"
+                className="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-white font-bold px-8 py-4 rounded-2xl shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
               >
                 <Play className="w-5 h-5 text-blue-600 dark:text-blue-400 fill-current" />
                 Watch Demo Lecture (10 Min)
-              </motion.button>
-            </motion.div>
+              </button>
+            </div>
             
-            <motion.div variants={fadeIn} className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-slate-200/60 dark:border-slate-800/60">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-slate-200/60 dark:border-slate-800/60">
               {[
                 { label: 'Students', val: '20,000+' },
                 { label: 'Courses', val: '30+' },
@@ -243,59 +234,26 @@ export default function LandingPage() {
                   <div className="text-xs font-bold text-slate-500 uppercase tracking-wide">{s.label}</div>
                 </div>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
-
-          {/* Hero Section Right: Professional Student Motion Graphics Container */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            className="relative lg:ml-auto flex justify-center lg:justify-end z-10 w-full max-w-[540px]"
-          >
+          {/* Hero Section Right: High Performance Student Container */}
+          <div className="relative lg:ml-auto flex justify-center lg:justify-end z-10 w-full max-w-[540px]">
             <div className="relative w-full aspect-square max-w-[500px] flex items-center justify-center">
 
-              {/* Ambient Neon Radial Mesh Glows */}
-              <motion.div
-                animate={{ scale: [1, 1.15, 1], opacity: [0.35, 0.65, 0.35] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute inset-4 rounded-full bg-gradient-to-tr from-blue-600/30 via-indigo-500/20 to-cyan-400/30 blur-[80px] pointer-events-none"
-              />
-
-              {/* Concentric Holographic Motion Rings */}
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 rounded-full border border-dashed border-blue-500/30 pointer-events-none"
-              />
-              <motion.div
-                animate={{ rotate: -360 }}
-                transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-[-4%] rounded-full border border-cyan-400/20 pointer-events-none"
-              />
-
-              {/* Main Student Portrait Glassmorphism Container */}
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="relative w-[340px] sm:w-[420px] h-[340px] sm:h-[420px] rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 dark:border-blue-500/30 bg-gradient-to-b from-blue-900/20 to-slate-950/80 backdrop-blur-2xl group z-10"
-              >
+              {/* Main Student Portrait Container */}
+              <div className="relative w-[340px] sm:w-[420px] h-[340px] sm:h-[420px] rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 dark:border-blue-500/30 bg-slate-950 group z-10">
                 <img 
                   src="/uploads/ai_student_learning.png" 
                   alt="Student Learning AI" 
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" 
+                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300" 
                 />
-              </motion.div>
+              </div>
 
-              {/* FLOATING MOTION GRAPHICS BADGES */}
+              {/* STATIC HIGH PERFORMANCE BADGES */}
 
-              {/* Floating Badge Top Left: Placement Guarantee */}
-              <motion.div
-                animate={{ y: [0, -8, 0], x: [0, -5, 0] }}
-                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-                className="absolute top-2 left-[-15px] sm:left-[-30px] z-30 bg-slate-900/90 border border-blue-500/40 text-white p-3 rounded-2xl shadow-2xl backdrop-blur-xl flex items-center gap-3"
-              >
+              {/* Badge Top Left: Placement Guarantee */}
+              <div className="absolute top-2 left-[-15px] sm:left-[-30px] z-30 bg-slate-900 border border-blue-500/40 text-white p-3 rounded-2xl shadow-2xl flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold shrink-0">
                   <Trophy className="w-5 h-5 text-amber-400" />
                 </div>
@@ -303,14 +261,10 @@ export default function LandingPage() {
                   <div className="text-[10px] uppercase tracking-wider font-extrabold text-blue-400">Placement Record</div>
                   <div className="text-xs font-black text-white">100% Career Assistance</div>
                 </div>
-              </motion.div>
+              </div>
 
-              {/* Floating Badge Top Right: Certified Track */}
-              <motion.div
-                animate={{ y: [0, 8, 0], x: [0, 5, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-                className="absolute top-10 right-[-15px] sm:right-[-25px] z-30 bg-slate-900/90 border border-emerald-500/40 text-white p-3 rounded-2xl shadow-2xl backdrop-blur-xl flex items-center gap-3"
-              >
+              {/* Badge Top Right: Certified Track */}
+              <div className="absolute top-10 right-[-10px] sm:right-[-25px] z-30 bg-slate-900 border border-emerald-500/40 text-white p-3 rounded-2xl shadow-2xl flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold shrink-0">
                   <Award className="w-5 h-5 text-emerald-400" />
                 </div>
@@ -318,14 +272,10 @@ export default function LandingPage() {
                   <div className="text-[10px] uppercase tracking-wider font-extrabold text-emerald-400">ISO Certified</div>
                   <div className="text-xs font-black text-white">GenAI & ML Specialist</div>
                 </div>
-              </motion.div>
+              </div>
 
-              {/* Floating Badge Bottom Right: Hiring Partners */}
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute -bottom-4 right-2 sm:right-4 z-30 bg-slate-900/95 border border-indigo-500/40 text-white p-3.5 rounded-2xl shadow-2xl backdrop-blur-xl flex items-center gap-3"
-              >
+              {/* Badge Bottom Right: Hiring Partners */}
+              <div className="absolute -bottom-4 right-2 sm:right-4 z-30 bg-slate-900 border border-indigo-500/40 text-white p-3.5 rounded-2xl shadow-2xl flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold shrink-0">
                   <Briefcase className="w-5 h-5 text-indigo-400" />
                 </div>
@@ -333,9 +283,9 @@ export default function LandingPage() {
                   <div className="text-[10px] uppercase tracking-wider font-extrabold text-indigo-300">Top Hiring Partners</div>
                   <div className="text-xs font-bold text-slate-200">HCLTech • Deloitte • Samsung</div>
                 </div>
-              </motion.div>
+              </div>
 
-              {/* Floating Tech Stack Chips (Small & Black Text) */}
+              {/* Tech Stack Chips */}
               {[
                 'Python ⚡', 
                 'Generative AI ⚡', 
@@ -343,30 +293,20 @@ export default function LandingPage() {
                 'AGENTIC AI ⚡', 
                 'SQL & PowerBI ⚡'
               ].map((chip, idx) => (
-                <motion.span
+                <span
                   key={chip}
-                  animate={{ 
-                    y: [0, (idx % 2 === 0 ? -10 : 10), 0],
-                    opacity: [0.9, 1, 0.9],
-                  }}
-                  transition={{ 
-                    duration: 3.5 + idx * 0.5, 
-                    repeat: Infinity, 
-                    ease: "easeInOut",
-                    delay: idx * 0.4
-                  }}
-                  className="absolute z-20 text-[11px] font-black tracking-wider uppercase bg-white/95 border border-cyan-450 text-black px-2.5 py-1 rounded-xl shadow-lg backdrop-blur-md hidden sm:inline-flex items-center gap-1 cursor-pointer hover:scale-105 transition-transform"
+                  className="absolute z-20 text-[11px] font-black tracking-wider uppercase bg-white border border-cyan-400 text-black px-2.5 py-1 rounded-xl shadow-lg hidden sm:inline-flex items-center gap-1 cursor-pointer hover:scale-105 transition-transform"
                   style={{
                     top: `${15 + (idx * 17)}%`,
                     left: idx % 2 === 0 ? '-6%' : '86%',
                   }}
                 >
                   <strong className="font-black text-black">{chip}</strong>
-                </motion.span>
+                </span>
               ))}
 
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
