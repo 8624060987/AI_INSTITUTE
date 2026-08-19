@@ -50,8 +50,23 @@ export default function LandingPage() {
     setMounted(true);
   }, []);
 
-  // Initial Popup Modal State (First Provide Career Engine Modal)
-  const [showCareerModal, setShowCareerModal] = useState(true);
+  // Initial Popup Modal State (Show ONLY for NEW visitors who haven't filled form or logged in)
+  const [showCareerModal, setShowCareerModal] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const alreadySubmittedOrLogged = Boolean(
+        localStorage.getItem('user_contact_lead') ||
+        localStorage.getItem('lms_user_logged_in') === 'true' ||
+        localStorage.getItem('granted_student_user') ||
+        localStorage.getItem('lms_user') ||
+        sessionStorage.getItem('has_seen_career_modal')
+      );
+      if (!alreadySubmittedOrLogged) {
+        setShowCareerModal(true);
+      }
+    }
+  }, []);
 
   // Interactive Career Estimator & Title Animation State
   const [calcBackground, setCalcBackground] = useState<'12th' | 'college' | 'non_tech' | 'pro'>('college');
@@ -103,6 +118,7 @@ export default function LandingPage() {
 
     try {
       localStorage.setItem('user_contact_lead', JSON.stringify({ name: contactName, phone: contactPhone, course: trackNameMap[calcGoal] }));
+      sessionStorage.setItem('has_seen_career_modal', 'true');
     } catch (err) {}
 
     setContactSubmitted(true);
@@ -110,6 +126,13 @@ export default function LandingPage() {
       setShowCareerModal(false);
       setIsSubmittingContact(false);
     }, 1200);
+  };
+
+  const handleCloseCareerModal = () => {
+    try {
+      sessionStorage.setItem('has_seen_career_modal', 'true');
+    } catch (e) {}
+    setShowCareerModal(false);
   };
 
   const handleEnrollFormSubmit = async (e: React.FormEvent) => {
@@ -240,7 +263,7 @@ export default function LandingPage() {
               {/* Close Button */}
               <button
                 type="button"
-                onClick={() => setShowCareerModal(false)}
+                onClick={handleCloseCareerModal}
                 className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer z-10"
                 title="Explore Intro Page Directly"
               >
@@ -410,7 +433,7 @@ export default function LandingPage() {
 
                   <button
                     type="button"
-                    onClick={() => setShowCareerModal(false)}
+                    onClick={handleCloseCareerModal}
                     className="text-xs text-center text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 underline font-semibold cursor-pointer pt-1"
                   >
                     Skip &amp; Explore Intro Page Directly
