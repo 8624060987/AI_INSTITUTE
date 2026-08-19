@@ -8,7 +8,7 @@ import {
   ArrowRight, Play, Sparkles, CheckCircle, BookOpen, Users, 
   Trophy, Briefcase, ChevronDown, Star, Lock, MonitorPlay, 
   FileText, Download, UserCheck, Calendar, ShieldCheck, Mail, Phone, User, Loader2,
-  TrendingUp, Target, DollarSign, Zap, CheckCircle2, Award, GraduationCap
+  TrendingUp, Target, DollarSign, Zap, CheckCircle2, Award, GraduationCap, X
 } from 'lucide-react';
 import { LandingNavbar } from '@/components/shared/LandingNavbar';
 import { LandingFooter } from '@/components/shared/LandingFooter';
@@ -50,6 +50,9 @@ export default function LandingPage() {
     setMounted(true);
   }, []);
 
+  // Initial Popup Modal State (First Provide Career Engine Modal)
+  const [showCareerModal, setShowCareerModal] = useState(true);
+
   // Interactive Career Estimator & Title Animation State
   const [calcBackground, setCalcBackground] = useState<'12th' | 'college' | 'non_tech' | 'pro'>('college');
   const [calcGoal, setCalcGoal] = useState<'genai' | 'datascience' | 'analyst' | 'wfh'>('genai');
@@ -60,6 +63,54 @@ export default function LandingPage() {
   const [contactPhone, setContactPhone] = useState('');
   const [isSubmittingContact, setIsSubmittingContact] = useState(false);
   const [contactSubmitted, setContactSubmitted] = useState(false);
+
+  const handleModalEnrollSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactName.trim() || !contactPhone.trim()) {
+      alert('Please enter your Name and Mobile Number to continue.');
+      return;
+    }
+    setIsSubmittingContact(true);
+
+    const trackNameMap = {
+      genai: 'Generative AI Master Class',
+      datascience: 'AI & Machine Learning Complete Guide',
+      analyst: 'Data Analytics & BI Professional',
+      wfh: 'Cyber Security & Cloud Infrastructure'
+    };
+
+    try {
+      await fetch('/api/submit-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: contactName,
+          phone: contactPhone,
+          course: trackNameMap[calcGoal],
+        }),
+      });
+    } catch (apiErr) {}
+
+    if (addLead) {
+      addLead({
+        name: contactName,
+        phone: contactPhone,
+        email: '',
+        courseInterest: trackNameMap[calcGoal],
+        message: `Submitted via Initial Career Engine Modal — Connected to Google Sheet`
+      });
+    }
+
+    try {
+      localStorage.setItem('user_contact_lead', JSON.stringify({ name: contactName, phone: contactPhone, course: trackNameMap[calcGoal] }));
+    } catch (err) {}
+
+    setContactSubmitted(true);
+    setTimeout(() => {
+      setShowCareerModal(false);
+      setIsSubmittingContact(false);
+    }, 1200);
+  };
 
   const handleEnrollFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,6 +226,202 @@ export default function LandingPage() {
 
   return (
     <div className="relative min-h-screen flex flex-col bg-slate-50 dark:bg-[#080d1a] transition-colors duration-300 selection:bg-blue-500/30">
+      {/* 1. FIRST POPUP: INTERACTIVE AI CAREER ENGINE MODAL AT FIRST VISIT */}
+      <AnimatePresence>
+        {showCareerModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="relative w-full max-w-4xl bg-white dark:bg-[#0f1524] border-2 border-blue-500/40 rounded-3xl p-6 sm:p-10 shadow-2xl overflow-hidden my-auto"
+            >
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setShowCareerModal(false)}
+                className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer z-10"
+                title="Explore Intro Page Directly"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* Modal Header */}
+              <div className="text-center mb-8 space-y-2.5 pr-8">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider">
+                  <Zap className="w-3.5 h-3.5 text-blue-500" /> Interactive AI Career Engine
+                </div>
+                <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                  Find Your Ideal <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-500 to-emerald-500 font-black">Generative AI Track</span>
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
+                  Select your background &amp; desired career goal to unlock your custom AI Institute learning roadmap.
+                </p>
+              </div>
+
+              {/* Interactive Engine Box Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
+                {/* Left Controls */}
+                <div className="lg:col-span-7 space-y-5">
+                  {/* Step 1: Background */}
+                  <div>
+                    <label className="text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-2.5">
+                      1. Select Your Current Background
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { id: '12th', label: '10th / 12th Completed', icon: GraduationCap },
+                        { id: 'college', label: 'College Student (B.Sc/B.Tech)', icon: BookOpen },
+                        { id: 'non_tech', label: 'Non-Tech Graduate', icon: Users },
+                        { id: 'pro', label: 'Working Professional', icon: Briefcase },
+                      ].map((bg) => {
+                        const Icon = bg.icon;
+                        const isSelected = calcBackground === bg.id;
+                        return (
+                          <button
+                            key={bg.id}
+                            type="button"
+                            onClick={() => setCalcBackground(bg.id as any)}
+                            className={`p-3 rounded-xl border text-xs font-bold transition-all flex items-center gap-2 cursor-pointer text-left ${
+                              isSelected
+                                ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-500/20'
+                                : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-blue-500/40'
+                            }`}
+                          >
+                            <Icon className={`w-4 h-4 shrink-0 ${isSelected ? 'text-white' : 'text-blue-500'}`} />
+                            <span className="truncate">{bg.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Step 2: Desired Goal */}
+                  <div>
+                    <label className="text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 block mb-2.5">
+                      2. Select Your Desired Career Goal
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { id: 'genai', label: '🤖 Generative AI Specialist', tag: 'High Demand' },
+                        { id: 'datascience', label: '🧠 AI & ML Architect', tag: 'Core Engineering' },
+                        { id: 'analyst', label: '📊 Data & BI Specialist', tag: 'Analytics Track' },
+                        { id: 'wfh', label: '🌐 Overseas WFH (Remote)', tag: 'Global Placement' },
+                      ].map((goal) => {
+                        const isSelected = calcGoal === goal.id;
+                        return (
+                          <button
+                            key={goal.id}
+                            type="button"
+                            onClick={() => setCalcGoal(goal.id as any)}
+                            className={`p-3 rounded-xl border text-xs font-bold transition-all flex flex-col items-start gap-0.5 cursor-pointer ${
+                              isSelected
+                                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-500 shadow-md shadow-blue-500/20'
+                                : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-blue-500/40'
+                            }`}
+                          >
+                            <span className="truncate">{goal.label}</span>
+                            <span className={`text-[10px] font-semibold ${isSelected ? 'text-blue-100' : 'text-blue-600 dark:text-blue-400'}`}>
+                              Track: {goal.tag}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Form Column */}
+                <div className="lg:col-span-5 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white p-6 sm:p-7 rounded-2xl border border-blue-500/30 shadow-xl flex flex-col justify-center space-y-4">
+                  <div className="space-y-1">
+                    <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
+                      {calcGoal === 'genai' && 'Generative AI & Agent Developer'}
+                      {calcGoal === 'datascience' && 'AI & Machine Learning Specialist'}
+                      {calcGoal === 'analyst' && 'Business Intelligence & Data Analyst'}
+                      {calcGoal === 'wfh' && 'Global Remote Security Specialist'}
+                    </h3>
+                    <p className="text-xs font-extrabold text-blue-600 dark:text-blue-400">
+                      {calcGoal === 'genai' && 'Generative AI Master Class'}
+                      {calcGoal === 'datascience' && 'AI & Machine Learning Complete Guide'}
+                      {calcGoal === 'analyst' && 'Data Analytics & BI Professional'}
+                      {calcGoal === 'wfh' && 'Cyber Security & Cloud Infrastructure'}
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleModalEnrollSubmit} className="space-y-3.5">
+                    {contactSubmitted ? (
+                      <div className="p-4 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-500/40 rounded-xl text-center space-y-1 shadow-sm">
+                        <CheckCircle2 className="w-6 h-6 text-emerald-500 mx-auto" />
+                        <p className="text-sm font-black text-emerald-700 dark:text-emerald-400">
+                          Details Received!
+                        </p>
+                        <p className="text-xs font-bold text-emerald-600 dark:text-emerald-300">
+                          Opening Intro Page &amp; Courses...
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="space-y-2.5">
+                          <div className="relative">
+                            <User className="w-5 h-5 text-slate-400 absolute left-3.5 top-3.5" />
+                            <input
+                              type="text"
+                              required
+                              placeholder="Your Full Name"
+                              value={contactName}
+                              onChange={(e) => setContactName(e.target.value)}
+                              className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-bold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                            />
+                          </div>
+                          <div className="relative">
+                            <Phone className="w-5 h-5 text-slate-400 absolute left-3.5 top-3.5" />
+                            <input
+                              type="tel"
+                              required
+                              placeholder="10-Digit Mobile Number"
+                              value={contactPhone}
+                              onChange={(e) => setContactPhone(e.target.value)}
+                              className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-bold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                            />
+                          </div>
+                        </div>
+
+                        <button
+                          type="submit"
+                          disabled={isSubmittingContact}
+                          className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-sm shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 cursor-pointer transition-all uppercase tracking-wider"
+                        >
+                          {isSubmittingContact ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              <span>Saving...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>Show Intro Page &amp; Course</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+                      </>
+                    )}
+                  </form>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowCareerModal(false)}
+                    className="text-xs text-center text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 underline font-semibold cursor-pointer pt-1"
+                  >
+                    Skip &amp; Explore Intro Page Directly
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <LandingNavbar currentUser={currentUser} isAuthenticated={isAuthenticated} onAccessPortal={(e) => handlePremiumClick(e)} />
 
       {/* TOP SLIDING PROGRAM BANNERS (Sliding from Right to Left) */}
