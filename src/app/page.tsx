@@ -329,12 +329,13 @@ export default function LandingPage() {
                   className="bg-slate-50 dark:bg-slate-900/50 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all group cursor-pointer relative"
                   onClick={(e) => handlePremiumClick(e, course.id)}
                 >
-                  <div className="relative h-48 overflow-hidden bg-slate-950">
+                  <div className="relative h-52 overflow-hidden bg-slate-950 rounded-t-3xl">
                     <img 
                       src={course.imageUrl} 
                       alt={course.title} 
                       onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/banners/generative-ai.png'; }}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+                      className="w-full h-full object-fill object-center transition-transform duration-300 group-hover:scale-105" 
+                      style={{ imageRendering: '-webkit-optimize-contrast' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent flex items-end p-4">
                       <span className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-md ${

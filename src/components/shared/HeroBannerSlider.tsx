@@ -137,7 +137,7 @@ export function HeroBannerSlider({ onSelectCourse }: { onSelectCourse: (courseId
         <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-slate-300 dark:border-slate-700 shadow-2xl bg-black group">
             <div
               key={currentBanner.id}
-              className="w-full relative cursor-pointer overflow-hidden aspect-[16/9] sm:aspect-[24/8] md:aspect-[28/9] min-h-[160px] max-h-[360px] flex items-center justify-center bg-black transition-opacity duration-150"
+              className="w-full relative cursor-pointer overflow-hidden h-[180px] sm:h-[260px] md:h-[320px] lg:h-[360px] flex items-center justify-center bg-slate-950 transition-opacity duration-150 rounded-2xl sm:rounded-3xl"
               onClick={() => onSelectCourse(currentBanner.courseId)}
               onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
               onTouchEnd={(e) => {
@@ -149,11 +149,12 @@ export function HeroBannerSlider({ onSelectCourse }: { onSelectCourse: (courseId
                 }
               }}
             >
-              {/* Ultra Crisp High Definition Banner Image */}
+              {/* Ultra Crisp High Definition Banner Image - Fitted and Stretched */}
               <img
                 src={currentBanner.imageSrc}
                 alt={currentBanner.name}
-                className="w-full h-full object-fill object-center rounded-2xl sm:rounded-3xl block"
+                className="w-full h-full object-fill object-center rounded-2xl sm:rounded-3xl block shadow-inner"
+                style={{ imageRendering: '-webkit-optimize-contrast' }}
                 loading="eager"
                 decoding="async"
                 fetchPriority="high"
