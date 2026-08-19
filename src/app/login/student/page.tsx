@@ -263,18 +263,36 @@ export default function StudentLoginPage() {
         recordDailyDeviceLogin(normalizedEmail);
         setFailedAttemptsCount(0);
         setCooldownSeconds(0);
-        localStorage.setItem('user_role', 'student');
-        localStorage.setItem('lms_user_logged_in', 'true');
-        localStorage.setItem('granted_student_user', JSON.stringify({
+
+        // Purge ALL stale user sessions to prevent cross-account data leakage!
+        localStorage.removeItem('lms_user');
+        localStorage.removeItem('granted_student_user');
+        localStorage.removeItem('lms_mentor_profile');
+        localStorage.removeItem('user_role');
+        localStorage.removeItem('lms_user_logged_in');
+
+        const exactStudentProfile = {
+          id: foundLocal?.id || remoteProfile?.id || `stu_${Date.now()}`,
           email: normalizedEmail,
           fullName: foundLocal?.fullName || remoteProfile?.full_name || normalizedEmail.split('@')[0].toUpperCase(),
-          courseId: foundLocal?.courseId || 'course-gen-ai',
+          courseId: foundLocal?.courseId || remoteProfile?.course_id || selectedCourse || 'course-gen-ai',
           courseTitle: foundLocal?.courseTitle || 'Generative AI & LLMs',
           avatarUrl: foundLocal?.avatarUrl || remoteProfile?.avatar_url || DEFAULT_AVATAR,
           college: foundLocal?.college || remoteProfile?.college || 'AI Institute Scholar',
-          location: foundLocal?.location || 'India',
-          careerGoal: foundLocal?.careerGoal || 'AI Engineer'
-        }));
+          location: foundLocal?.location || remoteProfile?.location || 'Satana / Maharashtra',
+          careerGoal: foundLocal?.careerGoal || remoteProfile?.career_goal || 'AI Engineer',
+          qualification: foundLocal?.qualification || remoteProfile?.qualification || 'Graduate',
+          learningMode: foundLocal?.learningMode || remoteProfile?.learning_mode || 'Live Interactive Online Batch',
+          phone: foundLocal?.phone || remoteProfile?.phone || '',
+          bio: foundLocal?.bio || remoteProfile?.bio || '',
+          currentYear: foundLocal?.currentYear || 'Final Year (2025/2026)',
+          role: 'student'
+        };
+
+        localStorage.setItem('user_role', 'student');
+        localStorage.setItem('lms_user_logged_in', 'true');
+        localStorage.setItem('granted_student_user', JSON.stringify(exactStudentProfile));
+        localStorage.setItem('lms_user', JSON.stringify(exactStudentProfile));
 
         setSuccessMsg('🎉 Login successful! Welcome back.');
         setTimeout(() => {
@@ -389,12 +407,21 @@ export default function StudentLoginPage() {
         });
       } catch (err) {}
 
-      // 4. Enroll in course and setup session
+      // 4. Enroll in course and setup clean session
       enrollInCourse(selectedCourse);
       recordDailyDeviceLogin(normalizedEmail);
+
+      // Purge ALL stale user sessions
+      localStorage.removeItem('lms_user');
+      localStorage.removeItem('granted_student_user');
+      localStorage.removeItem('lms_mentor_profile');
+      localStorage.removeItem('user_role');
+      localStorage.removeItem('lms_user_logged_in');
+
       localStorage.setItem('user_role', 'student');
       localStorage.setItem('lms_user_logged_in', 'true');
       localStorage.setItem('granted_student_user', JSON.stringify(studentRecord));
+      localStorage.setItem('lms_user', JSON.stringify(studentRecord));
 
         setSuccessMsg('🎉 Student Profile Created & Photo Saved! Launching Portal...');
         setTimeout(() => {

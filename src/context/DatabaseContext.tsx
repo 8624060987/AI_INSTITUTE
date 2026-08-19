@@ -1098,39 +1098,54 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         } catch (e) {}
       }
 
-      // 2. If user logged in as Student on this device, restore student session immediately
-      if (roleOverride === 'student' || (rawGUser && isLogged === 'true')) {
+      // 2. If user logged in as Student on this device, restore exact student session immediately
+      if (roleOverride === 'student' || (rawGUser && isLogged === 'true') || (rawLmsUser && isLogged === 'true')) {
         try {
-          const gUser = rawGUser ? JSON.parse(rawGUser) : null;
-          const studentEmail = gUser?.email || 'student.sample@gmail.com';
-          const studentName = gUser?.fullName || studentEmail.split('@')[0].toUpperCase();
-          const savedAvatar = typeof window !== 'undefined' ? localStorage.getItem(`custom_avatar_${studentEmail}`) : null;
-          const photoUrl = gUser?.avatarUrl || savedAvatar || `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80`;
-          
-          setIsAuthenticated(true);
-          setCurrentUser({
-            id: 'stu-' + studentEmail.replace(/[^a-zA-Z0-9]/g, ''),
-            email: studentEmail,
-            fullName: studentName,
-            avatarUrl: photoUrl,
-            role: 'student',
-            college: gUser?.college || 'AI Institute Scholar',
-            location: gUser?.location || 'Satana / Maharashtra',
-            careerGoal: gUser?.careerGoal || 'Generative AI Engineer',
-            qualification: gUser?.qualification || 'Graduate / B.Tech / BCA',
-            learningMode: gUser?.learningMode || 'Live Interactive Online Batch',
-            phone: gUser?.phone || '',
-            bio: gUser?.bio || `Passionate student dedicated to mastering AI and Software Engineering.`,
-            currentYear: gUser?.currentYear || 'Final Year (2025/2026)',
-          });
+          const parsedG = rawGUser ? JSON.parse(rawGUser) : null;
+          const parsedLms = rawLmsUser ? JSON.parse(rawLmsUser) : null;
+          const studentEmail = parsedG?.email || parsedLms?.email;
 
-          const allCourseIds = courses.map(c => c.id);
-          const targetId = gUser?.courseId && gUser.courseId !== 'all' ? gUser.courseId : 'course-gen-ai';
-          const finalEnrolled = Array.from(new Set([targetId, ...allCourseIds]));
-          setEnrolledCourseIds(finalEnrolled);
-          save('lms_enrolled', finalEnrolled);
-          setAuthReady(true);
-          return;
+          if (studentEmail) {
+            let registeredMatch: any = null;
+            try {
+              const regRaw = localStorage.getItem('lms_registered_students');
+              if (regRaw) {
+                const regList = JSON.parse(regRaw);
+                registeredMatch = regList.find((s: any) => s.email?.toLowerCase().trim() === studentEmail.toLowerCase().trim());
+              }
+            } catch (e) {}
+
+            const activeProfile = registeredMatch || parsedG || parsedLms;
+            const studentName = activeProfile?.fullName || activeProfile?.full_name || studentEmail.split('@')[0].toUpperCase();
+            const savedAvatar = typeof window !== 'undefined' ? localStorage.getItem(`custom_avatar_${studentEmail}`) : null;
+            const fallbackAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
+            const photoUrl = activeProfile?.avatarUrl || activeProfile?.avatar_url || savedAvatar || fallbackAvatar;
+
+            setIsAuthenticated(true);
+            setCurrentUser({
+              id: activeProfile?.id || ('stu-' + studentEmail.replace(/[^a-zA-Z0-9]/g, '')),
+              email: studentEmail,
+              fullName: studentName,
+              avatarUrl: photoUrl,
+              role: 'student',
+              college: activeProfile?.college || 'AI Institute Scholar',
+              location: activeProfile?.location || 'Satana / Maharashtra',
+              careerGoal: activeProfile?.careerGoal || activeProfile?.career_goal || 'Generative AI Engineer',
+              qualification: activeProfile?.qualification || 'Graduate / B.Tech / BCA',
+              learningMode: activeProfile?.learningMode || 'Live Interactive Online Batch',
+              phone: activeProfile?.phone || '',
+              bio: activeProfile?.bio || `Passionate student dedicated to mastering AI and Software Engineering.`,
+              currentYear: activeProfile?.currentYear || 'Final Year (2025/2026)',
+            });
+
+            const allCourseIds = courses.map(c => c.id);
+            const targetId = activeProfile?.courseId && activeProfile.courseId !== 'all' ? activeProfile.courseId : 'course-gen-ai';
+            const finalEnrolled = Array.from(new Set([targetId, ...allCourseIds]));
+            setEnrolledCourseIds(finalEnrolled);
+            save('lms_enrolled', finalEnrolled);
+            setAuthReady(true);
+            return;
+          }
         } catch (e) {
           setAuthReady(true);
         }

@@ -195,16 +195,29 @@ export default function MentorLoginPage() {
         recordDailyDeviceLogin(normalizedEmail);
         setFailedAttemptsCount(0);
         setCooldownSeconds(0);
+
+        // Purge ALL stale user sessions to guarantee zero cross-account data overlap
+        localStorage.removeItem('lms_user');
         localStorage.removeItem('granted_student_user');
-        localStorage.setItem('user_role', 'mentor');
-        localStorage.setItem('lms_user_logged_in', 'true');
-        localStorage.setItem('lms_mentor_profile', JSON.stringify({
+        localStorage.removeItem('lms_mentor_profile');
+        localStorage.removeItem('user_role');
+        localStorage.removeItem('lms_user_logged_in');
+
+        const exactMentorProfile = {
+          id: foundLocal?.id || remoteProfile?.id || `men_${Date.now()}`,
           email: normalizedEmail,
           fullName: foundLocal?.fullName || remoteProfile?.full_name || normalizedEmail.split('@')[0].toUpperCase(),
           domain: foundLocal?.domain || 'Generative AI & LLMs',
           currentRole: foundLocal?.currentRole || 'Lead AI Mentor',
-          company: foundLocal?.company || 'AI Institute Satana'
-        }));
+          company: foundLocal?.company || 'AI Institute Satana',
+          avatarUrl: foundLocal?.avatarUrl || remoteProfile?.avatar_url || '/uploads/vaibhav_ahire.jpg',
+          role: 'mentor'
+        };
+
+        localStorage.setItem('user_role', 'mentor');
+        localStorage.setItem('lms_user_logged_in', 'true');
+        localStorage.setItem('lms_mentor_profile', JSON.stringify(exactMentorProfile));
+        localStorage.setItem('lms_user', JSON.stringify(exactMentorProfile));
 
         setSuccessMsg('🎉 Mentor login verified! Entering workspace...');
         setTimeout(() => {
