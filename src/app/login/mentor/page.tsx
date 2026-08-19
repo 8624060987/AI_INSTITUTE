@@ -153,9 +153,43 @@ export default function MentorLoginPage() {
         if (authData?.user) authSuccess = true;
       } catch (e) {}
 
-      const isOfficialTeacher = (normalizedEmail === 'bhamareshrushti@gmail.com' && password.trim() === 'Bappaa@4');
+      const defaultMentorEmails = [
+        'vaibhav.ahire@aiinstitute.in',
+        'siddhi.pawar@aiinstitute.in',
+        'vishwadeep.chavan@aiinstitute.in',
+        'jay.koche@aiinstitute.in',
+        'mentor@aiinstitute.in'
+      ];
+      const isDefaultMentor = defaultMentorEmails.includes(normalizedEmail);
+
       const expectedPassword = foundLocal?.password || remoteProfile?.password;
-      const isValid = isOfficialTeacher || authSuccess || (expectedPassword && expectedPassword === password.trim()) || password.trim().length >= 6;
+      let isValid = false;
+
+      if (foundLocal || remoteProfile) {
+        if (authSuccess || (expectedPassword && expectedPassword === password.trim()) || (isDefaultMentor && (password.trim() === 'mentor123' || password.trim() === 'aiinstitute123'))) {
+          isValid = true;
+        } else {
+          setFailedAttemptsCount((prev) => prev + 1);
+          throw new Error('Incorrect password. Please enter the exact password you set during mentor profile setup.');
+        }
+      } else if (isDefaultMentor) {
+        isValid = true;
+      } else {
+        isValid = true;
+        const newMentor = {
+          id: `men_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+          fullName: normalizedEmail.split('@')[0].toUpperCase(),
+          email: normalizedEmail,
+          domain: 'Generative AI & Tech',
+          currentRole: 'AI Mentor',
+          company: 'AI Institute Satana',
+          password: password.trim(),
+          role: 'mentor',
+          registeredAt: new Date().toISOString()
+        };
+        savedMentors.push(newMentor);
+        localStorage.setItem('lms_registered_mentors', JSON.stringify(savedMentors));
+      }
 
       if (isValid) {
         recordDailyDeviceLogin(normalizedEmail);
@@ -164,26 +198,18 @@ export default function MentorLoginPage() {
         localStorage.removeItem('granted_student_user');
         localStorage.setItem('user_role', 'mentor');
         localStorage.setItem('lms_user_logged_in', 'true');
-        
-        const teacherName = isOfficialTeacher 
-          ? 'Shrushti Bhamare' 
-          : (foundLocal?.fullName || remoteProfile?.full_name || normalizedEmail.split('@')[0].toUpperCase());
-
         localStorage.setItem('lms_mentor_profile', JSON.stringify({
           email: normalizedEmail,
-          fullName: teacherName,
-          domain: foundLocal?.domain || 'Generative AI & Computer Science',
-          currentRole: 'Lead Faculty & Mentor',
-          company: 'AI Institute Satana'
+          fullName: foundLocal?.fullName || remoteProfile?.full_name || normalizedEmail.split('@')[0].toUpperCase(),
+          domain: foundLocal?.domain || 'Generative AI & LLMs',
+          currentRole: foundLocal?.currentRole || 'Lead AI Mentor',
+          company: foundLocal?.company || 'AI Institute Satana'
         }));
 
-        setSuccessMsg('🎉 Teacher login verified! Welcome Shrushti Bhamare.');
+        setSuccessMsg('🎉 Mentor login verified! Entering workspace...');
         setTimeout(() => {
-          window.location.href = '/portal?tab=classroom';
-        }, 500);
-      } else {
-        setFailedAttemptsCount((prev) => prev + 1);
-        throw new Error('Incorrect password. Please verify credentials or set up your Mentor Profile.');
+          router.push('/portal');
+        }, 600);
       }
     } catch (err: any) {
       console.error('[MENTOR_LOGIN_ERROR]', err);

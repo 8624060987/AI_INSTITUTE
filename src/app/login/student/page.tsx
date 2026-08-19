@@ -225,7 +225,39 @@ export default function StudentLoginPage() {
       } catch (err) {}
 
       const expectedPassword = foundLocal?.password || remoteProfile?.password;
-      const isValid = authSuccess || (expectedPassword && expectedPassword === password.trim()) || password.trim().length >= 4;
+      let isValid = false;
+
+      if (foundLocal || remoteProfile) {
+        // Account ALREADY EXISTS: strictly verify password!
+        if (authSuccess || (expectedPassword && expectedPassword === password.trim())) {
+          isValid = true;
+        } else {
+          setFailedAttemptsCount((prev) => prev + 1);
+          throw new Error('Incorrect password. Please enter the exact password you set during admission or registration.');
+        }
+      } else {
+        // New Account: create student record with entered password!
+        isValid = true;
+        const newStudent = {
+          id: `stu_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+          fullName: normalizedEmail.split('@')[0].toUpperCase(),
+          email: normalizedEmail,
+          phone: '',
+          courseId: selectedCourse || 'course-gen-ai',
+          courseTitle: 'Generative AI & LLMs',
+          qualification: 'Graduate',
+          college: 'AI Institute Scholar',
+          currentYear: '2026',
+          location: 'Satana / Maharashtra',
+          careerGoal: 'AI Engineer',
+          avatarUrl: DEFAULT_AVATAR,
+          password: password.trim(),
+          role: 'student',
+          registeredAt: new Date().toISOString()
+        };
+        savedStudents.push(newStudent);
+        localStorage.setItem('lms_registered_students', JSON.stringify(savedStudents));
+      }
 
       if (isValid) {
         recordDailyDeviceLogin(normalizedEmail);
@@ -250,9 +282,6 @@ export default function StudentLoginPage() {
           const redirectTarget = params.get('redirect') || '/portal?tab=classroom';
           window.location.href = redirectTarget;
         }, 500);
-      } else {
-        setFailedAttemptsCount((prev) => prev + 1);
-        throw new Error('Incorrect password. Please verify your credentials or use the Admission Form to register.');
       }
     } catch (err: any) {
       console.error('[STUDENT_LOGIN_ERROR]', err);
