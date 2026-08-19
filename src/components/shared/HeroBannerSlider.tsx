@@ -149,11 +149,11 @@ export function HeroBannerSlider({ onSelectCourse }: { onSelectCourse: (courseId
                 }
               }}
             >
-              {/* Ultra Crisp High Definition Banner Image - Fitted and Stretched */}
+              {/* Ultra Crisp High Definition Banner Image - Premium Fit */}
               <img
                 src={currentBanner.imageSrc}
                 alt={currentBanner.name}
-                className="w-full h-full object-fill object-center rounded-2xl sm:rounded-3xl block shadow-inner"
+                className="w-full h-full object-cover object-center rounded-2xl sm:rounded-3xl block shadow-inner"
                 style={{ imageRendering: '-webkit-optimize-contrast' }}
                 loading="eager"
                 decoding="async"

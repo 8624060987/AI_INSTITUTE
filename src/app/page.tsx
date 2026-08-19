@@ -579,43 +579,67 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 5. TIE-UPS / PLACEMENT PARTNERS (STABLE & COMPACT) */}
-      <section className="py-10 sm:py-12 bg-white dark:bg-[#0a0f1c] border-y border-slate-200 dark:border-slate-800">
-        <div className="text-center max-w-5xl mx-auto px-4">
+      {/* 5. TIE-UPS / PLACEMENT PARTNERS (PREMIUM SMOOTH SLIDER) */}
+      <section className="py-12 sm:py-16 bg-white dark:bg-[#0a0f1c] border-y border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div className="text-center mb-8">
           <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-[0.25em] mb-1 block">
             Placement Network
           </span>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
             OUR OFFICIAL INDUSTRY TIE-UPS
           </h2>
           <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">
             Top global tech companies & enterprises where our graduates get hired
           </p>
 
-          {/* Compact stable grid of company badges */}
-          <div className="flex flex-wrap justify-center items-center gap-2.5 sm:gap-3.5 mt-6 max-w-5xl mx-auto">
-            {[
-              { name: 'HCLTech', logo: 'https://cdn.simpleicons.org/hcl' },
-              { name: 'Deloitte', logo: 'https://cdn.simpleicons.org/deloitte' },
-              { name: 'Samsung', logo: 'https://cdn.simpleicons.org/samsung' },
-              { name: 'Intel', logo: 'https://cdn.simpleicons.org/intel' },
-              { name: 'Flipkart', logo: 'https://cdn.simpleicons.org/flipkart' },
-              { name: 'Google', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg' },
-              { name: 'Microsoft', logo: 'https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg' },
-              { name: 'Amazon', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg' },
-              { name: 'TCS', logo: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Tata_Consultancy_Services_Logo.svg' },
-              { name: 'Infosys', logo: 'https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg' },
-              { name: 'Accenture', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/cd/Accenture.svg' },
-              { name: 'IBM', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg' },
-              { name: 'Wipro', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Wipro_Primary_Logo_Color_RGB.svg' },
-              { name: 'Cognizant', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/07/Cognizant_logo_2022.svg' },
-              { name: 'Capgemini', logo: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Capgemini_201x_logo.svg' },
-              { name: 'Razorpay', logo: 'https://cdn.simpleicons.org/razorpay/0C2340' },
-              { name: 'PhonePe', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg' },
-              { name: 'Paytm', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg' },
-            ].map((company) => (
-              <CompanyLogoBadge key={company.name} company={company} />
-            ))}
+          <div className="inline-flex flex-wrap justify-center items-center gap-3 py-2 px-5 mt-4 rounded-xl bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/20 text-xs font-bold text-slate-800 dark:text-slate-200">
+            <span className="text-blue-600 dark:text-blue-400 uppercase tracking-wider text-[10px] font-extrabold mr-1">Hiring Partners:</span>
+            <span className="text-blue-700 dark:text-blue-300 font-extrabold">HCLTech</span>
+            <span className="text-slate-400">•</span>
+            <span className="text-emerald-700 dark:text-emerald-300 font-extrabold">Deloitte</span>
+            <span className="text-slate-400">•</span>
+            <span className="text-indigo-700 dark:text-indigo-300 font-extrabold">Samsung</span>
+            <span className="text-slate-400">•</span>
+            <span className="text-sky-700 dark:text-sky-300 font-extrabold">Intel</span>
+            <span className="text-slate-400">•</span>
+            <span className="text-amber-700 dark:text-amber-300 font-extrabold">Flipkart</span>
+          </div>
+        </div>
+
+        {/* Marquee wrapper with edge fade */}
+        <div className="relative">
+          <div className="absolute left-0 top-0 bottom-0 w-20 z-10 bg-gradient-to-r from-white dark:from-[#0a0f1c] to-transparent pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-20 z-10 bg-gradient-to-l from-white dark:from-[#0a0f1c] to-transparent pointer-events-none" />
+
+          <div className="flex overflow-hidden py-2">
+            <div className="flex gap-8 sm:gap-12 animate-marquee whitespace-nowrap items-center">
+              {[...Array(2)].map((_, idx) => (
+                <div key={idx} className="flex gap-8 sm:gap-12 items-center shrink-0">
+                  {[
+                    { name: 'HCLTech', logo: 'https://cdn.simpleicons.org/hcl' },
+                    { name: 'Deloitte', logo: 'https://cdn.simpleicons.org/deloitte' },
+                    { name: 'Samsung', logo: 'https://cdn.simpleicons.org/samsung' },
+                    { name: 'Intel', logo: 'https://cdn.simpleicons.org/intel' },
+                    { name: 'Flipkart', logo: 'https://cdn.simpleicons.org/flipkart' },
+                    { name: 'Google', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg' },
+                    { name: 'Microsoft', logo: 'https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg' },
+                    { name: 'Amazon', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg' },
+                    { name: 'TCS', logo: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Tata_Consultancy_Services_Logo.svg' },
+                    { name: 'Infosys', logo: 'https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg' },
+                    { name: 'Accenture', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/cd/Accenture.svg' },
+                    { name: 'IBM', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg' },
+                    { name: 'Wipro', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Wipro_Primary_Logo_Color_RGB.svg' },
+                    { name: 'Cognizant', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/07/Cognizant_logo_2022.svg' },
+                    { name: 'Capgemini', logo: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Capgemini_201x_logo.svg' },
+                    { name: 'Razorpay', logo: 'https://cdn.simpleicons.org/razorpay/0C2340' },
+                    { name: 'PhonePe', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg' },
+                    { name: 'Paytm', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg' },
+                  ].map((company) => (
+                    <CompanyLogoBadge key={company.name} company={company} />
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
