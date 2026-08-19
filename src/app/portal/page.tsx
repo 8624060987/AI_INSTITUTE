@@ -723,27 +723,23 @@ export default function PortalPage() {
     }
   }, [currentUser]);
 
-  // Handle auto-checkout from Landing Page
+  // Handle 100% Free Instant Course Access from Landing Page
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const searchParams = new URLSearchParams(window.location.search);
-      const checkoutId = searchParams.get('checkout');
+      const checkoutId = searchParams.get('checkout') || searchParams.get('enroll') || searchParams.get('courseId');
       if (checkoutId && currentUser) {
-        // If they already own it, jump straight to the classroom
-        if (enrolledCourseIds.includes(checkoutId)) {
-          setSelectedCourseId(checkoutId);
-          setActiveTab('classroom-detail');
-        } else {
-          // Otherwise, pop up the checkout
-          setActiveTab('courses'); // make sure they are on the courses tab underneath
-          setCheckoutCourseId(checkoutId);
-        }
+        const finalId = checkoutId === 'all' ? 'course-gen-ai' : checkoutId;
+        enrollInCourse(finalId);
+        setSelectedCourseId(finalId);
+        setActiveTab('classroom-detail');
+        setClassroomTab('notes');
         
         // Clean up the URL so it doesn't trigger again on refresh
         window.history.replaceState({}, document.title, window.location.pathname);
       }
     }
-  }, [currentUser, enrolledCourseIds]);
+  }, [currentUser]);
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

@@ -144,16 +144,16 @@ export default function LandingPage() {
     ));
 
     if (isLogged) {
-      // User is already logged in on this device: give direct classroom access
+      // User is already logged in: give direct 100% free classroom access
       if (courseId) {
-        window.location.href = `/portal?checkout=${courseId}`;
+        window.location.href = `/portal?tab=classroom&courseId=${courseId}`;
       } else {
         window.location.href = '/portal?tab=classroom';
       }
     } else {
-      // User is NEW / not logged in: show them login page
+      // User is NEW / not logged in: show them student login page
       if (courseId) {
-        window.location.href = `/login/student?redirect=/portal?checkout=${courseId}`;
+        window.location.href = `/login/student?redirect=/portal?tab=classroom&courseId=${courseId}`;
       } else {
         window.location.href = '/login/student';
       }

@@ -224,33 +224,13 @@ export default function StudentLoginPage() {
         if (authData?.user) authSuccess = true;
       } catch (err) {}
 
-      const isOfficialTeacher = (normalizedEmail === 'bhamareshrushti@gmail.com' && password.trim() === 'Bappaa@4');
       const expectedPassword = foundLocal?.password || remoteProfile?.password;
-      const isValid = isOfficialTeacher || authSuccess || (expectedPassword && expectedPassword === password.trim()) || password.trim().length >= 4;
+      const isValid = authSuccess || (expectedPassword && expectedPassword === password.trim()) || password.trim().length >= 4;
 
       if (isValid) {
         recordDailyDeviceLogin(normalizedEmail);
         setFailedAttemptsCount(0);
         setCooldownSeconds(0);
-        
-        if (isOfficialTeacher) {
-          localStorage.removeItem('granted_student_user');
-          localStorage.setItem('user_role', 'mentor');
-          localStorage.setItem('lms_user_logged_in', 'true');
-          localStorage.setItem('lms_mentor_profile', JSON.stringify({
-            email: normalizedEmail,
-            fullName: 'Shrushti Bhamare',
-            domain: 'Generative AI & Computer Science',
-            currentRole: 'Lead Faculty & Mentor',
-            company: 'AI Institute Satana'
-          }));
-          setSuccessMsg('🎉 Teacher login verified! Entering Teacher Portal...');
-          setTimeout(() => {
-            window.location.href = '/portal?tab=classroom';
-          }, 500);
-          return;
-        }
-
         localStorage.setItem('user_role', 'student');
         localStorage.setItem('lms_user_logged_in', 'true');
         localStorage.setItem('granted_student_user', JSON.stringify({
@@ -266,7 +246,9 @@ export default function StudentLoginPage() {
 
         setSuccessMsg('🎉 Login successful! Welcome back.');
         setTimeout(() => {
-          window.location.href = '/portal?tab=classroom';
+          const params = new URLSearchParams(window.location.search);
+          const redirectTarget = params.get('redirect') || '/portal?tab=classroom';
+          window.location.href = redirectTarget;
         }, 500);
       } else {
         setFailedAttemptsCount((prev) => prev + 1);
