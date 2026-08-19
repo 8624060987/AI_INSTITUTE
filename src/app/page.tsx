@@ -320,25 +320,22 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <motion.div 
-            initial="hidden" 
-            whileInView="show" 
-            viewport={{ once: true, margin: "-50px" }}
-            variants={staggerContainer}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {dedupeCourses(courses).map((course, idx) => {
               const isUpcoming = isUpcomingCourse(course.id) || isUpcomingCourse(course.title);
               return (
-                <motion.div 
+                <div 
                   key={course.id} 
-                  variants={fadeIn}
-                  whileHover={{ y: -10 }}
-                  className="bg-slate-50 dark:bg-slate-900/50 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-lg hover:shadow-2xl transition-all group cursor-pointer relative"
+                  className="bg-slate-50 dark:bg-slate-900/50 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all group cursor-pointer relative"
                   onClick={(e) => handlePremiumClick(e, course.id)}
                 >
-                  <div className="relative h-48 overflow-hidden">
-                    <img src={course.imageUrl} alt={course.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <div className="relative h-48 overflow-hidden bg-slate-950">
+                    <img 
+                      src={course.imageUrl} 
+                      alt={course.title} 
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/banners/generative-ai.png'; }}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent flex items-end p-4">
                       <span className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-md ${
                         isUpcoming ? 'bg-amber-500 text-slate-950 font-black' : 'bg-blue-600 text-white'
@@ -394,10 +391,10 @@ export default function LandingPage() {
                       </button>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
-          </motion.div>
+          </div>
           <div className="mt-12 text-center">
             <button onClick={handlePremiumClick} className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold hover:underline">
               View All Courses <ArrowRight className="w-4 h-4" />
