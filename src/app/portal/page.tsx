@@ -9,7 +9,6 @@ import { AIAssistant } from '@/components/shared/AIAssistant';
 import { EditProfileModal } from '@/components/shared/EditProfileModal';
 import { SecureVideoPlayer } from '@/components/shared/SecureVideoPlayer';
 import { HandwrittenNoteModal } from '@/components/shared/HandwrittenNoteModal';
-import { DemoLectureModal } from '@/components/shared/DemoLectureModal';
 import { ComingSoonCourseModal, isUpcomingCourse } from '@/components/shared/ComingSoonCourseModal';
 import { 
   Play, 
@@ -129,7 +128,6 @@ export default function PortalPage() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [sessionToRate, setSessionToRate] = useState<any>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const [upcomingModalCourse, setUpcomingModalCourse] = useState<string | null>(null);
   const [selectedCourseId, setSelectedCourseId] = useState<string>('course-gen-ai');
   
@@ -544,9 +542,9 @@ export default function PortalPage() {
     if (c.includes('hcl')) return 'https://upload.wikimedia.org/wikipedia/commons/a/ab/HCLTech_Logo.svg';
     if (c.includes('ibm')) return 'https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg';
     if (c.includes('accenture')) return 'https://upload.wikimedia.org/wikipedia/commons/c/cd/Accenture.svg';
-    if (c.includes('cognizant')) return 'https://upload.wikimedia.org/wikipedia/commons/0/07/Cognizant_logo_2022.svg';
+    if (c.includes('cognizant')) return 'https://upload.wikimedia.org/wikipedia/commons/4/43/Cognizant_logo_2022.svg';
     if (c.includes('capgemini')) return 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Capgemini_201x_logo.svg';
-    if (c.includes('deloitte')) return 'https://upload.wikimedia.org/wikipedia/commons/5/56/Deloitte.svg';
+    if (c.includes('deloitte')) return 'https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_of_Deloitte.svg';
     if (c.includes('samsung')) return 'https://cdn.simpleicons.org/samsung/1428A0';
     if (c.includes('intel')) return 'https://cdn.simpleicons.org/intel/0071C5';
     if (c.includes('flipkart')) return 'https://cdn.simpleicons.org/flipkart/2874F0';
@@ -1364,15 +1362,6 @@ export default function PortalPage() {
                         Hello, {currentUser.fullName} 👋
                       </h2>
                       <p className="text-xs text-blue-100 font-medium">Let's continue your learning journey. You are making amazing progress!</p>
-                      <div className="pt-2">
-                        <button
-                          onClick={() => setIsDemoModalOpen(true)}
-                          className="px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-md text-white font-extrabold text-xs transition-all flex items-center gap-2 border border-white/30 shadow-lg cursor-pointer"
-                        >
-                          <Play className="w-4 h-4 fill-current text-emerald-400" />
-                          <span>Watch 10-Min Demo Lecture & Platform Orientation</span>
-                        </button>
-                      </div>
                     </div>
                     <div className="absolute right-0 bottom-0 opacity-10 translate-y-6 translate-x-6 z-0">
                       <Sparkles className="w-48 h-48 text-white" />
@@ -4533,8 +4522,6 @@ export default function PortalPage() {
       <AIAssistant />
       {/* AI Handwritten Notes Modal */}
       <HandwrittenNoteModal note={selectedHandwrittenNote} onClose={() => setSelectedHandwrittenNote(null)} />
-      {/* 10-Minute Demo Lecture Modal */}
-      <DemoLectureModal isOpen={isDemoModalOpen} onClose={() => setIsDemoModalOpen(false)} />
       {/* Coming Soon Course Modal for Digital Marketing, IT & Software Eng, UI/UX Design */}
       <ComingSoonCourseModal
         isOpen={!!upcomingModalCourse}

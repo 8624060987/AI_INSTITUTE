@@ -13,7 +13,6 @@ import {
 import { LandingNavbar } from '@/components/shared/LandingNavbar';
 import { LandingFooter } from '@/components/shared/LandingFooter';
 import { AIAssistant } from '@/components/shared/AIAssistant';
-import { DemoLectureModal } from '@/components/shared/DemoLectureModal';
 import { HeroBannerSlider } from '@/components/shared/HeroBannerSlider';
 import { ComingSoonCourseModal, isUpcomingCourse } from '@/components/shared/ComingSoonCourseModal';
 import { useDatabase, dedupeCourses } from '@/context/DatabaseContext';
@@ -43,7 +42,6 @@ export default function LandingPage() {
   const { courses, currentUser, isAuthenticated, authReady, enrolledCourseIds, addLead } = useDatabase();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const [upcomingModalCourse, setUpcomingModalCourse] = useState<string | null>(null);
 
   useEffect(() => {
@@ -483,13 +481,6 @@ export default function LandingPage() {
                 Explore Courses
                 <ArrowRight className="w-5 h-5" />
               </a>
-              <button 
-                onClick={() => setIsDemoModalOpen(true)} 
-                className="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-white font-bold px-8 py-4 rounded-2xl shadow-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
-              >
-                <Play className="w-5 h-5 text-blue-600 dark:text-blue-400 fill-current" />
-                Watch Demo Lecture (10 Min)
-              </button>
             </div>
             
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-slate-200/60 dark:border-slate-800/60">
@@ -887,7 +878,7 @@ export default function LandingPage() {
                 <div key={idx} className="flex gap-8 sm:gap-12 items-center shrink-0">
                   {[
                     { name: 'HCLTech', logo: 'https://cdn.simpleicons.org/hcl' },
-                    { name: 'Deloitte', logo: 'https://cdn.simpleicons.org/deloitte' },
+                    { name: 'Deloitte', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_of_Deloitte.svg' },
                     { name: 'Samsung', logo: 'https://cdn.simpleicons.org/samsung' },
                     { name: 'Intel', logo: 'https://cdn.simpleicons.org/intel' },
                     { name: 'Flipkart', logo: 'https://cdn.simpleicons.org/flipkart' },
@@ -899,7 +890,7 @@ export default function LandingPage() {
                     { name: 'Accenture', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/cd/Accenture.svg' },
                     { name: 'IBM', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg' },
                     { name: 'Wipro', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Wipro_Primary_Logo_Color_RGB.svg' },
-                    { name: 'Cognizant', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/07/Cognizant_logo_2022.svg' },
+                    { name: 'Cognizant', logo: 'https://upload.wikimedia.org/wikipedia/commons/4/43/Cognizant_logo_2022.svg' },
                     { name: 'Capgemini', logo: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Capgemini_201x_logo.svg' },
                     { name: 'Razorpay', logo: 'https://cdn.simpleicons.org/razorpay/0C2340' },
                     { name: 'PhonePe', logo: 'https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg' },
@@ -1113,14 +1104,6 @@ export default function LandingPage() {
 
       <LandingFooter />
       <AIAssistant />
-      <DemoLectureModal
-        isOpen={isDemoModalOpen}
-        onClose={() => setIsDemoModalOpen(false)}
-        onEnrollClick={() => {
-          setIsDemoModalOpen(false);
-          router.push('/portal?tab=classroom');
-        }}
-      />
       <ComingSoonCourseModal
         isOpen={!!upcomingModalCourse}
         onClose={() => setUpcomingModalCourse(null)}
