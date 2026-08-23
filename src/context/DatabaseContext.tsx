@@ -351,7 +351,7 @@ const SEED_COURSES: Course[] = [
     category: 'Data Science',
     price: 4599,
     originalPrice: 12999,
-    imageUrl: '/banners/data-science.png',
+    imageUrl: '/banners/data-science.webp',
     mentorName: 'Vaibhav Ahire',
     duration: '250+ Hours',
     rating: 4.8,
@@ -365,7 +365,7 @@ const SEED_COURSES: Course[] = [
     category: 'Data Analytics',
     price: 4599,
     originalPrice: 9999,
-    imageUrl: '/banners/data-analyst.png',
+    imageUrl: '/banners/data-analyst.webp',
     mentorName: 'Jay Koche',
     duration: '160+ Hours',
     rating: 4.8,
@@ -379,7 +379,7 @@ const SEED_COURSES: Course[] = [
     category: 'Digital Marketing',
     price: 4599,
     originalPrice: 11999,
-    imageUrl: '/banners/digital-marketing.png',
+    imageUrl: '/banners/digital-marketing.webp',
     mentorName: 'Siddhi Pawar',
     duration: '140+ Hours',
     rating: 4.9,
@@ -393,7 +393,7 @@ const SEED_COURSES: Course[] = [
     category: 'AI & ML',
     price: 4599,
     originalPrice: 16999,
-    imageUrl: '/banners/ai-ml.png',
+    imageUrl: '/banners/ai-ml.webp',
     mentorName: 'Vaibhav Ahire',
     duration: '300+ Hours',
     rating: 4.9,
@@ -407,7 +407,7 @@ const SEED_COURSES: Course[] = [
     category: 'Generative AI',
     price: 4599,
     originalPrice: 6999,
-    imageUrl: '/banners/generative-ai.png',
+    imageUrl: '/banners/generative-ai.webp',
     mentorName: 'Vaibhav Ahire',
     duration: '80+ Hours',
     rating: 4.9,
@@ -421,7 +421,7 @@ const SEED_COURSES: Course[] = [
     category: 'Cyber Security',
     price: 4599,
     originalPrice: 10999,
-    imageUrl: '/banners/cyber-security.png',
+    imageUrl: '/banners/cyber-security.webp',
     mentorName: 'Vishwadeep Chavan',
     duration: '150+ Hours',
     rating: 4.8,
@@ -463,7 +463,7 @@ const SEED_COURSES: Course[] = [
     category: 'Business Analyst',
     price: 3999,
     originalPrice: 8999,
-    imageUrl: '/banners/business-analyst.png',
+    imageUrl: '/banners/business-analyst.webp',
     mentorName: 'Jay Koche',
     duration: '100+ Hours',
     rating: 4.8,
@@ -491,7 +491,7 @@ const SEED_COURSES: Course[] = [
     category: 'Design & Experience',
     price: 3999,
     originalPrice: 9999,
-    imageUrl: '/banners/full-stack-web-dev.png',
+    imageUrl: '/banners/full-stack-web-dev.webp',
     mentorName: 'Siddhi Pawar',
     duration: '120+ Hours',
     rating: 4.9,
@@ -775,11 +775,11 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const sanitizedSeedCourses = dedupeCourses(SEED_COURSES.map(c => ({
       ...c,
       imageUrl: c.id === 'course-ai-ml' 
-        ? '/images/banner_ai_ml.png'
+        ? '/images/banner_ai_ml.webp'
         : c.id === 'course-gen-ai'
-        ? '/banners/generative-ai.png'
+        ? '/banners/generative-ai.webp'
         : c.id === 'course-cyber-sec'
-        ? '/images/banner_cyber_sec.png'
+        ? '/images/banner_cyber_sec.webp'
         : sanitizeCourseImage(c.imageUrl, c.imageUrl)
     })));
 
@@ -880,12 +880,12 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             price: c.price || 4599,
             originalPrice: c.original_price || 12999,
             imageUrl: c.id === 'course-ai-ml' 
-              ? '/images/banner_ai_ml.png'
+              ? '/images/banner_ai_ml.webp'
               : c.id === 'course-gen-ai'
-              ? '/banners/generative-ai.png'
+              ? '/banners/generative-ai.webp'
               : c.id === 'course-cyber-sec'
-              ? '/images/banner_cyber_sec.png'
-              : sanitizeCourseImage(c.thumbnail_url || c.image_url, '/images/banner_ai_ml.png'),
+              ? '/images/banner_cyber_sec.webp'
+              : sanitizeCourseImage(c.thumbnail_url || c.image_url, '/images/banner_ai_ml.webp'),
             mentorName: c.mentor_name || 'Vaibhav Ahire',
             duration: c.duration || '200+ Hours',
             rating: c.rating || 4.9,
@@ -899,11 +899,11 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
               ...formatted,
               id: mergedList[existingIndex].id,
               imageUrl: mergedList[existingIndex].id === 'course-ai-ml' 
-                ? '/images/banner_ai_ml.png' 
+                ? '/images/banner_ai_ml.webp' 
                 : mergedList[existingIndex].id === 'course-gen-ai'
-                ? '/banners/generative-ai.png'
+                ? '/banners/generative-ai.webp'
                 : mergedList[existingIndex].id === 'course-cyber-sec'
-                ? '/images/banner_cyber_sec.png'
+                ? '/images/banner_cyber_sec.webp'
                 : formatted.imageUrl
             };
           } else {

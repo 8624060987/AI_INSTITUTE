@@ -17,7 +17,7 @@ export const UPLOADED_BANNERS: UploadedBanner[] = [
   {
     id: 'data-analyst',
     name: 'Data Analyst',
-    imageSrc: '/banners/data-analyst.png',
+    imageSrc: '/banners/data-analyst.webp',
     courseId: 'course-da',
     badge: 'Turn Data into Insights',
     glowColor: 'rgba(30, 58, 138, 0.45)',
@@ -25,7 +25,7 @@ export const UPLOADED_BANNERS: UploadedBanner[] = [
   {
     id: 'generative-ai',
     name: 'Generative AI',
-    imageSrc: '/banners/generative-ai.png',
+    imageSrc: '/banners/generative-ai.webp',
     courseId: 'course-gen-ai',
     badge: 'Imagine The Future',
     glowColor: 'rgba(13, 148, 136, 0.45)',
@@ -33,7 +33,7 @@ export const UPLOADED_BANNERS: UploadedBanner[] = [
   {
     id: 'data-science',
     name: 'Data Science',
-    imageSrc: '/banners/data-science.png',
+    imageSrc: '/banners/data-science.webp',
     courseId: 'course-ds',
     badge: 'Build Models & Predict Future',
     glowColor: 'rgba(124, 58, 237, 0.45)',
@@ -41,7 +41,7 @@ export const UPLOADED_BANNERS: UploadedBanner[] = [
   {
     id: 'full-stack',
     name: 'Full Stack Web Development',
-    imageSrc: '/banners/full-stack-web-dev.png',
+    imageSrc: '/banners/full-stack-web-dev.webp',
     courseId: 'course-web-dev',
     badge: 'Design • Develop • Deploy',
     glowColor: 'rgba(37, 99, 235, 0.45)',
@@ -49,7 +49,7 @@ export const UPLOADED_BANNERS: UploadedBanner[] = [
   {
     id: 'business-analyst',
     name: 'Business Analyst',
-    imageSrc: '/banners/business-analyst.png',
+    imageSrc: '/banners/business-analyst.webp',
     courseId: 'course-business-analyst',
     badge: 'Analyze • Strategies • Deliver Value',
     glowColor: 'rgba(234, 88, 12, 0.45)',
@@ -57,7 +57,7 @@ export const UPLOADED_BANNERS: UploadedBanner[] = [
   {
     id: 'digital-marketing',
     name: 'Digital Marketing',
-    imageSrc: '/banners/digital-marketing.png',
+    imageSrc: '/banners/digital-marketing.webp',
     courseId: 'course-digital-marketing',
     badge: 'Digital Skills • Real Results',
     glowColor: 'rgba(22, 163, 74, 0.45)',

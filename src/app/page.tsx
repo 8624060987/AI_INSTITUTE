@@ -603,7 +603,7 @@ export default function LandingPage() {
                     <img 
                       src={course.imageUrl} 
                       alt={course.title} 
-                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/banners/generative-ai.png'; }}
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/banners/generative-ai.webp'; }}
                       className="w-full h-full object-fill object-center transition-transform duration-300 group-hover:scale-105" 
                       style={{ imageRendering: '-webkit-optimize-contrast' }}
                     />
