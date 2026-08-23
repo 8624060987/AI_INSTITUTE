@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { User, BookOpen, GraduationCap, School, ShieldAlert, ArrowRight } from 'lucide-react';
+import { GraduationCap, School, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import { useDatabase } from '@/context/DatabaseContext';
