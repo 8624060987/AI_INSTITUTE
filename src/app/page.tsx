@@ -209,11 +209,17 @@ export default function LandingPage() {
       setUpcomingModalCourse(courseId);
       return;
     }
-    const isLogged = isAuthenticated || (typeof window !== 'undefined' && (
-      localStorage.getItem('lms_user_logged_in') === 'true' ||
-      Boolean(localStorage.getItem('user_role')) ||
-      Boolean(localStorage.getItem('granted_student_user'))
-    ));
+    // Only treat as logged-in for enroll if the session is a STUDENT (not mentor/admin).
+    // Mentor/admin localStorage should NOT bypass the student login page.
+    const role = typeof window !== 'undefined' ? localStorage.getItem('user_role') : null;
+    const isMentorOrAdmin = role === 'mentor' || role === 'admin';
+    const isLogged = !isMentorOrAdmin && (
+      (isAuthenticated && (currentUser?.role === 'student' || !currentUser?.role)) ||
+      (typeof window !== 'undefined' && (
+        (localStorage.getItem('lms_user_logged_in') === 'true' && role === 'student') ||
+        Boolean(localStorage.getItem('granted_student_user'))
+      ))
+    );
 
     if (isLogged) {
       // User is already logged in: give direct 100% free classroom access

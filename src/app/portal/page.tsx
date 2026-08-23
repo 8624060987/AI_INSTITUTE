@@ -1850,7 +1850,7 @@ export default function PortalPage() {
                                       setUpcomingModalCourse(course.id);
                                       return;
                                     }
-                                    if (isAuthenticated) {
+                                    if (isAuthenticated && currentUser?.role === 'student') {
                                       await enrollInCourse(course.id);
                                       setSelectedCourseId(course.id);
                                       setClassroomTab('notes');
