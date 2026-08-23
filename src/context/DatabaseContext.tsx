@@ -1120,7 +1120,10 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             const studentName = activeProfile?.fullName || activeProfile?.full_name || studentEmail.split('@')[0].toUpperCase();
             const savedAvatar = typeof window !== 'undefined' ? localStorage.getItem(`custom_avatar_${studentEmail}`) : null;
             const fallbackAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
-            const photoUrl = activeProfile?.avatarUrl || activeProfile?.avatar_url || savedAvatar || fallbackAvatar;
+            const storedAvatar = activeProfile?.avatarUrl || activeProfile?.avatar_url;
+            // Prefer custom_avatar (uploaded photo) over the stored avatar if stored is just the default
+            const isDefaultAvatar = !storedAvatar || storedAvatar === fallbackAvatar || storedAvatar.includes('unsplash.com/photo-1534528741775');
+            const photoUrl = (savedAvatar && isDefaultAvatar) ? savedAvatar : (storedAvatar || savedAvatar || fallbackAvatar);
 
             setIsAuthenticated(true);
             setCurrentUser({

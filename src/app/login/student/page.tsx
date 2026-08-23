@@ -271,13 +271,19 @@ export default function StudentLoginPage() {
         localStorage.removeItem('user_role');
         localStorage.removeItem('lms_user_logged_in');
 
+        // Resolve best available avatar: prefer a previously uploaded custom photo
+        const savedCustomAvatar = localStorage.getItem(`custom_avatar_${normalizedEmail}`);
+        const storedAvatar = foundLocal?.avatarUrl || remoteProfile?.avatar_url || DEFAULT_AVATAR;
+        const isDefaultAvatar = !storedAvatar || storedAvatar === DEFAULT_AVATAR || storedAvatar.includes('unsplash.com/photo-1534528741775');
+        const resolvedAvatar = (savedCustomAvatar && isDefaultAvatar) ? savedCustomAvatar : storedAvatar;
+
         const exactStudentProfile = {
           id: foundLocal?.id || remoteProfile?.id || `stu_${Date.now()}`,
           email: normalizedEmail,
           fullName: foundLocal?.fullName || remoteProfile?.full_name || normalizedEmail.split('@')[0].toUpperCase(),
           courseId: foundLocal?.courseId || remoteProfile?.course_id || selectedCourse || 'course-gen-ai',
           courseTitle: foundLocal?.courseTitle || 'Generative AI & LLMs',
-          avatarUrl: foundLocal?.avatarUrl || remoteProfile?.avatar_url || DEFAULT_AVATAR,
+          avatarUrl: resolvedAvatar,
           college: foundLocal?.college || remoteProfile?.college || 'AI Institute Scholar',
           location: foundLocal?.location || remoteProfile?.location || 'Satana / Maharashtra',
           careerGoal: foundLocal?.careerGoal || remoteProfile?.career_goal || 'AI Engineer',
@@ -288,6 +294,19 @@ export default function StudentLoginPage() {
           currentYear: foundLocal?.currentYear || 'Final Year (2025/2026)',
           role: 'student'
         };
+
+        // Also update the registered students list with the resolved avatar so it persists
+        try {
+          const regRaw = localStorage.getItem('lms_registered_students');
+          if (regRaw) {
+            const regList = JSON.parse(regRaw);
+            const idx = regList.findIndex((s: any) => s.email?.toLowerCase().trim() === normalizedEmail);
+            if (idx >= 0) {
+              regList[idx] = { ...regList[idx], ...exactStudentProfile };
+              localStorage.setItem('lms_registered_students', JSON.stringify(regList));
+            }
+          }
+        } catch (_) {}
 
         localStorage.setItem('user_role', 'student');
         localStorage.setItem('lms_user_logged_in', 'true');
