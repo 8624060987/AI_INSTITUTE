@@ -147,9 +147,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onEdi
           onClick={async () => {
             const supabase = createClient();
             await supabase.auth.signOut();
-            localStorage.removeItem('user_role');
-            localStorage.removeItem('granted_student_user');
-            localStorage.removeItem('just_logged_in');
+            // Clear ALL session keys — prevents stale phantom sessions from being restored
+            const sessionKeys = [
+              'user_role',
+              'granted_student_user',
+              'just_logged_in',
+              'lms_user_logged_in',
+              'lms_user',
+              'lms_mentor_profile',
+              'lms_enrolled',
+              'my_active_session_token',
+            ];
+            sessionKeys.forEach(k => localStorage.removeItem(k));
+            // Also clear any per-user session tokens
+            Object.keys(localStorage).forEach(k => {
+              if (k.startsWith('lms_active_session_')) localStorage.removeItem(k);
+            });
             window.location.href = '/';
           }}
           className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 cursor-pointer"

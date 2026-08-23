@@ -1099,7 +1099,8 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       }
 
       // 2. If user logged in as Student on this device, restore exact student session immediately
-      if (roleOverride === 'student' || (rawGUser && isLogged === 'true') || (rawLmsUser && isLogged === 'true')) {
+      // Requires BOTH lms_user_logged_in AND user_role === 'student' to prevent stale ghost sessions
+      if (roleOverride === 'student' && isLogged === 'true' && (rawGUser || rawLmsUser)) {
         try {
           const parsedG = rawGUser ? JSON.parse(rawGUser) : null;
           const parsedLms = rawLmsUser ? JSON.parse(rawLmsUser) : null;

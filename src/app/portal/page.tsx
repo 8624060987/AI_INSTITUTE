@@ -473,12 +473,13 @@ export default function PortalPage() {
       let targetCourseId = urlCourseId;
       const role = localStorage.getItem('user_role');
       const rawGUser = localStorage.getItem('granted_student_user');
-
-      // Wait until auth is resolved before deciding to redirect
+      // Wait until DatabaseContext has finished resolving auth state
       if (!authReady) return;
 
-      // Unauthenticated visitors must log in first before accessing portal
-      if (!isAuthenticated && !role && !rawGUser) {
+      // STRICT AUTH GUARD: only allow portal access if the DatabaseContext has resolved
+      // a valid authenticated session. Stale role-only localStorage keys are NOT enough.
+      const hasValidSession = isAuthenticated || Boolean(rawGUser);
+      if (!hasValidSession) {
         router.push('/login');
         return;
       }
