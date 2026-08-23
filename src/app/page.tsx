@@ -182,7 +182,8 @@ export default function LandingPage() {
 
     setContactSubmitted(true);
     setTimeout(() => {
-      handlePremiumClick(e, targetCourseId);
+      // Always go to login page after form submit — student login will handle redirect
+      window.location.href = '/login';
     }, 1500);
   };
 
@@ -209,32 +210,11 @@ export default function LandingPage() {
       setUpcomingModalCourse(courseId);
       return;
     }
-    // Only treat as logged-in for enroll if the session is a STUDENT (not mentor/admin).
-    // Mentor/admin localStorage should NOT bypass the student login page.
-    const role = typeof window !== 'undefined' ? localStorage.getItem('user_role') : null;
-    const isMentorOrAdmin = role === 'mentor' || role === 'admin';
-    const isLogged = !isMentorOrAdmin && (
-      (isAuthenticated && (currentUser?.role === 'student' || !currentUser?.role)) ||
-      (typeof window !== 'undefined' && (
-        (localStorage.getItem('lms_user_logged_in') === 'true' && role === 'student') ||
-        Boolean(localStorage.getItem('granted_student_user'))
-      ))
-    );
-
-    if (isLogged) {
-      // User is already logged in: give direct 100% free classroom access
-      if (courseId) {
-        window.location.href = `/portal?tab=classroom&courseId=${courseId}`;
-      } else {
-        window.location.href = '/portal?tab=classroom';
-      }
+    // Always send to login page — students already logged in will be auto-redirected to portal from /login
+    if (courseId) {
+      window.location.href = `/login?redirect=/portal?tab=classroom%26courseId=${courseId}`;
     } else {
-      // User is NEW / not logged in: show them student login page
-      if (courseId) {
-        window.location.href = `/login/student?redirect=/portal?tab=classroom&courseId=${courseId}`;
-      } else {
-        window.location.href = '/login/student';
-      }
+      window.location.href = '/login';
     }
   };
 

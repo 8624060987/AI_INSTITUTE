@@ -10,13 +10,14 @@ import { useDatabase } from '@/context/DatabaseContext';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { isAuthenticated, authReady } = useDatabase();
+  const { isAuthenticated, authReady, currentUser } = useDatabase();
 
   React.useEffect(() => {
-    if (authReady && isAuthenticated) {
+    // Only auto-redirect authenticated STUDENTS — mentors/admins stay on login page
+    if (authReady && isAuthenticated && currentUser?.role === 'student') {
       router.push('/portal?tab=classroom');
     }
-  }, [authReady, isAuthenticated, router]);
+  }, [authReady, isAuthenticated, currentUser, router]);
   return (
     <div className="min-h-screen bg-black text-white flex flex-col justify-center items-center p-4 relative overflow-hidden">
       {/* Small discrete Mentor Login button at Top Right */}
