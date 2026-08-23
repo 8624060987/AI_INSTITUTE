@@ -95,8 +95,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onEdi
         </div>
       </div>
 
-      {/* Navigation Links */}
-      <nav className="flex-1 px-4 py-6 overflow-y-auto space-y-1">
+      {/* Navigation Links — vertical stack (standing line) */}
+      <nav className="flex-1 flex flex-col px-4 py-6 overflow-y-auto gap-1">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -104,14 +104,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onEdi
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 ${
+              className={`w-full flex flex-row items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 ${
                 isActive 
                   ? 'bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-950/40 dark:to-blue-900/10 text-blue-600 dark:text-blue-400 border-l-4 border-blue-600'
                   : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/60 dark:hover:bg-slate-900/40 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`} />
-              <span>{item.name}</span>
+              <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`} />
+              <span className="truncate text-left">{item.name}</span>
             </button>
           );
         })}
