@@ -437,18 +437,18 @@ export default function LandingPage() {
       </div>
 
       {/* 1. HERO SECTION */}
-      <section className="relative pt-6 pb-24 px-6 overflow-hidden min-h-[85vh] flex items-center">
+      <section className="relative pt-6 pb-16 sm:pb-24 px-4 sm:px-6 overflow-hidden min-h-[70vh] sm:min-h-[85vh] flex items-center">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-[10%] -right-[5%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-blue-500/15 to-purple-500/15 blur-3xl opacity-70" />
           <div className="absolute -bottom-[10%] -left-[5%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-blue-500/15 to-cyan-500/15 blur-3xl opacity-70" />
         </div>
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center z-10 w-full">
-          <div className="space-y-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center z-10 w-full">
+          <div className="space-y-6 sm:space-y-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-white/60 dark:bg-slate-900/60 border border-blue-500/20 text-blue-600 dark:text-blue-400 shadow-sm">
               <Sparkles className="w-4 h-4" /> Premium AI Institute
             </div>
             
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1] text-slate-900 dark:text-white">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight leading-[1.1] text-slate-900 dark:text-white">
               Master Future Skills &amp; Build Your <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
                 Dream Career
@@ -469,7 +469,7 @@ export default function LandingPage() {
               </a>
             </div>
             
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-slate-200/60 dark:border-slate-800/60">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 pt-6 sm:pt-8 border-t border-slate-200/60 dark:border-slate-800/60">
               {[
                 { label: 'Students', val: '20,000+' },
                 { label: 'Courses', val: '30+' },
@@ -484,8 +484,8 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Hero Section Right: High Performance Student Container */}
-          <div className="relative lg:ml-auto flex justify-center lg:justify-end z-10 w-full max-w-[540px]">
+          {/* Hero Section Right: High Performance Student Container — hidden on mobile to prevent badge overflow */}
+          <div className="hidden lg:flex relative lg:ml-auto justify-center lg:justify-end z-10 w-full max-w-[540px]">
             <div className="relative w-full aspect-square max-w-[500px] flex items-center justify-center">
 
               {/* Main Student Portrait Container */}
@@ -497,10 +497,8 @@ export default function LandingPage() {
                 />
               </div>
 
-              {/* STATIC HIGH PERFORMANCE BADGES */}
-
               {/* Badge Top Left: Placement Guarantee */}
-              <div className="absolute top-2 left-[-15px] sm:left-[-30px] z-30 bg-slate-900 border border-blue-500/40 text-white p-3 rounded-2xl shadow-2xl flex items-center gap-3">
+              <div className="absolute top-2 left-[-30px] z-30 bg-slate-900 border border-blue-500/40 text-white p-3 rounded-2xl shadow-2xl flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold shrink-0">
                   <Trophy className="w-5 h-5 text-amber-400" />
                 </div>
@@ -511,18 +509,18 @@ export default function LandingPage() {
               </div>
 
               {/* Badge Top Right: Certified Track */}
-              <div className="absolute top-10 right-[-10px] sm:right-[-25px] z-30 bg-slate-900 border border-emerald-500/40 text-white p-3 rounded-2xl shadow-2xl flex items-center gap-3">
+              <div className="absolute top-10 right-[-25px] z-30 bg-slate-900 border border-emerald-500/40 text-white p-3 rounded-2xl shadow-2xl flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold shrink-0">
                   <Award className="w-5 h-5 text-emerald-400" />
                 </div>
                 <div>
                   <div className="text-[10px] uppercase tracking-wider font-extrabold text-emerald-400">ISO Certified</div>
-                  <div className="text-xs font-black text-white">GenAI & ML Specialist</div>
+                  <div className="text-xs font-black text-white">GenAI &amp; ML Specialist</div>
                 </div>
               </div>
 
               {/* Badge Bottom Right: Hiring Partners */}
-              <div className="absolute -bottom-4 right-2 sm:right-4 z-30 bg-slate-900 border border-indigo-500/40 text-white p-3.5 rounded-2xl shadow-2xl flex items-center gap-3">
+              <div className="absolute -bottom-4 right-4 z-30 bg-slate-900 border border-indigo-500/40 text-white p-3.5 rounded-2xl shadow-2xl flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold shrink-0">
                   <Briefcase className="w-5 h-5 text-indigo-400" />
                 </div>
@@ -551,7 +549,34 @@ export default function LandingPage() {
                   <strong className="font-black text-black">{chip}</strong>
                 </span>
               ))}
+            </div>
+          </div>
 
+          {/* Mobile-only: compact student image without overflowing badges */}
+          <div className="flex lg:hidden justify-center">
+            <div className="relative w-full max-w-[320px] sm:max-w-[400px]">
+              <div className="rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 dark:border-blue-500/30 bg-slate-950">
+                <img 
+                  src="/uploads/ai_student_learning.png" 
+                  alt="Student Learning AI" 
+                  className="w-full h-[220px] sm:h-[280px] object-cover object-center" 
+                />
+              </div>
+              {/* Mobile badges — inline, no overflow */}
+              <div className="mt-3 flex flex-wrap gap-2 justify-center">
+                <div className="bg-slate-900 border border-blue-500/40 text-white px-3 py-1.5 rounded-xl flex items-center gap-2 text-xs">
+                  <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="font-bold">100% Placement</span>
+                </div>
+                <div className="bg-slate-900 border border-emerald-500/40 text-white px-3 py-1.5 rounded-xl flex items-center gap-2 text-xs">
+                  <Award className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="font-bold">ISO Certified</span>
+                </div>
+                <div className="bg-slate-900 border border-indigo-500/40 text-white px-3 py-1.5 rounded-xl flex items-center gap-2 text-xs">
+                  <Briefcase className="w-3.5 h-3.5 text-indigo-400" />
+                  <span className="font-bold">100+ Partners</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -567,7 +592,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {dedupeCourses(courses).map((course, idx) => {
               const isUpcoming = isUpcomingCourse(course.id) || isUpcomingCourse(course.title);
               return (
@@ -576,13 +601,12 @@ export default function LandingPage() {
                   className="bg-slate-50 dark:bg-slate-900/50 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all group cursor-pointer relative"
                   onClick={(e) => handlePremiumClick(e, course.id)}
                 >
-                  <div className="relative h-52 overflow-hidden bg-slate-950 rounded-t-3xl">
+                  <div className="relative h-48 sm:h-52 overflow-hidden bg-slate-950 rounded-t-3xl">
                     <img 
                       src={course.imageUrl} 
                       alt={course.title} 
                       onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/banners/generative-ai.webp'; }}
-                      className="w-full h-full object-fill object-center transition-transform duration-300 group-hover:scale-105" 
-                      style={{ imageRendering: '-webkit-optimize-contrast' }}
+                      className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105" 
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent flex items-end p-4">
                       <span className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-md ${
@@ -705,7 +729,7 @@ export default function LandingPage() {
             whileInView="show" 
             viewport={{ once: true, margin: "-50px" }}
             variants={staggerContainer}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
           >
             {[
               {
@@ -750,7 +774,7 @@ export default function LandingPage() {
       </section>
 
       {/* 4. SUCCESS STORIES */}
-      <section id="testimonials" className="py-24 px-6 bg-blue-600 dark:bg-blue-950 text-white relative overflow-hidden">
+      <section id="testimonials" className="py-16 sm:py-24 px-4 sm:px-6 bg-blue-600 dark:bg-blue-950 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
         <div className="max-w-7xl mx-auto relative z-10 text-center">
           <h2 className="text-3xl sm:text-4xl font-black mb-4">Proud Moments & Placement Success Stories</h2>
