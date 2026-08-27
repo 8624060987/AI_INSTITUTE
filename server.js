@@ -69,7 +69,8 @@ function findChunkFile(baseDir, fileName) {
 const server = createServer(async (req, res) => {
   try {
     const parsedUrl = parse(req.url, true);
-    const pathname = parsedUrl.pathname || '';
+    const rawPath = parsedUrl.pathname || '';
+    const pathname = decodeURIComponent(rawPath).split('?')[0];
 
     // Instant 200 OK Health Check endpoint for Passenger & Uptime monitors
     if (pathname === '/api/health' || pathname === '/healthz' || pathname.includes('health')) {
@@ -106,13 +107,13 @@ const server = createServer(async (req, res) => {
         return fs.createReadStream(recursivePath).pipe(res);
       }
 
-      // Fallback for stale browser chunk requests to prevent fatal client JS crashes
-      if (pathname.endsWith('.js')) {
+      // Bulletproof Auto-Recovery for stale browser chunk requests (Prevents client JS crashes)
+      if (pathname.includes('.js')) {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
         res.setHeader('Cache-Control', 'no-store');
         return res.end('/* Chunk Auto Recovery */');
-      } else if (pathname.endsWith('.css')) {
+      } else if (pathname.includes('.css')) {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/css; charset=utf-8');
         res.setHeader('Cache-Control', 'no-store');
@@ -121,7 +122,8 @@ const server = createServer(async (req, res) => {
     }
 
     // 2. Direct Public Folder Asset Resolution (photos, banners, uploads, logos)
-    const publicPath = path.join(dir, 'public', pathname.startsWith('/') ? pathname.slice(1) : pathname);
+    const cleanPublicSubpath = pathname.startsWith('/') ? pathname.slice(1) : pathname;
+    const publicPath = path.join(dir, 'public', cleanPublicSubpath);
     if (pathname !== '/' && fs.existsSync(publicPath) && fs.statSync(publicPath).isFile()) {
       const ext = path.extname(publicPath).toLowerCase();
       const mime = MIME_TYPES[ext] || 'application/octet-stream';
@@ -131,18 +133,27 @@ const server = createServer(async (req, res) => {
       return fs.createReadStream(publicPath).pipe(res);
     }
 
-    // Public Image Extension Fallback (.png -> .webp or .webp -> .png)
-    if (pathname.match(/\.(png|jpg|jpeg|webp)$/i)) {
+    // 3. Public Image Extension & Path Fallback (.png -> .webp or .webp -> .png)
+    if (pathname.match(/\.(png|jpg|jpeg|webp|svg)$/i)) {
       const baseNoExt = publicPath.substring(0, publicPath.lastIndexOf('.'));
       for (const altExt of ['.webp', '.png', '.jpg', '.jpeg']) {
         const altPath = baseNoExt + altExt;
         if (fs.existsSync(altPath) && fs.statSync(altPath).isFile()) {
-          const mime = MIME_TYPES[altExt] || 'image/jpeg';
+          const mime = MIME_TYPES[altExt] || 'image/webp';
           res.statusCode = 200;
           res.setHeader('Content-Type', mime);
           res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
           return fs.createReadStream(altPath).pipe(res);
         }
+      }
+
+      // Default Banner Fallback if specific image file is missing
+      const defaultBanner = path.join(dir, 'public', 'banners', 'generative-ai.webp');
+      if (fs.existsSync(defaultBanner)) {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'image/webp');
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        return fs.createReadStream(defaultBanner).pipe(res);
       }
     }
 
