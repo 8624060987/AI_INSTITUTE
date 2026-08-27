@@ -9,6 +9,20 @@ SetEnv NODE_OPTIONS "--require /home/u677383889/domains/aiinstitutesatana.in/hbu
 SetEnv LSNODE_CONSOLE_LOG console.log
 SetEnv TOKIO_WORKER_THREADS 2
 
+# Forward all routing, static chunks, and missing files to Phusion Passenger Node.js server.js
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Do not rewrite existing physical files or directories
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Pass all other requests to Passenger server.js
+    RewriteRule ^(.*)$ server.js [QSA,L]
+</IfModule>
+
 # Allow Apache & LiteSpeed access to .next static assets & public directory
 <DirectoryMatch "^\.next">
     Require all granted
@@ -24,13 +38,14 @@ SetEnv TOKIO_WORKER_THREADS 2
     AddType text/plain .txt
     AddType image/png .png
     AddType image/jpeg .jpg .jpeg
+    AddType image/webp .webp
     AddType image/svg+xml .svg
     AddType image/x-icon .ico
 </IfModule>
 
 # Security, CORS & Caching Headers
 <IfModule mod_headers.c>
-    <FilesMatch "\.(css|js|mjs|woff2|woff|ttf|png|jpg|jpeg|svg|ico|txt)$">
+    <FilesMatch "\.(css|js|mjs|woff2|woff|ttf|png|jpg|jpeg|webp|svg|ico|txt)$">
         Header set Access-Control-Allow-Origin "*"
         Header set Cache-Control "public, max-age=31536000, immutable"
     </FilesMatch>
