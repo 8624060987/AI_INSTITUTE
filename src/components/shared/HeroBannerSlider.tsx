@@ -137,7 +137,7 @@ export function HeroBannerSlider({ onSelectCourse }: { onSelectCourse: (courseId
         <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-slate-300 dark:border-slate-700 shadow-2xl bg-black group">
             <div
               key={currentBanner.id}
-              className="w-full relative cursor-pointer overflow-hidden h-[180px] sm:h-[260px] md:h-[320px] lg:h-[360px] flex items-center justify-center bg-slate-950 transition-opacity duration-150 rounded-2xl sm:rounded-3xl"
+              className="w-full relative cursor-pointer overflow-hidden h-[140px] sm:h-[200px] md:h-[250px] lg:h-[280px] flex items-center justify-center bg-slate-950 transition-opacity duration-150 rounded-2xl sm:rounded-3xl"
               onClick={() => onSelectCourse(currentBanner.courseId)}
               onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
               onTouchEnd={(e) => {

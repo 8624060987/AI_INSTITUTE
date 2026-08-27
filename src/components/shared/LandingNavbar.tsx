@@ -210,14 +210,17 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onAccessPortal, cu
             {theme === 'light' ? <Moon className="w-4 h-4 text-blue-600" /> : <Sun className="w-4 h-4 text-amber-400" />}
           </button>
 
-          {/* Always show Login / My Classroom button — routes to /login */}
-          <button
-            onClick={onAccessPortal}
+          {/* Always show Login / My Classroom button — native link for 100% instant navigation */}
+          <a
+            href={isAuthenticated ? "/portal?tab=classroom" : "/login/student"}
+            onClick={(e) => {
+              if (onAccessPortal) onAccessPortal(e);
+            }}
             className="flex items-center gap-1.5 px-3.5 sm:px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/15 transition-all hover:scale-[1.02] cursor-pointer"
           >
             <span>{isAuthenticated ? 'My Classroom' : 'Login / Enroll'}</span>
             <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          </a>
 
 
           {/* Mobile Hamburger Toggle Button */}

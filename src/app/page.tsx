@@ -21,16 +21,16 @@ function CompanyLogoBadge({ company }: { company: { name: string; logo: string }
   const [logoFailed, setLogoFailed] = useState(false);
 
   return (
-    <div className="h-9 px-3.5 py-1.5 bg-slate-50 dark:bg-slate-900/90 rounded-xl border border-slate-200/70 dark:border-slate-800 shadow-2xs flex items-center justify-center min-w-[70px] max-w-[110px] shrink-0">
+    <div className="h-7 px-2.5 py-1 bg-slate-50 dark:bg-slate-900/90 rounded-lg border border-slate-200/70 dark:border-slate-800 shadow-2xs flex items-center justify-center min-w-[50px] max-w-[85px] shrink-0">
       {!logoFailed ? (
         <img
           src={company.logo}
           alt={company.name}
-          className="h-4 sm:h-5 w-auto max-w-[80px] object-contain filter grayscale dark:invert hover:grayscale-0 transition-all duration-200"
+          className="h-3.5 sm:h-4 w-auto max-w-[60px] object-contain filter grayscale dark:invert hover:grayscale-0 transition-all duration-200"
           onError={() => setLogoFailed(true)}
         />
       ) : (
-        <span className="font-extrabold text-[11px] tracking-wide text-slate-700 dark:text-slate-300 uppercase">
+        <span className="font-extrabold text-[10px] tracking-wide text-slate-700 dark:text-slate-300 uppercase">
           {company.name}
         </span>
       )}
@@ -462,10 +462,17 @@ export default function LandingPage() {
             <div className="flex flex-wrap gap-4">
               <a 
                 href="#courses" 
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-blue-600/20 transition-all"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold px-7 py-3.5 sm:px-8 sm:py-4 rounded-2xl shadow-xl shadow-blue-600/20 transition-all text-sm sm:text-base"
               >
                 Explore Courses
                 <ArrowRight className="w-5 h-5" />
+              </a>
+              <a 
+                href="/login/student" 
+                className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 active:scale-95 text-white font-bold px-7 py-3.5 sm:px-8 sm:py-4 rounded-2xl border border-blue-500/30 transition-all text-sm sm:text-base"
+              >
+                Student Login
+                <User className="w-5 h-5 text-blue-400" />
               </a>
             </div>
             
