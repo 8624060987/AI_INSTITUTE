@@ -47,6 +47,24 @@ const MIME_TYPES = {
   '.pdf': 'application/pdf',
 };
 
+// Helper: Recursive chunk file finder in .next/static/
+function findChunkFile(baseDir, fileName) {
+  if (!fs.existsSync(baseDir)) return null;
+  try {
+    const items = fs.readdirSync(baseDir, { withFileTypes: true });
+    for (const item of items) {
+      const fullPath = path.join(baseDir, item.name);
+      if (item.isDirectory()) {
+        const found = findChunkFile(fullPath, fileName);
+        if (found) return found;
+      } else if (item.isFile() && item.name === fileName) {
+        return fullPath;
+      }
+    }
+  } catch (e) {}
+  return null;
+}
+
 // Create & bind server IMMEDIATELY on startup so Phusion Passenger connects in 0ms!
 const server = createServer(async (req, res) => {
   try {
@@ -64,7 +82,9 @@ const server = createServer(async (req, res) => {
     // 1. Direct Physical Asset Resolution for /_next/static/ JS & CSS chunks
     if (pathname.startsWith('/_next/static/')) {
       const relativeStatic = pathname.replace('/_next/static/', '');
-      const staticPath = path.join(dir, '.next', 'static', relativeStatic);
+      let staticPath = path.join(dir, '.next', 'static', relativeStatic);
+
+      // Check exact path first
       if (fs.existsSync(staticPath) && fs.statSync(staticPath).isFile()) {
         const ext = path.extname(staticPath).toLowerCase();
         const mime = MIME_TYPES[ext] || 'application/octet-stream';
@@ -72,8 +92,22 @@ const server = createServer(async (req, res) => {
         res.setHeader('Content-Type', mime);
         res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
         return fs.createReadStream(staticPath).pipe(res);
-      } else if (pathname.endsWith('.js')) {
-        // Auto-Recovery for stale browser chunk requests to prevent fatal client JS crashes
+      }
+
+      // If not found directly, do recursive lookup inside .next/static/
+      const fileName = path.basename(relativeStatic);
+      const recursivePath = findChunkFile(path.join(dir, '.next', 'static'), fileName);
+      if (recursivePath && fs.existsSync(recursivePath) && fs.statSync(recursivePath).isFile()) {
+        const ext = path.extname(recursivePath).toLowerCase();
+        const mime = MIME_TYPES[ext] || 'application/octet-stream';
+        res.statusCode = 200;
+        res.setHeader('Content-Type', mime);
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        return fs.createReadStream(recursivePath).pipe(res);
+      }
+
+      // Fallback for stale browser chunk requests to prevent fatal client JS crashes
+      if (pathname.endsWith('.js')) {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
         res.setHeader('Cache-Control', 'no-store');
@@ -95,6 +129,21 @@ const server = createServer(async (req, res) => {
       res.setHeader('Content-Type', mime);
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       return fs.createReadStream(publicPath).pipe(res);
+    }
+
+    // Public Image Extension Fallback (.png -> .webp or .webp -> .png)
+    if (pathname.match(/\.(png|jpg|jpeg|webp)$/i)) {
+      const baseNoExt = publicPath.substring(0, publicPath.lastIndexOf('.'));
+      for (const altExt of ['.webp', '.png', '.jpg', '.jpeg']) {
+        const altPath = baseNoExt + altExt;
+        if (fs.existsSync(altPath) && fs.statSync(altPath).isFile()) {
+          const mime = MIME_TYPES[altExt] || 'image/jpeg';
+          res.statusCode = 200;
+          res.setHeader('Content-Type', mime);
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+          return fs.createReadStream(altPath).pipe(res);
+        }
+      }
     }
 
     if (prepareError) {
