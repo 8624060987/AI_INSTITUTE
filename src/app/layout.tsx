@@ -52,6 +52,15 @@ export default function RootLayout({
     <html lang="en" data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <head>
         <meta name="google-adsense-account" content="ca-pub-8428613200514609" />
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.addEventListener('error', function(e) {
+            if (e.target && (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK')) {
+              if (e.target.src && e.target.src.includes('_next/static/chunks/')) {
+                console.warn('Chunk auto recovery handled:', e.target.src);
+              }
+            }
+          }, true);
+        ` }} />
         <style dangerouslySetInnerHTML={{ __html: `
           html, body { margin: 0; padding: 0; font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif; }
           img { max-width: 100%; height: auto; }

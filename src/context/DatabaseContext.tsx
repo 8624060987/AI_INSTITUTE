@@ -769,6 +769,9 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (!url || url.includes('ai_ml_poster') || url.includes('generative_ai_poster') || url.includes('photo-1507146426996-ef05306b995a') || url.includes('dog')) {
         return defaultUrl;
       }
+      if (url.includes('/banners/') && url.endsWith('.png')) {
+        return url.replace('.png', '.webp');
+      }
       return url;
     };
 
