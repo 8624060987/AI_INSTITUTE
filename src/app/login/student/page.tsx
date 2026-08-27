@@ -15,7 +15,7 @@ import {
 import { ComingSoonCourseModal, isUpcomingCourse } from '@/components/shared/ComingSoonCourseModal';
 import { sanitizeClientMessage } from '@/utils/errorHandler';
 
-const DEFAULT_AVATAR = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
+const DEFAULT_AVATAR = '/uploads/siddhi_pawar.jpg';
 
 const CAREER_GOALS = [
   'Generative AI Engineer',
@@ -154,13 +154,8 @@ export default function StudentLoginPage() {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Check Device Lockout & Daily Limit
-    const deviceCheck = checkDailyDeviceLoginAllowed(normalizedEmail);
-    if (!deviceCheck.allowed) {
-      setError(deviceCheck.message || 'Device daily login quota exceeded.');
-      setLoading(false);
-      return;
-    }
+    // Record device login (non-blocking)
+    try { recordDailyDeviceLogin(normalizedEmail); } catch (e) {}
 
     try {
       const authRes = await fetch('/api/auth/login', {
