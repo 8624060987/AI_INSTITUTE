@@ -53,13 +53,27 @@ export default function RootLayout({
       <head>
         <meta name="google-adsense-account" content="ca-pub-8428613200514609" />
         <script dangerouslySetInnerHTML={{ __html: `
-          window.addEventListener('error', function(e) {
-            if (e.target && (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK')) {
-              if (e.target.src && e.target.src.includes('_next/static/chunks/')) {
-                console.warn('Chunk auto recovery handled:', e.target.src);
+          (function() {
+            window.addEventListener('error', function(e) {
+              if (e.target && (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK')) {
+                var src = e.target.src || e.target.href || '';
+                if (src.includes('_next/static/chunks/')) {
+                  if (!sessionStorage.getItem('chunk_auto_refreshed')) {
+                    sessionStorage.setItem('chunk_auto_refreshed', 'true');
+                    window.location.reload(true);
+                  }
+                }
               }
-            }
-          }, true);
+            }, true);
+            window.addEventListener('unhandledrejection', function(e) {
+              if (e.reason && (e.reason.name === 'ChunkLoadError' || (e.reason.message && e.reason.message.includes('Loading chunk')))) {
+                if (!sessionStorage.getItem('chunk_auto_refreshed')) {
+                  sessionStorage.setItem('chunk_auto_refreshed', 'true');
+                  window.location.reload(true);
+                }
+              }
+            });
+          })();
         ` }} />
         <style dangerouslySetInnerHTML={{ __html: `
           html, body { margin: 0; padding: 0; font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif; }
