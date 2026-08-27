@@ -351,14 +351,14 @@ export default function MentorLoginPage() {
       />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-2xl relative z-10 px-4">
-        {/* Back link */}
-        <Link 
+        {/* Back link - Native hard href for 100% instant homepage loading */}
+        <a 
           href="/"
           className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white mb-6 transition-colors bg-white/5 px-3 py-1.5 rounded-full border border-white/10"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Home</span>
-        </Link>
+        </a>
 
         {/* Header Branding */}
         <div className="text-center mb-6">

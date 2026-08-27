@@ -22,14 +22,14 @@ export default function LoginPage() {
     <div className="min-h-screen bg-black text-white flex flex-col justify-center items-center p-4 relative overflow-hidden">
       {/* Small discrete Mentor Login button at Top Right */}
       <div className="absolute top-6 right-6 z-20">
-        <Link 
+        <a 
           href="/login/mentor"
           className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:text-emerald-300 text-xs font-bold transition-all shadow-md backdrop-blur-md"
           title="Switch to Mentor Portal Login"
         >
           <span>👨‍🏫 Mentor Login</span>
           <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
+        </a>
       </div>
 
       {/* Background ambient glows (GPU Optimized) */}
@@ -66,7 +66,7 @@ export default function LoginPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            onClick={() => router.push('/login/student')}
+            onClick={() => { window.location.href = '/login/student'; }}
             className="group relative rounded-3xl p-8 w-full max-w-lg bg-gradient-to-b from-blue-900/20 via-blue-950/10 to-slate-950/80 border-2 border-blue-500/80 backdrop-blur-xl transition-all duration-300 shadow-2xl shadow-blue-500/20 flex flex-col justify-between items-start text-left overflow-hidden cursor-pointer ring-4 ring-blue-500/10"
           >
             {/* Recommended Badge */}

@@ -462,14 +462,14 @@ export default function StudentLoginPage() {
       />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-2xl relative z-10 px-4">
-        {/* Back link */}
-        <Link 
+        {/* Back link - Native hard href for 100% instant homepage loading */}
+        <a 
           href="/"
           className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors mb-6 group"
         >
           <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
           <span>Back to Institute Homepage</span>
-        </Link>
+        </a>
 
         {/* Header Branding */}
         <div className="text-center mb-8">

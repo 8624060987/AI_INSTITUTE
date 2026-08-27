@@ -210,11 +210,11 @@ export default function LandingPage() {
       setUpcomingModalCourse(courseId);
       return;
     }
-    // Always send to login page — students already logged in will be auto-redirected to portal from /login
+    // Direct hard location navigation to /login/student for 100% instant page loading
     if (courseId) {
-      window.location.href = `/login?redirect=/portal?tab=classroom%26courseId=${courseId}`;
+      window.location.href = `/login/student?courseId=${courseId}`;
     } else {
-      window.location.href = '/login';
+      window.location.href = '/login/student';
     }
   };
 
