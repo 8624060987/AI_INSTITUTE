@@ -15,7 +15,7 @@ import { LandingFooter } from '@/components/shared/LandingFooter';
 import { AIAssistant } from '@/components/shared/AIAssistant';
 import { HeroBannerSlider } from '@/components/shared/HeroBannerSlider';
 import { ComingSoonCourseModal, isUpcomingCourse } from '@/components/shared/ComingSoonCourseModal';
-import { useDatabase, dedupeCourses } from '@/context/DatabaseContext';
+import { useDatabase, dedupeCourses, SEED_COURSES } from '@/context/DatabaseContext';
 
 function CompanyLogoBadge({ company }: { company: { name: string; logo: string } }) {
   const [logoFailed, setLogoFailed] = useState(false);
@@ -602,7 +602,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            {dedupeCourses(courses).map((course, idx) => {
+            {dedupeCourses(courses && courses.length > 0 ? courses : SEED_COURSES).map((course, idx) => {
               const isUpcoming = isUpcomingCourse(course.id) || isUpcomingCourse(course.title);
               return (
                 <div 
@@ -659,7 +659,8 @@ export default function LandingPage() {
                           </span>
                         )}
                       </div>
-                      <button 
+                      <a 
+                        href={isAuthenticated ? "/portal?tab=classroom" : "/login/student"}
                         onClick={(e) => handlePremiumClick(e, course.id)} 
                         className={`px-4 py-2 rounded-xl text-xs font-extrabold shadow-md transition-colors cursor-pointer flex items-center gap-1.5 ${
                           isUpcoming 
@@ -667,9 +668,8 @@ export default function LandingPage() {
                             : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white'
                         }`}
                       >
-                        <span>{isUpcoming ? 'Join Waitlist' : 'Start Learning Free'}</span>
-                        <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                      </button>
+                        <span>{isUpcoming ? 'Join Waitlist' : (isAuthenticated ? 'Access Classroom' : 'Start Free')}</span>
+                      </a>
                     </div>
                   </div>
                 </div>

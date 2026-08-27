@@ -343,7 +343,7 @@ const DEFAULT_USER: UserProfile = {
   role: 'student',
 };
 
-const SEED_COURSES: Course[] = [
+export const SEED_COURSES: Course[] = [
   {
     id: 'course-ds',
     title: 'Data Science Mastery Program',
