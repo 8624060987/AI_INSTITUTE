@@ -153,6 +153,7 @@ export function HeroBannerSlider({ onSelectCourse }: { onSelectCourse: (courseId
               <img
                 src={currentBanner.imageSrc}
                 alt={currentBanner.name}
+                onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/banners/generative-ai.webp'; }}
                 className="w-full h-full object-cover object-center rounded-2xl sm:rounded-3xl block shadow-inner"
                 style={{ imageRendering: '-webkit-optimize-contrast' }}
                 loading="eager"

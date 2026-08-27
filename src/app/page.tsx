@@ -493,6 +493,7 @@ export default function LandingPage() {
                 <img 
                   src="/uploads/ai_student_learning.png" 
                   alt="Student Learning AI" 
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/banners/generative-ai.webp'; }}
                   className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300" 
                 />
               </div>
@@ -559,6 +560,7 @@ export default function LandingPage() {
                 <img 
                   src="/uploads/ai_student_learning.png" 
                   alt="Student Learning AI" 
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/banners/generative-ai.webp'; }}
                   className="w-full h-[220px] sm:h-[280px] object-cover object-center" 
                 />
               </div>
@@ -760,7 +762,12 @@ export default function LandingPage() {
                 className="bg-white rounded-3xl p-6 border border-slate-200 shadow-lg hover:shadow-2xl transition-all text-center group"
               >
                 <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-6 border-4 border-slate-50 shadow-inner">
-                  <img src={mentor.image} alt={mentor.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  <img 
+                    src={mentor.image} 
+                    alt={mentor.name} 
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(mentor.name)}&background=3b82f6&color=fff`; }}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                  />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-2">{mentor.name}</h3>
                 <p className="text-sm text-blue-600 font-semibold mb-4 min-h-[40px] flex items-center justify-center">
@@ -827,7 +834,12 @@ export default function LandingPage() {
                 <div>
                   <div className="flex gap-4 items-center mb-4">
                     <div className="w-16 h-16 rounded-full bg-slate-900 overflow-hidden border-2 border-white/50 shadow-md shrink-0">
-                      <img src={student.image} alt={student.name} className="w-full h-full object-cover" />
+                      <img 
+                        src={student.image} 
+                        alt={student.name} 
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=10b981&color=fff`; }}
+                        className="w-full h-full object-cover" 
+                      />
                     </div>
                     <div>
                       <h4 className="font-bold text-base text-white">{student.name}</h4>

@@ -85,7 +85,12 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onAccessPortal, cu
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img src="/logo-transparent.png" alt="AI Institute Logo" className="h-12 sm:h-14 scale-110 ml-1 w-auto object-contain drop-shadow-md mix-blend-multiply dark:mix-blend-normal" />
+          <img 
+            src="/logo-transparent.png" 
+            alt="AI Institute Logo" 
+            onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/logo-icon.png'; }}
+            className="h-12 sm:h-14 scale-110 ml-1 w-auto object-contain drop-shadow-md mix-blend-multiply dark:mix-blend-normal" 
+          />
         </div>
 
         {/* Desktop Menu Links */}

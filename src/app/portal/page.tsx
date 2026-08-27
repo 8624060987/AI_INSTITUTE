@@ -1777,7 +1777,12 @@ export default function PortalPage() {
                   {/* Dashboard Profile Header */}
                   <div className="bg-white dark:bg-[#0f1420] border border-slate-200/60 dark:border-slate-800/80 rounded-3xl p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-4 text-center sm:text-left">
-                      <img src={currentUser.avatarUrl} alt="Avatar" className="w-16 h-16 rounded-full object-cover shadow-md border-2 border-white dark:border-slate-800" />
+                      <img 
+                        src={currentUser.avatarUrl} 
+                        alt="Avatar" 
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.fullName || 'User')}&background=3b82f6&color=fff`; }}
+                        className="w-16 h-16 rounded-full object-cover shadow-md border-2 border-white dark:border-slate-800" 
+                      />
                       <div>
                         <h2 className="text-xl font-black text-slate-800 dark:text-white">Welcome back, {currentUser.fullName}!</h2>
                         <p className="text-xs text-slate-500 font-semibold mt-1">Ready to continue your learning journey?</p>
@@ -1805,7 +1810,12 @@ export default function PortalPage() {
                         <div key={course.id} className="bg-white dark:bg-[#0f1420] border border-slate-200/60 dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
                           <div>
                             <div className="relative h-48 overflow-hidden bg-slate-950">
-                              <img src={course.imageUrl} alt={course.title} className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105" />
+                              <img 
+                                src={course.imageUrl} 
+                                alt={course.title} 
+                                onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/banners/generative-ai.webp'; }}
+                                className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105" 
+                              />
                               {isUpcoming && (
                                 <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-amber-500 text-slate-950 font-black text-[10px] shadow-lg">
                                   🚀 Coming Soon

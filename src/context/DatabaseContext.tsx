@@ -775,11 +775,11 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const sanitizedSeedCourses = dedupeCourses(SEED_COURSES.map(c => ({
       ...c,
       imageUrl: c.id === 'course-ai-ml' 
-        ? '/images/banner_ai_ml.webp'
+        ? '/banners/ai-ml.webp'
         : c.id === 'course-gen-ai'
         ? '/banners/generative-ai.webp'
         : c.id === 'course-cyber-sec'
-        ? '/images/banner_cyber_sec.webp'
+        ? '/banners/cyber-security.webp'
         : sanitizeCourseImage(c.imageUrl, c.imageUrl)
     })));
 
@@ -880,12 +880,12 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             price: c.price || 4599,
             originalPrice: c.original_price || 12999,
             imageUrl: c.id === 'course-ai-ml' 
-              ? '/images/banner_ai_ml.webp'
+              ? '/banners/ai-ml.webp'
               : c.id === 'course-gen-ai'
               ? '/banners/generative-ai.webp'
               : c.id === 'course-cyber-sec'
-              ? '/images/banner_cyber_sec.webp'
-              : sanitizeCourseImage(c.thumbnail_url || c.image_url, '/images/banner_ai_ml.webp'),
+              ? '/banners/cyber-security.webp'
+              : sanitizeCourseImage(c.thumbnail_url || c.image_url, '/banners/generative-ai.webp'),
             mentorName: c.mentor_name || 'Vaibhav Ahire',
             duration: c.duration || '200+ Hours',
             rating: c.rating || 4.9,
@@ -899,11 +899,11 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
               ...formatted,
               id: mergedList[existingIndex].id,
               imageUrl: mergedList[existingIndex].id === 'course-ai-ml' 
-                ? '/images/banner_ai_ml.webp' 
+                ? '/banners/ai-ml.webp' 
                 : mergedList[existingIndex].id === 'course-gen-ai'
                 ? '/banners/generative-ai.webp'
                 : mergedList[existingIndex].id === 'course-cyber-sec'
-                ? '/images/banner_cyber_sec.webp'
+                ? '/banners/cyber-security.webp'
                 : formatted.imageUrl
             };
           } else {
