@@ -9,17 +9,22 @@ SetEnv NODE_OPTIONS "--require /home/u677383889/domains/aiinstitutesatana.in/hbu
 SetEnv LSNODE_CONSOLE_LOG console.log
 SetEnv TOKIO_WORKER_THREADS 2
 
-# Forward all routing, static chunks, and missing files to Phusion Passenger Node.js server.js
+# Force Phusion Passenger to handle Next.js static chunks, banners, and uploads directly
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
-    
+
+    # Bypass Apache static check and force Node.js server.js to handle _next chunks, banners, & uploads
+    RewriteRule ^_next/(.*)$ server.js [QSA,L]
+    RewriteRule ^banners/(.*)$ server.js [QSA,L]
+    RewriteRule ^uploads/(.*)$ server.js [QSA,L]
+
     # Do not rewrite existing physical files or directories
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
 
-    # Pass all other requests to Passenger server.js
+    # Pass all other page requests to Passenger server.js
     RewriteRule ^(.*)$ server.js [QSA,L]
 </IfModule>
 
