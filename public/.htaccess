@@ -9,17 +9,17 @@ SetEnv NODE_OPTIONS "--require /home/u677383889/domains/aiinstitutesatana.in/hbu
 SetEnv LSNODE_CONSOLE_LOG console.log
 SetEnv TOKIO_WORKER_THREADS 2
 
-# Force Phusion Passenger to handle Next.js static chunks, banners, and uploads directly
+# Force Phusion Passenger to handle Next.js static chunks directly without Apache 404 interception
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
 
-    # Bypass Apache static check and force Node.js server.js to handle _next chunks, banners, & uploads
+    # ALWAYS pass _next requests to server.js (Bypasses Apache 404 on stale JS chunks)
     RewriteRule ^_next/(.*)$ server.js [QSA,L]
     RewriteRule ^banners/(.*)$ server.js [QSA,L]
     RewriteRule ^uploads/(.*)$ server.js [QSA,L]
 
-    # Do not rewrite existing physical files or directories
+    # Do not rewrite existing physical files or directories for root assets
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
