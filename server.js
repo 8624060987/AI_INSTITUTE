@@ -106,7 +106,18 @@ const server = createServer(async (req, res) => {
 
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/css; charset=utf-8');
-        return res.end('/* CSS Auto Recovery */');
+        res.setHeader('Cache-Control', 'no-store');
+        return res.end(`
+          html, body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; background-color: #080d1a; color: #f8fafc; }
+          img { max-width: 100%; height: auto; }
+          header img, nav img, a img, img[alt*="AI Institute"], img[alt*="Logo"], .logo { max-height: 48px !important; max-width: 220px !important; width: auto !important; height: auto !important; object-fit: contain !important; display: inline-block !important; }
+          header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.5rem; }
+          header nav { display: flex; align-items: center; gap: 1.25rem; }
+          header nav a { color: #94a3b8; text-decoration: none; font-size: 0.875rem; font-weight: 600; }
+          .grid { display: grid; gap: 1.5rem; }
+          @media (min-width: 640px) { .sm\\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+          @media (min-width: 1024px) { .lg\\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+        `);
       }
 
       const relativeStatic = pathname.replace('/_next/static/', '');
