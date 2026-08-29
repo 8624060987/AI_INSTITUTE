@@ -75,6 +75,7 @@ export default function RootLayout({
             });
           })();
         ` }} />
+        <link rel="stylesheet" href="/fallback-tailwind.css" />
         <style dangerouslySetInnerHTML={{ __html: `
           html, body { margin: 0; padding: 0; font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif; background-color: #080d1a; color: #f8fafc; }
           img { max-width: 100%; height: auto; }
