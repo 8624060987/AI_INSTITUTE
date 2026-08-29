@@ -10,12 +10,12 @@ SetEnv LSNODE_CONSOLE_LOG console.log
 SetEnv TOKIO_WORKER_THREADS 2
 DirectoryIndex server.js
 
-# Force Phusion Passenger to handle Next.js static chunks directly without Apache 404 interception
+# Force Apache to bypass static directory checks for _next and route 100% to server.js
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
 
-    # ALWAYS pass _next requests to server.js (Bypasses Apache 404 on stale JS chunks)
+    # Route ALL _next, banners, and uploads requests directly to server.js
     RewriteRule ^_next/(.*)$ server.js [QSA,L]
     RewriteRule ^banners/(.*)$ server.js [QSA,L]
     RewriteRule ^uploads/(.*)$ server.js [QSA,L]

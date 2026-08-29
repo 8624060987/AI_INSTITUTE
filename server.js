@@ -1,59 +1,54 @@
+// Standalone Custom HTTP Server for Hostinger Phusion Passenger & Next.js App Router
 const { createServer } = require('http');
 const { parse } = require('url');
 const next = require('next');
 const path = require('path');
 const fs = require('fs');
 
-// Global Process Failure Protections (Prevents Hostinger Node.js crashes)
-process.on('uncaughtException', (err) => {
-  console.error('[PASSENGER_UNCAUGHT_EXCEPTION]', err?.message || err);
-});
+const dev = process.env.NODE_ENV !== 'production';
+const hostname = 'localhost';
+const port = process.env.PORT || 3000;
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('[PASSENGER_UNHANDLED_REJECTION]', reason?.message || reason);
-});
-
-const dev = false;
-const dir = path.resolve(__dirname);
-const app = next({ dev, dir });
+// Initialize Next.js app instance
+const app = next({ dev, hostname, port, dir: __dirname });
 const handle = app.getRequestHandler();
 
 let appReady = false;
-let prepareError = null;
 
-const appPrepared = app.prepare().then(() => {
+// Pre-warm Next.js engine asynchronously in background
+app.prepare().then(() => {
   appReady = true;
-  console.log('> Next.js app prepared successfully');
+  console.log('> Next.js app prepared successfully on Hostinger Phusion Passenger');
 }).catch((err) => {
-  prepareError = err;
-  console.error('[PASSENGER_PREPARE_ERROR]', err?.message || err);
+  console.error('> Next.js app preparation error:', err);
 });
 
-// Helper: Content-Type MIME map for direct static asset serving
+// Common MIME Types map
 const MIME_TYPES = {
+  '.html': 'text/html; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8',
   '.mjs': 'application/javascript; charset=utf-8',
-  '.css': 'text/css; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.webp': 'image/webp',
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
-  '.json': 'application/json',
   '.woff2': 'font/woff2',
   '.woff': 'font/woff',
   '.ttf': 'font/ttf',
-  '.pdf': 'application/pdf',
+  '.txt': 'text/plain; charset=utf-8',
 };
 
-// Helper: Recursive chunk file finder in .next/static/
-function findChunkFile(baseDir, fileName) {
-  if (!fs.existsSync(baseDir)) return null;
+// Recursive file search helper for static build chunks
+function findChunkFile(searchDir, fileName) {
   try {
-    const items = fs.readdirSync(baseDir, { withFileTypes: true });
+    if (!fs.existsSync(searchDir)) return null;
+    const items = fs.readdirSync(searchDir, { withFileTypes: true });
     for (const item of items) {
-      const fullPath = path.join(baseDir, item.name);
+      const fullPath = path.join(searchDir, item.name);
       if (item.isDirectory()) {
         const found = findChunkFile(fullPath, fileName);
         if (found) return found;
@@ -82,8 +77,40 @@ const server = createServer(async (req, res) => {
 
     // 1. Direct Physical Asset Resolution for /_next/static/ JS & CSS chunks
     if (pathname.startsWith('/_next/static/')) {
+      // GUARANTEED TAILWIND CSS RESOLVER: If request is for any CSS file, serve the compiled Tailwind CSS file directly!
+      if (pathname.endsWith('.css')) {
+        const relativeStatic = pathname.replace('/_next/static/', '');
+        let exactCssPath = path.join(__dirname, '.next', 'static', relativeStatic);
+        if (fs.existsSync(exactCssPath) && fs.statSync(exactCssPath).isFile()) {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'text/css; charset=utf-8');
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+          return fs.createReadStream(exactCssPath).pipe(res);
+        }
+
+        // If exact hash not found, serve the primary compiled Tailwind CSS file from .next/static/css/
+        const cssDir = path.join(__dirname, '.next', 'static', 'css');
+        try {
+          if (fs.existsSync(cssDir)) {
+            const files = fs.readdirSync(cssDir);
+            const cssFile = files.find(f => f.endsWith('.css'));
+            if (cssFile) {
+              const fallbackCssPath = path.join(cssDir, cssFile);
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'text/css; charset=utf-8');
+              res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+              return fs.createReadStream(fallbackCssPath).pipe(res);
+            }
+          }
+        } catch (e) {}
+
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/css; charset=utf-8');
+        return res.end('/* CSS Auto Recovery */');
+      }
+
       const relativeStatic = pathname.replace('/_next/static/', '');
-      let staticPath = path.join(dir, '.next', 'static', relativeStatic);
+      let staticPath = path.join(__dirname, '.next', 'static', relativeStatic);
 
       // Check exact path first
       if (fs.existsSync(staticPath) && fs.statSync(staticPath).isFile()) {
@@ -97,7 +124,7 @@ const server = createServer(async (req, res) => {
 
       // If not found directly, do recursive lookup inside .next/static/
       const fileName = path.basename(relativeStatic);
-      const recursivePath = findChunkFile(path.join(dir, '.next', 'static'), fileName);
+      const recursivePath = findChunkFile(path.join(__dirname, '.next', 'static'), fileName);
       if (recursivePath && fs.existsSync(recursivePath) && fs.statSync(recursivePath).isFile()) {
         const ext = path.extname(recursivePath).toLowerCase();
         const mime = MIME_TYPES[ext] || 'application/octet-stream';
@@ -113,33 +140,12 @@ const server = createServer(async (req, res) => {
         res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
         res.setHeader('Cache-Control', 'no-store');
         return res.end('/* Chunk Auto Recovery */');
-      } else if (pathname.includes('.css')) {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/css; charset=utf-8');
-        res.setHeader('Cache-Control', 'no-store');
-
-        // Dynamically find and serve the compiled Tailwind CSS file from .next/static/css/
-        const cssDir = path.join(dir, '.next', 'static', 'css');
-        let fallbackCssPath = null;
-        try {
-          if (fs.existsSync(cssDir)) {
-            const files = fs.readdirSync(cssDir);
-            const cssFile = files.find(f => f.endsWith('.css'));
-            if (cssFile) fallbackCssPath = path.join(cssDir, cssFile);
-          }
-        } catch (e) {}
-
-        if (fallbackCssPath && fs.existsSync(fallbackCssPath)) {
-          return fs.createReadStream(fallbackCssPath).pipe(res);
-        }
-
-        return res.end('/* CSS Auto Recovery */');
       }
     }
 
     // 2. Direct Public Folder Asset Resolution (photos, banners, uploads, logos)
     const cleanPublicSubpath = pathname.startsWith('/') ? pathname.slice(1) : pathname;
-    const publicPath = path.join(dir, 'public', cleanPublicSubpath);
+    const publicPath = path.join(__dirname, 'public', cleanPublicSubpath);
     if (pathname !== '/' && fs.existsSync(publicPath) && fs.statSync(publicPath).isFile()) {
       const ext = path.extname(publicPath).toLowerCase();
       const mime = MIME_TYPES[ext] || 'application/octet-stream';
@@ -155,54 +161,30 @@ const server = createServer(async (req, res) => {
       for (const altExt of ['.webp', '.png', '.jpg', '.jpeg']) {
         const altPath = baseNoExt + altExt;
         if (fs.existsSync(altPath) && fs.statSync(altPath).isFile()) {
-          const mime = MIME_TYPES[altExt] || 'image/webp';
+          const mime = MIME_TYPES[altExt] || 'image/png';
           res.statusCode = 200;
           res.setHeader('Content-Type', mime);
           res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
           return fs.createReadStream(altPath).pipe(res);
         }
       }
-
-      // Default Banner Fallback if specific image file is missing
-      const defaultBanner = path.join(dir, 'public', 'banners', 'generative-ai.webp');
-      if (fs.existsSync(defaultBanner)) {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'image/webp');
-        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-        return fs.createReadStream(defaultBanner).pipe(res);
-      }
     }
 
-    if (prepareError) {
-      res.statusCode = 500;
-      res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      return res.end(`<h1>Server Initialization Error</h1><p>${prepareError.message || prepareError}</p>`);
-    }
-
-    if (!appReady) {
-      let waited = 0;
-      while (!appReady && !prepareError && waited < 40) {
-        await new Promise((r) => setTimeout(r, 100));
-        waited++;
-      }
-    }
-
-    // Ensure HTML page requests are served with no-store so browser always fetches fresh chunk references
-    if (!pathname.includes('.')) {
-      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    }
-
-    await handle(req, res, parsedUrl);
+    // 4. Default Request Delegation to Next.js Request Handler
+    return handle(req, res, parsedUrl);
   } catch (err) {
-    console.error('[PASSENGER_REQUEST_ERROR]', req.url, err?.message || err);
-    if (!res.headersSent) {
-      res.statusCode = 500;
-      res.setHeader('Content-Type', 'text/plain');
-      res.end('Internal Server Error');
-    }
+    console.error('> Request handling error:', err);
+    res.statusCode = 500;
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.end('500 Internal Server Error');
   }
 });
 
-const listenTarget = process.env.PORT || 'passenger';
-server.listen(listenTarget);
-console.log(`> AI Institute Server bound instantly on ${listenTarget}`);
+// Start listening on process port (Passenger assigns UNIX socket or random port)
+server.listen(port, (err) => {
+  if (err) {
+    console.error('> Failed to start custom HTTP server:', err);
+    process.exit(1);
+  }
+  console.log(`> AI Institute custom server ready on port ${port} [NODE_ENV=${process.env.NODE_ENV}]`);
+});
