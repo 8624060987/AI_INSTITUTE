@@ -76,10 +76,11 @@ export default function RootLayout({
           })();
         ` }} />
         <style dangerouslySetInnerHTML={{ __html: `
-          html, body { margin: 0; padding: 0; font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif; }
+          html, body { margin: 0; padding: 0; font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif; background-color: #080d1a; color: #f8fafc; }
           img { max-width: 100%; height: auto; }
-          header img { max-height: 48px; width: auto; }
-          header nav { display: flex; align-items: center; gap: 1.5rem; }
+          header img, nav img, a img, img[alt*="AI Institute"], img[alt*="Logo"] { max-height: 48px !important; max-width: 220px !important; width: auto !important; height: auto !important; object-fit: contain !important; display: inline-block !important; }
+          header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.5rem; }
+          header nav { display: flex; align-items: center; gap: 1.25rem; }
           header nav a { color: #94a3b8; text-decoration: none; font-size: 0.875rem; font-weight: 600; }
         ` }} />
         <Script

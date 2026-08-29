@@ -117,6 +117,22 @@ const server = createServer(async (req, res) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/css; charset=utf-8');
         res.setHeader('Cache-Control', 'no-store');
+
+        // Dynamically find and serve the compiled Tailwind CSS file from .next/static/css/
+        const cssDir = path.join(dir, '.next', 'static', 'css');
+        let fallbackCssPath = null;
+        try {
+          if (fs.existsSync(cssDir)) {
+            const files = fs.readdirSync(cssDir);
+            const cssFile = files.find(f => f.endsWith('.css'));
+            if (cssFile) fallbackCssPath = path.join(cssDir, cssFile);
+          }
+        } catch (e) {}
+
+        if (fallbackCssPath && fs.existsSync(fallbackCssPath)) {
+          return fs.createReadStream(fallbackCssPath).pipe(res);
+        }
+
         return res.end('/* CSS Auto Recovery */');
       }
     }
