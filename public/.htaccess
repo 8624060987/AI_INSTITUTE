@@ -10,17 +10,16 @@ SetEnv LSNODE_CONSOLE_LOG console.log
 SetEnv TOKIO_WORKER_THREADS 2
 DirectoryIndex server.js
 
-# Force Apache to bypass static directory checks for _next and route 100% to server.js
+# Force Apache to NEVER check physical files for _next and ALWAYS route _next to server.js
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
 
-    # Route ALL _next, banners, and uploads requests directly to server.js
+    # Route ALL _next requests directly to server.js (Bypasses Apache physical folder checks)
     RewriteRule ^_next/(.*)$ server.js [QSA,L]
-    RewriteRule ^banners/(.*)$ server.js [QSA,L]
-    RewriteRule ^uploads/(.*)$ server.js [QSA,L]
 
-    # Do not rewrite existing physical files or directories for root assets
+    # Do not rewrite existing physical files or directories for root public assets (EXCLUDING _next)
+    RewriteCond %{REQUEST_URI} !^/_next/
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
