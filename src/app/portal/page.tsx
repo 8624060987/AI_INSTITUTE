@@ -3431,7 +3431,7 @@ export default function PortalPage() {
                         <select
                           value={mentorSelectedCourseId}
                           onChange={(e) => setMentorSelectedCourseId(e.target.value)}
-                          className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-1.5 focus:ring-blue-500 dark:text-white"
+                          className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-1.5 focus:ring-blue-500"
                         >
                           {dedupeCourses(courses).map(c => (
                             <option key={c.id} value={c.id}>{c.title}</option>
@@ -3447,7 +3447,7 @@ export default function PortalPage() {
                             placeholder="e.g. Backpropagation Live Class"
                             value={newSessionTitle}
                             onChange={(e) => setNewSessionTitle(e.target.value)}
-                            className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-1.5 focus:ring-blue-500 dark:text-white"
+                            className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-1.5 focus:ring-blue-500"
                             required
                           />
                         </div>
@@ -3460,7 +3460,7 @@ export default function PortalPage() {
                           placeholder="Provide syllabus notes or reference links..."
                           value={newSessionDesc}
                           onChange={(e) => setNewSessionDesc(e.target.value)}
-                          className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-1.5 focus:ring-blue-500 dark:text-white h-20"
+                          className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 text-slate-900 dark:text-white placeholder-slate-400 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-1.5 focus:ring-blue-500 h-20"
                         />
                       </div>
 
@@ -3471,7 +3471,7 @@ export default function PortalPage() {
                             type="date"
                             value={newSessionDate}
                             onChange={(e) => setNewSessionDate(e.target.value)}
-                            className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-1.5 focus:ring-blue-500 dark:text-white"
+                            className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-1.5 focus:ring-blue-500"
                             required
                           />
                         </div>
@@ -3481,7 +3481,7 @@ export default function PortalPage() {
                             type="time"
                             value={newSessionTime}
                             onChange={(e) => setNewSessionTime(e.target.value)}
-                            className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-1.5 focus:ring-blue-500 dark:text-white"
+                            className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-1.5 focus:ring-blue-500"
                             required
                           />
                         </div>
@@ -3491,7 +3491,7 @@ export default function PortalPage() {
                             type="number"
                             value={newSessionDuration}
                             onChange={(e) => setNewSessionDuration(parseInt(e.target.value))}
-                            className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-1.5 focus:ring-blue-500 dark:text-white"
+                            className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-1.5 focus:ring-blue-500"
                           />
                         </div>
                       </div>
@@ -3501,7 +3501,7 @@ export default function PortalPage() {
                           <input
                             type="file"
                             onChange={(e) => handleFileUpload(e, setNewSessionFileUrl)}
-                            className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-1.5 focus:ring-blue-500 dark:text-white"
+                            className="w-full bg-[#f8fafc] dark:bg-slate-950 border border-slate-200 dark:border-slate-900 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-1.5 focus:ring-blue-500"
                           />
                           {isUploading && (
                             <div className="absolute inset-0 bg-white/50 dark:bg-slate-950/50 flex items-center justify-center rounded-xl">

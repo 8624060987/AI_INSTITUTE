@@ -65,11 +65,17 @@ input.dark, textarea.dark, select.dark {
   font-weight: 600 !important;
 }
 
-.bg-white input, .bg-slate-50 input, .bg-slate-100 input, .bg-slate-200 input,
-input.bg-white, input.bg-slate-50, input.bg-slate-100, input.bg-slate-200,
-textarea.bg-white, textarea.bg-slate-50, textarea.bg-slate-100, textarea.bg-slate-200 {
+.bg-white input, .bg-slate-50 input, .bg-slate-100 input, .bg-slate-200 input, .bg-\[\#f8fafc\] input,
+input.bg-white, input.bg-slate-50, input.bg-slate-100, input.bg-slate-200, input.bg-\[\#f8fafc\],
+textarea.bg-white, textarea.bg-slate-50, textarea.bg-slate-100, textarea.bg-slate-200, textarea.bg-\[\#f8fafc\] {
   color: #0f172a !important;
   -webkit-text-fill-color: #0f172a !important;
+}
+
+.dark .bg-\[\#f8fafc\] input, .dark .bg-\[\#f8fafc\] textarea, .dark .bg-\[\#f8fafc\] select,
+.dark input.bg-\[\#f8fafc\], .dark textarea.bg-\[\#f8fafc\], .dark select.bg-\[\#f8fafc\] {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 /* Webkit Autofill Override - Prevents Chrome/Edge from turning typed text invisible */
