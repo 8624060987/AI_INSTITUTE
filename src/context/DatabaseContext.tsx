@@ -1577,15 +1577,6 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (currentUser?.email) {
         localStorage.setItem(`custom_avatar_${currentUser.email}`, avatarUrl);
       }
-      const rawGUser = localStorage.getItem('granted_student_user');
-      if (rawGUser) {
-        try {
-          const parsed = JSON.parse(rawGUser);
-          parsed.fullName = fullName;
-          parsed.avatarUrl = avatarUrl;
-          localStorage.setItem('granted_student_user', JSON.stringify(parsed));
-        } catch (e) {}
-      }
     }
     
     // Update Supabase Database

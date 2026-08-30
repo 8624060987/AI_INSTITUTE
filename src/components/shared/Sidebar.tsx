@@ -54,7 +54,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onEdi
   const mentorNavItems = [
     { id: 'dashboard', name: 'Dashboard', icon: Layers },
     { id: 'courses', name: 'My Courses', icon: BookOpen },
-    { id: 'grant-access', name: 'Grant Free Access', icon: Shield },
     { id: 'live', name: 'Live Sessions', icon: Video },
     { id: 'assignments', name: 'Assignments', icon: FileText },
     { id: 'students', name: 'Students', icon: User },
@@ -65,7 +64,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onEdi
   const adminNavItems = [
     { id: 'dashboard', name: 'Dashboard', icon: Layers },
     { id: 'courses', name: 'Courses', icon: BookOpen },
-    { id: 'grant-access', name: 'Grant Free Access', icon: Shield },
     { id: 'mentors', name: 'Mentors', icon: User },
     { id: 'payments', name: 'Payments', icon: FileText },
     { id: 'leads', name: 'Lead Mgmt', icon: Users },

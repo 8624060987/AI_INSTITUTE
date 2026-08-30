@@ -56,7 +56,6 @@ export default function LandingPage() {
       const alreadySubmittedOrLogged = Boolean(
         localStorage.getItem('user_contact_lead') ||
         localStorage.getItem('lms_user_logged_in') === 'true' ||
-        localStorage.getItem('granted_student_user') ||
         localStorage.getItem('lms_user') ||
         sessionStorage.getItem('has_seen_career_modal')
       );

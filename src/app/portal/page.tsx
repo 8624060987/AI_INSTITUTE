@@ -355,34 +355,6 @@ export default function PortalPage() {
     languages: string[];
   } | null>(null);
 
-  // Mentor / Admin Free Gmail Access Generator State
-  const [grantGmail, setGrantGmail] = useState('');
-  const [grantCourseId, setGrantCourseId] = useState('all');
-  const [grantPassKey, setGrantPassKey] = useState('FreeAccess@2026');
-  const [isGrantingAccess, setIsGrantingAccess] = useState(false);
-  const [grantedAccessResult, setGrantedAccessResult] = useState<{
-    gmail: string;
-    courseTitle: string;
-    passKey: string;
-    grantedAt: string;
-  } | null>(null);
-  const [grantedHistory, setGrantedHistory] = useState<Array<{
-    id: string;
-    gmail: string;
-    courseTitle: string;
-    passKey: string;
-    grantedBy: string;
-    grantedAt: string;
-  }>>([
-    {
-      id: 'grant-1',
-      gmail: 'student.sample@gmail.com',
-      courseTitle: 'Generative AI & LLM Engineering Masterclass',
-      passKey: 'FreeAccess@2026',
-      grantedBy: 'Dr. Vishwadeep (Senior AI Mentor)',
-      grantedAt: '07/08/2026, 10:30 AM',
-    }
-  ]);
 
   const parsedSkills = resumeAnalysis
     ? [...resumeAnalysis.technicalSkills, ...resumeAnalysis.softSkills]
@@ -438,29 +410,6 @@ export default function PortalPage() {
   useEffect(() => {
     setMounted(true);
     if (typeof window !== 'undefined') {
-      const fetchSupabasePasses = async () => {
-        try {
-          const { data } = await supabase
-            .from('granted_access_passes')
-            .select('*')
-            .order('granted_at', { ascending: false });
-
-          if (data && data.length > 0) {
-            const mappedHistory = data.map(d => ({
-              id: d.id,
-              gmail: d.gmail,
-              courseId: d.course_id,
-              courseTitle: d.course_title,
-              passKey: d.password,
-              grantedBy: d.granted_by || 'Mentor',
-              grantedAt: d.granted_at ? new Date(d.granted_at).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' }) : 'Just now',
-            }));
-            setGrantedHistory(mappedHistory);
-            localStorage.setItem('lms_granted_passes', JSON.stringify(mappedHistory));
-          }
-        } catch (e) {}
-      };
-      fetchSupabasePasses();
 
       const params = new URLSearchParams(window.location.search);
       const urlCourseId = params.get('courseId') || params.get('enroll') || params.get('checkout');
