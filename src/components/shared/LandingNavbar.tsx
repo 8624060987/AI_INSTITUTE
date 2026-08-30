@@ -210,10 +210,10 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onAccessPortal, cu
             {theme === 'light' ? <Moon className="w-4 h-4 text-blue-600" /> : <Sun className="w-4 h-4 text-amber-400" />}
           </button>
 
-          {/* Dedicated Mentor Login button */}
+          {/* Dedicated Mentor Login button — TOP RIGHT Header for all screen sizes */}
           <a
             href="/login/mentor"
-            className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 transition-all cursor-pointer"
+            className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 transition-all cursor-pointer shrink-0"
             title="Access Mentor & Faculty Login Portal"
           >
             <span>👨‍🏫 Mentor Login</span>
