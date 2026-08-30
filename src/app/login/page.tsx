@@ -58,67 +58,73 @@ export default function LoginPage() {
           </p>
         </motion.div>
 
-        {/* Student Login Card (Mentor Login accessible via top-right button) */}
-        <div className="flex justify-center pt-4">
+        {/* Two Prominent Cards: Student Login & Mentor Login */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 max-w-3xl mx-auto">
           
-          {/* Student Card (HIGHLIGHTED PRIMARY) */}
+          {/* Student Card */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 1, y: 0 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
             onClick={() => { window.location.href = '/login/student'; }}
-            className="group relative rounded-3xl p-8 w-full max-w-lg bg-gradient-to-b from-blue-900/20 via-blue-950/10 to-slate-950/80 border-2 border-blue-500/80 backdrop-blur-xl transition-all duration-300 shadow-2xl shadow-blue-500/20 flex flex-col justify-between items-start text-left overflow-hidden cursor-pointer ring-4 ring-blue-500/10"
+            className="group relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-blue-900/20 via-blue-950/10 to-slate-950/80 border-2 border-blue-500/80 backdrop-blur-xl transition-all duration-300 shadow-2xl shadow-blue-500/20 flex flex-col justify-between items-start text-left overflow-hidden cursor-pointer ring-4 ring-blue-500/10 hover:border-blue-400"
           >
-            {/* Recommended Badge */}
-            <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg border border-blue-400/40">
-              ⭐ Recommended Student Portal
-            </div>
-
-            {/* Card internal background glow */}
-            <div className="absolute -right-20 -top-20 w-56 h-56 rounded-full bg-blue-500/20 blur-[60px] group-hover:bg-blue-500/30 transition-all duration-500" />
-            
-            <div className="space-y-6 z-10 w-full">
-              <div className="w-14 h-14 rounded-2xl bg-blue-500/20 border border-blue-400/40 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform duration-300 shadow-md">
-                <GraduationCap className="w-7 h-7" />
+            <div className="space-y-4 z-10 w-full">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-400/40 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform duration-300 shadow-md">
+                <GraduationCap className="w-6 h-6" />
               </div>
-              <div className="space-y-2">
-                <h2 className="text-2xl font-black text-white group-hover:text-blue-400 transition-colors">
-                  Student Portal Login
+              <div className="space-y-1">
+                <h2 className="text-xl font-black text-white group-hover:text-blue-400 transition-colors">
+                  🎓 Student Login
                 </h2>
                 <p className="text-xs text-blue-100/70 leading-relaxed">
-                  Enter your student workspace. Access active lectures, download study notes, submit projects, write tests, and interact with the student community.
+                  Enter student workspace, watch live lectures, submit projects, write tests, and download materials.
                 </p>
               </div>
-              
-              <ul className="space-y-2 text-[11px] text-gray-400 font-medium">
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                  Watch Lectures & mark progress
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                  Submit Assignments & Quizzes
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                  Earn XP & track Leaderboard rank
-                </li>
-              </ul>
             </div>
 
-            <div className="w-full pt-8 z-10">
-              <Link 
+            <div className="w-full pt-6 z-10">
+              <a 
                 href="/login/student"
-                className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-bold text-xs shadow-lg shadow-blue-500/10 flex items-center justify-center gap-2 group-hover:gap-3 transition-all duration-200"
+                className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-bold text-xs shadow-lg flex items-center justify-center gap-2 transition-all duration-200"
               >
-                Access Student Portal
+                <span>Access Student Portal</span>
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </a>
             </div>
           </motion.div>
 
+          {/* Mentor Card */}
+          <motion.div
+            initial={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
+            onClick={() => { window.location.href = '/login/mentor'; }}
+            className="group relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-emerald-900/20 via-emerald-950/10 to-slate-950/80 border-2 border-emerald-500/80 backdrop-blur-xl transition-all duration-300 shadow-2xl shadow-emerald-500/20 flex flex-col justify-between items-start text-left overflow-hidden cursor-pointer ring-4 ring-emerald-500/10 hover:border-emerald-400"
+          >
+            <div className="space-y-4 z-10 w-full">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform duration-300 shadow-md">
+                <School className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <h2 className="text-xl font-black text-white group-hover:text-emerald-400 transition-colors">
+                  👨‍🏫 Mentor &amp; Faculty Login
+                </h2>
+                <p className="text-xs text-emerald-100/70 leading-relaxed">
+                  Instructor dashboard to create courses, grade student assignments, schedule live batches, and mentor students.
+                </p>
+              </div>
+            </div>
 
-          
+            <div className="w-full pt-6 z-10">
+              <a 
+                href="/login/mentor"
+                className="w-full py-3 px-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl font-bold text-xs shadow-lg flex items-center justify-center gap-2 transition-all duration-200"
+              >
+                <span>Access Mentor Portal</span>
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+          </motion.div>
+
         </div>
 
         {/* Back Link */}
