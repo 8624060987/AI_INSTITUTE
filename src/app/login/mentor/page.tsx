@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/client';
@@ -8,7 +8,7 @@ import { checkDailyDeviceLoginAllowed, recordDailyDeviceLogin } from '@/utils/de
 import { 
   Mail, Lock, User, Loader2, ArrowLeft, ArrowRight, BookOpen, 
   ShieldCheck, CheckCircle2, Sparkles, Building, Briefcase, Award, 
-  Eye, EyeOff, Key, Phone, Star
+  Eye, EyeOff, Key, Phone, Star, Camera, UploadCloud, Upload, Trash2, Image as ImageIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sanitizeClientMessage } from '@/utils/errorHandler';
@@ -37,6 +37,11 @@ export default function MentorLoginPage() {
   const [setupPassword, setSetupPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showSetupPassword, setShowSetupPassword] = useState(false);
+  // Mentor Profile Photo Upload State
+  const [uploadedPhotoUrl, setUploadedPhotoUrl] = useState<string | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoUploadSuccess, setPhotoUploadSuccess] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,6 +51,53 @@ export default function MentorLoginPage() {
 
   const router = useRouter();
   const supabase = createClient();
+
+  // Mentor Profile Photo Upload Handler
+  const handleMentorPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setError('Please upload a valid image file (PNG, JPG, WebP, GIF).');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Uploaded image is too large. Maximum file size allowed is 10MB.');
+      return;
+    }
+
+    setUploadingPhoto(true);
+    setError(null);
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const base64Data = event.target?.result as string;
+        setUploadedPhotoUrl(base64Data);
+        setUploadingPhoto(false);
+        setPhotoUploadSuccess(true);
+
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+          });
+          const json = await res.json();
+          if (json.url) {
+            setUploadedPhotoUrl(json.url);
+          }
+        } catch (serverErr) {}
+      };
+      reader.readAsDataURL(file);
+    } catch (err: any) {
+      setUploadingPhoto(false);
+      setError('Failed to process image file. Please try selecting another photo.');
+    }
+  };
+
 
   // Exponential backoff countdown timer
   useEffect(() => {
@@ -268,6 +320,8 @@ export default function MentorLoginPage() {
     }
 
     try {
+      const mentorAvatar = uploadedPhotoUrl || '/uploads/vaibhav_ahire.jpg';
+
       const mentorRecord = {
         id: `mentor_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
         fullName: fullName.trim(),
@@ -280,6 +334,7 @@ export default function MentorLoginPage() {
         teachingMode,
         bio: bio.trim() || `Mentor specializing in ${domain} with ${experience} of industry experience.`,
         password: setupPassword.trim(),
+        avatarUrl: mentorAvatar,
         role: 'mentor',
         createdAt: new Date().toISOString()
       };
@@ -293,6 +348,10 @@ export default function MentorLoginPage() {
       existingMentors.push(mentorRecord);
       localStorage.setItem('lms_registered_mentors', JSON.stringify(existingMentors));
 
+      if (uploadedPhotoUrl) {
+        localStorage.setItem(`custom_avatar_${normalizedEmail}`, uploadedPhotoUrl);
+      }
+
       // 2. Save in Supabase profiles
       try {
         await supabase.from('profiles').upsert({
@@ -303,6 +362,8 @@ export default function MentorLoginPage() {
           phone: mentorRecord.phone,
           qualification: mentorRecord.experience,
           learning_mode: mentorRecord.teachingMode,
+          avatar_url: mentorAvatar,
+          profile_photo_url: mentorAvatar,
           created_at: new Date().toISOString()
         });
       } catch (e) {}
@@ -506,6 +567,79 @@ export default function MentorLoginPage() {
               <div className="p-3 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-300 text-xs font-bold flex items-center gap-2 mb-2">
                 <Star className="w-4 h-4 text-amber-300" />
                 <span>Configure your Mentor Profile & create your login password.</span>
+              </div>
+
+              {/* MENTOR PROFILE PHOTO SETUP UPLOADER */}
+              <div className="p-4 rounded-2xl bg-slate-950/80 border border-teal-500/30 flex flex-col sm:flex-row items-center gap-4">
+                <div className="relative group shrink-0">
+                  <img
+                    src={uploadedPhotoUrl || '/uploads/vaibhav_ahire.jpg'}
+                    alt="Mentor Avatar"
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-teal-400/80 shadow-md bg-slate-900"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute inset-0 bg-black/60 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white cursor-pointer"
+                    title="Upload Mentor Profile Photo"
+                  >
+                    <Camera className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="space-y-1.5 text-center sm:text-left flex-1">
+                  <div className="flex items-center justify-center sm:justify-start gap-2">
+                    <span className="text-xs font-black text-white">📸 Mentor Profile Photo</span>
+                    {photoUploadSuccess && (
+                      <span className="text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Photo Uploaded
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-tight">
+                    Upload your professional photo for student portal & live session cards.
+                  </p>
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/*"
+                    onChange={handleMentorPhotoUpload}
+                    className="hidden"
+                  />
+
+                  <div className="flex items-center justify-center sm:justify-start gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploadingPhoto}
+                      className="px-3 py-1.5 rounded-xl bg-teal-600/20 hover:bg-teal-600/30 text-teal-300 border border-teal-500/40 text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                    >
+                      {uploadingPhoto ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Uploading...</span>
+                        </>
+                      ) : (
+                        <>
+                          <UploadCloud className="w-3.5 h-3.5 text-teal-400" />
+                          <span>{uploadedPhotoUrl ? 'Change Photo' : 'Upload Photo'}</span>
+                        </>
+                      )}
+                    </button>
+
+                    {uploadedPhotoUrl && (
+                      <button
+                        type="button"
+                        onClick={() => { setUploadedPhotoUrl(null); setPhotoUploadSuccess(false); }}
+                        className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 border border-slate-700 text-xs font-bold transition-all cursor-pointer"
+                        title="Remove custom photo"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* Full Name */}
