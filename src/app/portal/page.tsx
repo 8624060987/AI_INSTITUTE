@@ -1845,7 +1845,7 @@ export default function PortalPage() {
                   <div className="p-6 rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 text-white shadow-xl flex justify-between items-center relative overflow-hidden">
                     <div className="space-y-1.5 z-10">
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur border border-white/20 text-[10px] font-bold uppercase tracking-wider text-amber-300">
-                        <Sparkles className="w-3.5 h-3.5" /> 🎓 Live Student Classroom • Granted Access
+                        <Sparkles className="w-3.5 h-3.5" /> 🎓 Live Student Classroom Workspace
                       </div>
                       <h2 className="text-2xl font-black tracking-tight">{selectedCourse.title}</h2>
                       <p className="text-xs text-blue-100 font-medium">
