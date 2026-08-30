@@ -222,7 +222,7 @@ export default function StudentLoginPage() {
       const expectedPassword = foundLocal?.password || remoteProfile?.password;
       let isValid = false;
 
-      if (foundLocal || remoteProfile) {
+      if (foundLocal || remoteProfile || authSuccess) {
         // Account ALREADY EXISTS: strictly verify password!
         if (authSuccess || (expectedPassword && expectedPassword === password.trim())) {
           isValid = true;
@@ -231,27 +231,9 @@ export default function StudentLoginPage() {
           throw new Error('Incorrect password. Please enter the exact password you set during admission or registration.');
         }
       } else {
-        // New Account: create student record with entered password!
-        isValid = true;
-        const newStudent = {
-          id: `stu_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-          fullName: normalizedEmail.split('@')[0].toUpperCase(),
-          email: normalizedEmail,
-          phone: '',
-          courseId: selectedCourse || 'course-gen-ai',
-          courseTitle: 'Generative AI & LLMs',
-          qualification: 'Graduate',
-          college: 'AI Institute Scholar',
-          currentYear: '2026',
-          location: 'Satana / Maharashtra',
-          careerGoal: 'AI Engineer',
-          avatarUrl: DEFAULT_AVATAR,
-          password: password.trim(),
-          role: 'student',
-          registeredAt: new Date().toISOString()
-        };
-        savedStudents.push(newStudent);
-        localStorage.setItem('lms_registered_students', JSON.stringify(savedStudents));
+        // STRICT SECURITY GUARD: Unregistered accounts CANNOT log in without registering first!
+        setFailedAttemptsCount((prev) => prev + 1);
+        throw new Error('No student account found for this email. Please click the "Student Admission & Registration" tab below to enroll and create your account first.');
       }
 
       if (isValid) {

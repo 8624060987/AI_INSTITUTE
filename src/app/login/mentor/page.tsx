@@ -217,7 +217,7 @@ export default function MentorLoginPage() {
       const expectedPassword = foundLocal?.password || remoteProfile?.password;
       let isValid = false;
 
-      if (foundLocal || remoteProfile) {
+      if (foundLocal || remoteProfile || authSuccess) {
         if (authSuccess || (expectedPassword && expectedPassword === password.trim()) || (isDefaultMentor && (password.trim() === 'mentor123' || password.trim() === 'aiinstitute123'))) {
           isValid = true;
         } else {
@@ -227,20 +227,9 @@ export default function MentorLoginPage() {
       } else if (isDefaultMentor) {
         isValid = true;
       } else {
-        isValid = true;
-        const newMentor = {
-          id: `men_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-          fullName: normalizedEmail.split('@')[0].toUpperCase(),
-          email: normalizedEmail,
-          domain: 'Generative AI & Tech',
-          currentRole: 'AI Mentor',
-          company: 'AI Institute Satana',
-          password: password.trim(),
-          role: 'mentor',
-          registeredAt: new Date().toISOString()
-        };
-        savedMentors.push(newMentor);
-        localStorage.setItem('lms_registered_mentors', JSON.stringify(savedMentors));
+        // STRICT SECURITY GUARD: Unregistered mentor accounts CANNOT log in without setting up profile first!
+        setFailedAttemptsCount((prev) => prev + 1);
+        throw new Error('No mentor profile found for this email. Please click the "Mentor Profile Setup" tab below to configure your faculty account first.');
       }
 
       if (isValid) {
