@@ -676,41 +676,13 @@ const SEED_QUESTIONS: Question[] = [
 export function dedupeCourses(courseList: Course[]): Course[] {
   if (!Array.isArray(courseList)) return [];
   const seenIds = new Set<string>();
-  const seenTitles = new Set<string>();
   const result: Course[] = [];
 
   for (const c of courseList) {
     if (!c || !c.id || !c.title) continue;
     const normId = c.id.trim().toLowerCase();
-    
-    // Normalize title to match duplicate titles
-    const normTitle = c.title.toLowerCase().replace(/[^a-z0-9]/g, '');
-
     if (seenIds.has(normId)) continue;
-
-    let isTitleDuplicate = false;
-    for (const existingTitle of seenTitles) {
-      if (
-        existingTitle === normTitle ||
-        (normTitle.includes('generativeai') && existingTitle.includes('generativeai')) ||
-        (normTitle.includes('machinelearning') && existingTitle.includes('machinelearning')) ||
-        (normTitle.includes('datascience') && existingTitle.includes('datascience')) ||
-        (normTitle.includes('dataanalytics') && existingTitle.includes('dataanalytics')) ||
-        (normTitle.includes('digitalmarketing') && existingTitle.includes('digitalmarketing')) ||
-        (normTitle.includes('cybersecurity') && existingTitle.includes('cybersecurity')) ||
-        (normTitle.includes('businessanalyst') && existingTitle.includes('businessanalyst')) ||
-        (normTitle.includes('informationtechnology') && existingTitle.includes('informationtechnology')) ||
-        (normTitle.includes('uiuxdesign') && existingTitle.includes('uiuxdesign'))
-      ) {
-        isTitleDuplicate = true;
-        break;
-      }
-    }
-
-    if (isTitleDuplicate) continue;
-
     seenIds.add(normId);
-    seenTitles.add(normTitle);
     result.push(c);
   }
 

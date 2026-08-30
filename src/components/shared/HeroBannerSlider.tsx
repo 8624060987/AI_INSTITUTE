@@ -138,6 +138,7 @@ export function HeroBannerSlider({ onSelectCourse }: { onSelectCourse: (courseId
             <div
               key={currentBanner.id}
               className="w-full relative cursor-pointer overflow-hidden h-[160px] sm:h-[220px] md:h-[280px] lg:h-[320px] flex items-center justify-center bg-slate-950 transition-opacity duration-150 rounded-2xl sm:rounded-3xl"
+              style={{ maxHeight: '320px', minHeight: '160px', width: '100%', position: 'relative' }}
               onClick={() => onSelectCourse(currentBanner.courseId)}
               onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
               onTouchEnd={(e) => {
@@ -155,7 +156,7 @@ export function HeroBannerSlider({ onSelectCourse }: { onSelectCourse: (courseId
                 alt={currentBanner.name}
                 onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/banners/generative-ai.webp'; }}
                 className="w-full h-full object-contain object-center rounded-2xl sm:rounded-3xl block shadow-inner bg-slate-950"
-                style={{ imageRendering: '-webkit-optimize-contrast' }}
+                style={{ imageRendering: '-webkit-optimize-contrast', width: '100%', height: '100%', maxHeight: '320px', objectFit: 'contain', objectPosition: 'center', display: 'block', margin: '0 auto' }}
                 loading="eager"
                 decoding="async"
                 fetchPriority="high"

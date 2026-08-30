@@ -1,70 +1,15 @@
-# Hostinger Phusion Passenger & Apache Server Configuration for AI Institute Satana
-PassengerAppRoot /home/u677383889/domains/aiinstitutesatana.in/hbuilds/current/nodejs
-PassengerAppType node
-PassengerNodejs /opt/alt/alt-nodejs22/root/bin/node
-PassengerStartupFile server.js
-PassengerBaseURI /
-PassengerRestartDir /home/u677383889/domains/aiinstitutesatana.in/hbuilds/current/nodejs/tmp
-SetEnv NODE_OPTIONS "--require /home/u677383889/domains/aiinstitutesatana.in/hbuilds/config/preload-timestamp.js"
-SetEnv LSNODE_CONSOLE_LOG console.log
-SetEnv TOKIO_WORKER_THREADS 2
-DirectoryIndex server.js
-
-# Force Apache to NEVER check physical files for _next and ALWAYS route _next to server.js
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
-
-    # Route ALL _next requests directly to server.js (Bypasses Apache physical folder checks)
-    RewriteRule ^_next/(.*)$ server.js [QSA,L]
-
-    # Do not rewrite existing physical files or directories for root public assets (EXCLUDING _next)
-    RewriteCond %{REQUEST_URI} !^/_next/
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^ - [L]
-
-    # Pass all other page requests to Passenger server.js
-    RewriteRule ^(.*)$ server.js [QSA,L]
-</IfModule>
-
-# Allow Apache & LiteSpeed access to .next static assets & public directory
-<DirectoryMatch "^\.next">
-    Require all granted
-</DirectoryMatch>
-
-# MIME Types for CSS, JS, Fonts & Media Assets
-<IfModule mod_mime.c>
-    AddType text/css .css
-    AddType application/javascript .js .mjs
-    AddType font/woff2 .woff2
-    AddType font/woff .woff
-    AddType font/ttf .ttf
-    AddType text/plain .txt
-    AddType image/png .png
-    AddType image/jpeg .jpg .jpeg
-    AddType image/webp .webp
-    AddType image/svg+xml .svg
-    AddType image/x-icon .ico
-</IfModule>
-
-# Security, CORS & Caching Headers
+# ─────────────────────────────────────────────────────────────
+# HOSTINGER LITESPEED / APACHE ZERO-CACHE CONFIGURATION
+# ─────────────────────────────────────────────────────────────
 <IfModule mod_headers.c>
-    <FilesMatch "\.(css|js|mjs|woff2|woff|ttf|png|jpg|jpeg|webp|svg|ico|txt)$">
-        Header set Access-Control-Allow-Origin "*"
-        Header set Cache-Control "public, max-age=31536000, immutable"
-    </FilesMatch>
-    <Files "ads.txt">
-        Header set Access-Control-Allow-Origin "*"
-        Header set Content-Type "text/plain; charset=UTF-8"
-        Header set Cache-Control "public, max-age=86400"
-    </Files>
-    Header set X-Content-Type-Options "nosniff"
-    Header set X-XSS-Protection "1; mode=block"
-    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    # Disable LiteSpeed LSCache for dynamic Next.js routes
+    Header set X-LiteSpeed-Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
 </IfModule>
 
-# Enable Compression for Fast Mobile & Desktop Loading
-<IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json image/svg+xml
+<IfModule LiteSpeed>
+    CacheDisable public /
+    CacheDisable private /
 </IfModule>

@@ -88,8 +88,11 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onAccessPortal, cu
           <img 
             src="/logo-transparent.png" 
             alt="AI Institute Logo" 
+            height="48"
+            width="180"
             onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/logo-icon.png'; }}
-            className="h-12 sm:h-14 scale-110 ml-1 w-auto object-contain drop-shadow-md mix-blend-multiply dark:mix-blend-normal" 
+            className="h-12 sm:h-14 w-auto object-contain drop-shadow-md mix-blend-multiply dark:mix-blend-normal" 
+            style={{ maxHeight: '48px', maxWidth: '200px', width: 'auto', height: 'auto', objectFit: 'contain', display: 'inline-block' }}
           />
         </div>
 

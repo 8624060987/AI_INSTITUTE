@@ -600,8 +600,11 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            {dedupeCourses(courses && courses.length > 0 ? courses : SEED_COURSES).map((course, idx) => {
+          <div 
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', width: '100%', minHeight: '350px' }}
+          >
+            {(courses && courses.length > 0 ? courses : SEED_COURSES).map((course, idx) => {
               const isUpcoming = isUpcomingCourse(course.id) || isUpcomingCourse(course.title);
               return (
                 <div 

@@ -181,7 +181,11 @@ const server = createServer(async (req, res) => {
       }
     }
 
-    // 4. Default Request Delegation to Next.js Request Handler
+    // 4. Default Request Delegation to Next.js Request Handler (With Zero-Cache Headers for HTML routes)
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('X-LiteSpeed-Cache-Control', 'no-cache');
     return handle(req, res, parsedUrl);
   } catch (err) {
     console.error('> Request handling error:', err);
