@@ -47,6 +47,21 @@
     --input: #1e293b;
     --ring: #60a5fa;
   }
+/* Universal Form Input Text Visibility - Always High-Contrast Visible Typed Text */
+input, textarea, select {
+  color: #0f172a !important;
+  caret-color: #2563eb;
+}
+
+.dark input, .dark textarea, .dark select {
+  color: #ffffff !important;
+  caret-color: #60a5fa;
+}
+
+.bg-white input, .bg-slate-50 input, .bg-slate-100 input,
+input.bg-white, input.bg-slate-50, input.bg-slate-100,
+textarea.bg-white, textarea.bg-slate-50, textarea.bg-slate-100 {
+  color: #0f172a !important;
 }
 
 /* Custom Ultra-Sleek Scrollbar for Dark & Light Mode */

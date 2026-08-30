@@ -83,6 +83,9 @@ export default function RootLayout({
           header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.5rem; }
           header nav { display: flex; align-items: center; gap: 1.25rem; }
           header nav a { color: #94a3b8; text-decoration: none; font-size: 0.875rem; font-weight: 600; }
+          input, textarea, select { color: #0f172a !important; caret-color: #2563eb; }
+          .dark input, .dark textarea, .dark select { color: #ffffff !important; caret-color: #60a5fa; }
+          .bg-white input, .bg-slate-50 input, input.bg-white, textarea.bg-white { color: #0f172a !important; }
         ` }} />
         <Script
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8428613200514609"
