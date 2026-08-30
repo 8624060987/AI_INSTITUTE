@@ -83,9 +83,11 @@ export default function RootLayout({
           header { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.5rem; }
           header nav { display: flex; align-items: center; gap: 1.25rem; }
           header nav a { color: #94a3b8; text-decoration: none; font-size: 0.875rem; font-weight: 600; }
-          input, textarea, select { color: #0f172a !important; caret-color: #2563eb; }
-          .dark input, .dark textarea, .dark select { color: #ffffff !important; caret-color: #60a5fa; }
-          .bg-white input, .bg-slate-50 input, input.bg-white, textarea.bg-white { color: #0f172a !important; }
+          input, textarea, select { color: #0f172a !important; -webkit-text-fill-color: #0f172a !important; opacity: 1 !important; caret-color: #2563eb !important; }
+          .dark input, .dark textarea, .dark select { color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; opacity: 1 !important; caret-color: #60a5fa !important; }
+          .bg-white input, .bg-slate-50 input, input.bg-white, textarea.bg-white { color: #0f172a !important; -webkit-text-fill-color: #0f172a !important; }
+          input:-webkit-autofill, textarea:-webkit-autofill { -webkit-text-fill-color: #0f172a !important; }
+          .dark input:-webkit-autofill, .dark textarea:-webkit-autofill { -webkit-text-fill-color: #ffffff !important; }
         ` }} />
         <Script
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8428613200514609"

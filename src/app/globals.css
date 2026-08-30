@@ -50,18 +50,60 @@
 /* Universal Form Input Text Visibility - Always High-Contrast Visible Typed Text */
 input, textarea, select {
   color: #0f172a !important;
-  caret-color: #2563eb;
+  -webkit-text-fill-color: #0f172a !important;
+  opacity: 1 !important;
+  caret-color: #2563eb !important;
+  font-weight: 600 !important;
 }
 
-.dark input, .dark textarea, .dark select {
+.dark input, .dark textarea, .dark select,
+input.dark, textarea.dark, select.dark {
   color: #ffffff !important;
-  caret-color: #60a5fa;
+  -webkit-text-fill-color: #ffffff !important;
+  opacity: 1 !important;
+  caret-color: #60a5fa !important;
+  font-weight: 600 !important;
 }
 
-.bg-white input, .bg-slate-50 input, .bg-slate-100 input,
-input.bg-white, input.bg-slate-50, input.bg-slate-100,
-textarea.bg-white, textarea.bg-slate-50, textarea.bg-slate-100 {
+.bg-white input, .bg-slate-50 input, .bg-slate-100 input, .bg-slate-200 input,
+input.bg-white, input.bg-slate-50, input.bg-slate-100, input.bg-slate-200,
+textarea.bg-white, textarea.bg-slate-50, textarea.bg-slate-100, textarea.bg-slate-200 {
   color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+/* Webkit Autofill Override - Prevents Chrome/Edge from turning typed text invisible */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill {
+  -webkit-text-fill-color: #0f172a !important;
+  transition: background-color 50000s ease-in-out 0s !important;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark textarea:-webkit-autofill,
+.dark textarea:-webkit-autofill:hover,
+.dark textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff !important;
+  transition: background-color 50000s ease-in-out 0s !important;
+}
+
+/* Input Placeholder Visibility */
+input::placeholder, textarea::placeholder {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  opacity: 0.8 !important;
+}
+.dark input::placeholder, .dark textarea::placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+  opacity: 0.8 !important;
 }
 
 /* Custom Ultra-Sleek Scrollbar for Dark & Light Mode */
