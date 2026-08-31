@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { DatabaseProvider } from "@/context/DatabaseContext";
@@ -90,11 +89,6 @@ export default function RootLayout({
           input:-webkit-autofill, textarea:-webkit-autofill { -webkit-text-fill-color: #0f172a !important; }
           .dark input:-webkit-autofill, .dark textarea:-webkit-autofill { -webkit-text-fill-color: #ffffff !important; }
         ` }} />
-        <Script
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8428613200514609"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
       </head>
       <body className="antialiased bg-[#fcfdff] dark:bg-[#080d1a] text-[#1e293b] dark:text-[#f8fafc] transition-colors duration-200" suppressHydrationWarning>
         <ThemeProvider>
