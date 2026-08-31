@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/utils/supabase/server';
 import { 
   extractClientIp, 
   checkAuthRateLimit, 
@@ -14,15 +15,15 @@ import { handleApiError } from '@/utils/errorHandler';
 export async function POST(req: NextRequest) {
   const ip = extractClientIp(req);
 
-  // 1. Strict Schema Validation (Type, Length, Format, Unknown Keys)
+  // 1. Strict Schema Validation
   const validation = await parseAndValidateRequest(req, LoginSchema);
   if (!validation.success || !validation.data) {
-    // Strictly reject without executing authentication or coercing
     return validation.response!;
   }
 
   const { email, password, role } = validation.data;
   const accountIdentifier = email.toLowerCase().trim();
+  const inputPassword = password.trim();
 
   // 2. Check Rate Limit & Exponential Backoff
   const rateLimit = checkAuthRateLimit(ip, accountIdentifier);
@@ -31,15 +32,95 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const isStudentValid = password.length >= 4;
-    const isMentorValid = password.length >= 4;
+    const supabase = await createClient();
 
-    if (!isStudentValid && !isMentorValid) {
+    // Default Faculty/Mentor Emails Whitelist
+    const defaultMentorEmails = [
+      'vaibhav.ahire@aiinstitute.in',
+      'siddhi.pawar@aiinstitute.in',
+      'vishwadeep.chavan@aiinstitute.in',
+      'jay.koche@aiinstitute.in',
+      'mentor@aiinstitute.in'
+    ];
+    const isDefaultMentor = defaultMentorEmails.includes(accountIdentifier);
+
+    let isAuthenticated = false;
+    let authUser: any = null;
+    let authErrorMsg = '';
+
+    // Step A: Attempt Supabase Auth Password Sign In
+    try {
+      const { data: authData } = await supabase.auth.signInWithPassword({
+        email: accountIdentifier,
+        password: inputPassword,
+      });
+
+      if (authData?.user) {
+        isAuthenticated = true;
+        authUser = {
+          id: authData.user.id,
+          email: authData.user.email,
+          fullName: authData.user.user_metadata?.full_name || accountIdentifier.split('@')[0],
+          role: authData.user.user_metadata?.role || role || 'student',
+        };
+      }
+    } catch (e) {}
+
+    // Step B: If Supabase Auth didn't match, query Supabase DB 'profiles' table
+    if (!isAuthenticated) {
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .ilike('email', accountIdentifier)
+          .single();
+
+        if (profile) {
+          // Account exists in DB! Validate password
+          const expectedPassword = profile.password;
+          if (expectedPassword && expectedPassword === inputPassword) {
+            isAuthenticated = true;
+            authUser = {
+              id: profile.id,
+              email: profile.email,
+              fullName: profile.full_name || profile.name,
+              role: profile.role || role || 'student',
+            };
+          } else {
+            authErrorMsg = 'Incorrect password. Please enter the exact password set during registration.';
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Step C: Fallback check for Default Faculty Accounts
+    if (!isAuthenticated && isDefaultMentor) {
+      if (inputPassword === 'mentor123' || inputPassword === 'aiinstitute123') {
+        isAuthenticated = true;
+        authUser = {
+          id: `mentor_${accountIdentifier.split('@')[0]}`,
+          email: accountIdentifier,
+          fullName: accountIdentifier.split('@')[0].toUpperCase(),
+          role: 'mentor',
+        };
+      } else {
+        authErrorMsg = 'Incorrect mentor password. Please enter your authorized faculty password.';
+      }
+    }
+
+    // Step D: STRICT REJECTION IF NOT AUTHENTICATED
+    if (!isAuthenticated) {
       const failure = recordAuthFailure(ip, accountIdentifier);
+      const errorMessage = authErrorMsg || (
+        role === 'mentor'
+          ? 'No mentor profile found for this email address. Please click "Mentor Profile Setup" to configure your account first.'
+          : 'No registered student account found for this email address. Please click "Student Admission & Registration" below to enroll first.'
+      );
+
       return NextResponse.json(
         {
           success: false,
-          error: 'Authentication failed. Please verify your email and password.',
+          error: errorMessage,
           rateLimit: {
             failedAttempts: failure.failedAttempts,
             backoffDelayMs: failure.backoffDelayMs,
@@ -50,15 +131,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // On Successful Authentication: Reset failures and backoff penalty
+    // On Successful Authentication: Reset failure count
     recordAuthSuccess(ip, accountIdentifier);
 
     const response = NextResponse.json({
       success: true,
       message: 'Authentication successful',
       user: {
-        email: accountIdentifier,
-        role: role || (accountIdentifier.includes('mentor') ? 'mentor' : accountIdentifier.includes('admin') ? 'admin' : 'student'),
+        id: authUser.id,
+        email: authUser.email,
+        fullName: authUser.fullName,
+        role: authUser.role,
         authenticatedAt: new Date().toISOString(),
       },
     });

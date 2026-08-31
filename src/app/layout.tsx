@@ -75,6 +75,7 @@ export default function RootLayout({
             });
           })();
         ` }} />
+        <meta name="google-site-verification" content="AI_INSTITUTE_SATANA_GOOGLE_VERIFY_2026" />
         <link rel="stylesheet" href="/fallback-tailwind.css" />
         <style dangerouslySetInnerHTML={{ __html: `
           html, body { margin: 0; padding: 0; font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif; background-color: #080d1a; color: #f8fafc; }
