@@ -11,12 +11,36 @@ const nextConfig = {
     unoptimized: true,
   },
 
-  // Enterprise Security & Caching Headers
+  // Enterprise Security & Zero-Cache Headers for Hostinger CDN & Browsers
   async headers() {
     return [
       {
         source: '/:path*',
         headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache',
+          },
+          {
+            key: 'Expires',
+            value: '0',
+          },
+          {
+            key: 'X-LiteSpeed-Cache-Control',
+            value: 'no-cache',
+          },
+          {
+            key: 'CDN-Cache-Control',
+            value: 'no-store',
+          },
+          {
+            key: 'Hostinger-CDN-Cache-Control',
+            value: 'no-store',
+          },
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',

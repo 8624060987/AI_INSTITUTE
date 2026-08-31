@@ -39,6 +39,9 @@ function CompanyLogoBadge({ company }: { company: { name: string; logo: string }
   );
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function LandingPage() {
   const { courses, currentUser, isAuthenticated, authReady, enrolledCourseIds, addLead } = useDatabase();
   const router = useRouter();
