@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { DatabaseProvider } from "@/context/DatabaseContext";
@@ -75,7 +76,13 @@ export default function RootLayout({
           })();
         ` }} />
         <meta name="google-site-verification" content="AI_INSTITUTE_SATANA_GOOGLE_VERIFY_2026" />
+        <meta name="google-adsense-account" content="ca-pub-8428613200514609" />
         <link rel="stylesheet" href="/fallback-tailwind.css" />
+        <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8428613200514609"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         <style dangerouslySetInnerHTML={{ __html: `
           html, body { margin: 0; padding: 0; font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif; background-color: #080d1a; color: #f8fafc; }
           img { max-width: 100%; height: auto; }

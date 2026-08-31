@@ -1,3 +1,1 @@
-# Google AdSense Publisher Authorization File for AI Institute
-# Domain: aiinstitutesatana.in
 google.com, pub-8428613200514609, DIRECT, f08c47fec0942fa0

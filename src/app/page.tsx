@@ -16,6 +16,7 @@ import { AIAssistant } from '@/components/shared/AIAssistant';
 import { HeroBannerSlider } from '@/components/shared/HeroBannerSlider';
 import { ComingSoonCourseModal, isUpcomingCourse } from '@/components/shared/ComingSoonCourseModal';
 import { useDatabase, dedupeCourses, SEED_COURSES } from '@/context/DatabaseContext';
+import { AdSenseBanner } from '@/components/shared/AdSenseBanner';
 
 function CompanyLogoBadge({ company }: { company: { name: string; logo: string } }) {
   const [logoFailed, setLogoFailed] = useState(false);
@@ -589,6 +590,11 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Google AdSense Responsive Banner Slot 1 */}
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <AdSenseBanner slotId="8428613201" />
+      </div>
 
       {/* 2. FEATURED COURSES */}
       <section id="courses" className="py-24 px-6 bg-white dark:bg-[#0a0f1c] relative z-10">
