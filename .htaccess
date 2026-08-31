@@ -1,0 +1,17 @@
+# ─────────────────────────────────────────────────────────────
+# HOSTINGER LITESPEED / APACHE PERMANENT ZERO-CACHE DIRECTIVES
+# ─────────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    Header unset ETag
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0, s-maxage=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+    Header set X-LiteSpeed-Cache-Control "no-cache, no-store"
+    Header set CDN-Cache-Control "no-store"
+    Header set Hostinger-CDN-Cache-Control "no-store"
+</IfModule>
+
+<IfModule LiteSpeed>
+    CacheDisable public /
+    CacheDisable private /
+</IfModule>

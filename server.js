@@ -67,6 +67,24 @@ const server = createServer(async (req, res) => {
     const rawPath = parsedUrl.pathname || '';
     const pathname = decodeURIComponent(rawPath).split('?')[0];
 
+    // Intercept response headers to FORCIBLY BYPASS Hostinger CDN, LiteSpeed, and Browser Caches on ALL HTML responses
+    const originalSetHeader = res.setHeader;
+    res.setHeader = function (name, value) {
+      if (name.toLowerCase() === 'cache-control' && !pathname.match(/\.(png|jpg|jpeg|webp|svg|ico|css|js|woff2|woff)$/i)) {
+        return originalSetHeader.call(this, 'Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0');
+      }
+      return originalSetHeader.call(this, name, value);
+    };
+
+    if (!pathname.match(/\.(png|jpg|jpeg|webp|svg|ico|css|js|woff2|woff)$/i)) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.setHeader('X-LiteSpeed-Cache-Control', 'no-cache, no-store');
+      res.setHeader('CDN-Cache-Control', 'no-store');
+      res.setHeader('Hostinger-CDN-Cache-Control', 'no-store');
+    }
+
     // Instant 200 OK Health Check endpoint for Passenger & Uptime monitors
     if (pathname === '/api/health' || pathname === '/healthz' || pathname.includes('health')) {
       res.statusCode = 200;
