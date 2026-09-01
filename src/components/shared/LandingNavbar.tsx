@@ -213,15 +213,24 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onAccessPortal, cu
             {theme === 'light' ? <Moon className="w-4 h-4 text-blue-600" /> : <Sun className="w-4 h-4 text-amber-400" />}
           </button>
 
-          {/* Unified Login / My Classroom button */}
+          {/* Dedicated Mentor Login button */}
           <a
-            href={isAuthenticated ? "/portal" : "/login/student"}
+            href="/login/mentor"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-emerald-600/10 hover:bg-emerald-600/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 transition-all cursor-pointer shrink-0"
+            title="Access Mentor & Faculty Portal"
+          >
+            <span>👨‍🏫 Mentor Login</span>
+          </a>
+
+          {/* Dedicated Student Login button */}
+          <a
+            href={isAuthenticated ? "/portal?tab=classroom" : "/login/student"}
             onClick={(e) => {
               if (onAccessPortal) onAccessPortal(e);
             }}
-            className="flex items-center gap-1.5 px-3.5 sm:px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/15 transition-all hover:scale-[1.02] cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/15 transition-all hover:scale-[1.02] cursor-pointer"
           >
-            <span>{isAuthenticated ? 'My Workspace' : 'Login / Enroll'}</span>
+            <span>{isAuthenticated ? 'My Classroom' : 'Student Login'}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </a>
 
@@ -295,15 +304,24 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onAccessPortal, cu
                 </a>
               </nav>
 
-              {/* Mobile Action Button */}
-              <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
+              {/* Mobile Action Buttons */}
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
                 <a
                   href="/login/student"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20"
                 >
-                  <span>Login / Enroll</span>
+                  <GraduationCap className="w-4 h-4" />
+                  <span>Student Login</span>
                   <ArrowRight className="w-4 h-4" />
+                </a>
+                <a
+                  href="/login/mentor"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold bg-emerald-600/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+                >
+                  <Briefcase className="w-4 h-4" />
+                  <span>👨‍🏫 Mentor &amp; Faculty Login</span>
                 </a>
               </div>
             </div>

@@ -279,7 +279,7 @@ export default function MentorLoginPage() {
 
         setSuccessMsg('🎉 Mentor login verified! Entering workspace...');
         setTimeout(() => {
-          router.push('/portal');
+          router.push('/portal?tab=dashboard');
         }, 600);
       }
     } catch (err: any) {
