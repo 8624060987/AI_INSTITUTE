@@ -202,11 +202,11 @@ export default function StudentLoginPage() {
         return;
       }
 
-      if (authRes.status === 401) {
+      if (authRes.status === 401 || !authRes.ok) {
         const backoffDelay = authJson.rateLimit?.retryAfterSeconds || 2;
         setFailedAttemptsCount(authJson.rateLimit?.failedAttempts || 1);
-        setCooldownSeconds(backoffDelay);
-        setError(`Incorrect password. Cooling down for ${backoffDelay}s before retry.`);
+        if (backoffDelay > 1) setCooldownSeconds(backoffDelay);
+        setError(authJson.error || 'No registered account found for this email. Please click "Upload Photo & Setup Profile" below to create your account first.');
         setLoading(false);
         return;
       }
@@ -388,12 +388,26 @@ export default function StudentLoginPage() {
       existingStudents.push(studentRecord);
       localStorage.setItem('lms_registered_students', JSON.stringify(existingStudents));
 
-      // 2. Save profile in Supabase
+      // 2. Save credentials & profile in Supabase Auth & Supabase DB 'profiles' Table
+      try {
+        await supabase.auth.signUp({
+          email: normalizedEmail,
+          password: setupPassword.trim(),
+          options: {
+            data: {
+              full_name: studentRecord.fullName,
+              role: 'student',
+            },
+          },
+        });
+      } catch (err) {}
+
       try {
         await supabase.from('profiles').upsert({
           id: studentRecord.id,
           full_name: studentRecord.fullName,
           email: studentRecord.email,
+          password: setupPassword.trim(),
           role: 'student',
           phone: studentRecord.phone,
           qualification: studentRecord.qualification,
@@ -403,8 +417,8 @@ export default function StudentLoginPage() {
           avatar_url: studentRecord.avatarUrl,
           bio: studentRecord.bio,
           learning_mode: studentRecord.learningMode,
-          created_at: new Date().toISOString()
-        });
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'email' });
       } catch (err) {}
 
       // 3. Live Sync to Google Sheets Webhook via Backend API

@@ -364,14 +364,15 @@ export default function MentorLoginPage() {
           id: mentorRecord.id,
           full_name: mentorRecord.fullName,
           email: mentorRecord.email,
+          password: setupPassword.trim(),
           role: 'mentor',
           phone: mentorRecord.phone,
           qualification: mentorRecord.experience,
           learning_mode: mentorRecord.teachingMode,
           avatar_url: mentorAvatar,
           profile_photo_url: mentorAvatar,
-          created_at: new Date().toISOString()
-        });
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'email' });
       } catch (e) {}
 
       // 3. Register Auth account for future logins
