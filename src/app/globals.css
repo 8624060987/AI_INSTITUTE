@@ -193,9 +193,8 @@ input::placeholder, textarea::placeholder {
 
 html, body {
   overflow-x: hidden;
-  overscroll-behavior: none;
-  overscroll-behavior-y: none;
-  scroll-padding-top: 5rem;
+  scroll-behavior: smooth;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ─── Infinite Marquee (right → left) for Tie-Ups section ─── */

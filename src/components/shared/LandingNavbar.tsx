@@ -81,7 +81,7 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({ onAccessPortal, cu
       initial={{ y: -100 }} 
       animate={{ y: 0 }} 
       transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-      className="fixed top-0 left-0 right-0 z-40 bg-white/90 dark:bg-[#080d1a]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
+      className="fixed top-0 left-0 right-0 z-40 bg-white/85 dark:bg-[#080d1a]/85 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60 transition-all"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-2">
