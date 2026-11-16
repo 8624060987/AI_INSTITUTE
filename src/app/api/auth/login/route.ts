@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
           return NextResponse.json(
             {
               success: false,
-              error: 'Incorrect password. Please enter the exact password listed in your Google Sheet records.',
+              error: 'Incorrect password',
               rateLimit: {
                 failedAttempts: failure.failedAttempts,
                 backoffDelayMs: failure.backoffDelayMs,
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
           return NextResponse.json(
             {
               success: false,
-              error: sheetData.error || `Access Denied: No registered account found for ${accountIdentifier} in AI Institute Google Sheet records. Please create an account first.`,
+              error: 'Access Denied',
               rateLimit: {
                 failedAttempts: failure.failedAttempts,
                 backoffDelayMs: failure.backoffDelayMs,
@@ -140,14 +140,10 @@ export async function POST(req: NextRequest) {
     // STRICT SECURITY GUARD 1: IF NOT REGISTERED IN DATABASE & NOT DEFAULT FACULTY -> REJECT IMMEDIATELY!
     if (!dbProfile && !isDefaultMentor) {
       const failure = recordAuthFailure(ip, accountIdentifier);
-      const errorMessage = role === 'mentor'
-        ? `Access Denied: ${accountIdentifier} is not registered in AI Institute database. Please click "Set Up Mentor Profile" below to configure your account first.`
-        : `Access Denied: ${accountIdentifier} is not registered in AI Institute database. Please click "Upload Photo & Setup Profile" below to enroll first.`;
-
       return NextResponse.json(
         {
           success: false,
-          error: errorMessage,
+          error: 'Access Denied',
           rateLimit: {
             failedAttempts: failure.failedAttempts,
             backoffDelayMs: failure.backoffDelayMs,
@@ -234,7 +230,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Incorrect password. Please enter the exact password set during registration.',
+          error: 'Incorrect password',
           rateLimit: {
             failedAttempts: failure.failedAttempts,
             backoffDelayMs: failure.backoffDelayMs,

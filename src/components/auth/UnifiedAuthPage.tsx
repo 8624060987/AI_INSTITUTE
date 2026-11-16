@@ -130,7 +130,12 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
       }
 
       if (!authRes.ok || !authJson?.success) {
-        setError(authJson?.error || 'Access Denied: Invalid email or password. Please verify your Google Sheet credentials.');
+        const rawErr = String(authJson?.error || '').toLowerCase();
+        if (rawErr.includes('incorrect password') || rawErr.includes('password')) {
+          setError('Incorrect password');
+        } else {
+          setError('Access Denied');
+        }
         setLoading(false);
         return;
       }
@@ -175,7 +180,12 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
         }, 400);
       }
     } catch (err: any) {
-      setError(sanitizeClientMessage(err?.message, 'Login failed. Please check your email and password.'));
+      const msg = String(err?.message || '').toLowerCase();
+      if (msg.includes('incorrect password') || msg.includes('password')) {
+        setError('Incorrect password');
+      } else {
+        setError('Access Denied');
+      }
     } finally {
       setLoading(false);
     }
