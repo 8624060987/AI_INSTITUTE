@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
             action: 'login',
             email: accountIdentifier,
             password: inputPassword,
+            pass: inputPassword,
           }),
           redirect: 'follow',
         });
