@@ -164,16 +164,18 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
       } catch (_) {}
 
       const expectedPassword = foundLocal?.password || remoteProfile?.password;
-      let isValid = false;
+      let isValid = Boolean(authJson?.success);
 
-      if (foundLocal || remoteProfile || authSuccess) {
-        if (authSuccess || (expectedPassword && expectedPassword === password.trim())) {
-          isValid = true;
+      if (!isValid) {
+        if (foundLocal || remoteProfile || authSuccess) {
+          if (authSuccess || (expectedPassword && expectedPassword === password.trim())) {
+            isValid = true;
+          } else {
+            throw new Error('Incorrect password. Please enter the password you registered with.');
+          }
         } else {
-          throw new Error('Incorrect password. Please enter the password you registered with.');
+          throw new Error('No account found for this email. Please click "Create Account" below to register.');
         }
-      } else {
-        throw new Error('No account found for this email. Please click "Create Account" below to register.');
       }
 
       if (isValid) {
@@ -187,18 +189,18 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
         localStorage.removeItem('lms_user_logged_in');
 
         const studentProfile = {
-          id: foundLocal?.id || remoteProfile?.id || `stu_${Date.now()}`,
+          id: authJson.user?.id || foundLocal?.id || remoteProfile?.id || `stu_${Date.now()}`,
           email: normalizedEmail,
-          fullName: foundLocal?.fullName || remoteProfile?.full_name || normalizedEmail.split('@')[0].toUpperCase(),
-          courseId: foundLocal?.courseId || remoteProfile?.course_id || 'course-gen-ai',
-          courseTitle: foundLocal?.courseTitle || 'Generative AI & LLMs',
+          fullName: authJson.user?.fullName || foundLocal?.fullName || remoteProfile?.full_name || normalizedEmail.split('@')[0].toUpperCase(),
+          courseId: authJson.user?.courseId || foundLocal?.courseId || remoteProfile?.course_id || 'course-gen-ai',
+          courseTitle: authJson.user?.course || foundLocal?.courseTitle || 'Generative AI & LLMs',
           avatarUrl: foundLocal?.avatarUrl || remoteProfile?.avatar_url || '/uploads/siddhi_pawar.jpg',
           college: foundLocal?.college || remoteProfile?.college || 'AI Institute Scholar',
           location: foundLocal?.location || remoteProfile?.location || 'Satana / Maharashtra',
           careerGoal: foundLocal?.careerGoal || remoteProfile?.career_goal || 'AI Engineer',
           qualification: foundLocal?.qualification || remoteProfile?.qualification || 'Graduate',
           learningMode: foundLocal?.learningMode || remoteProfile?.learning_mode || 'Live Interactive Online Batch',
-          phone: foundLocal?.phone || remoteProfile?.phone || '',
+          phone: authJson.user?.phone || foundLocal?.phone || remoteProfile?.phone || '',
           bio: foundLocal?.bio || remoteProfile?.bio || '',
           currentYear: foundLocal?.currentYear || 'Final Year (2025/2026)',
           role: 'student'
@@ -335,7 +337,7 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
         });
       } catch (_) {}
 
-      // 4. Save full registration data to new Google Sheet
+      // 4. Save full registration data to new Google Sheet (including password for sheet auth)
       try {
         await fetch('/api/register-user', {
           method: 'POST',
@@ -344,6 +346,7 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
             fullName: studentRecord.fullName,
             email: studentRecord.email,
             phone: studentRecord.phone,
+            password: studentRecord.password,
             course: studentRecord.courseTitle,
             timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
           }),

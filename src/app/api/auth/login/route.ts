@@ -44,6 +44,61 @@ export async function POST(req: NextRequest) {
     ];
     const isDefaultMentor = defaultMentorEmails.includes(accountIdentifier);
 
+    // ─────────────────────────────────────────────────────────────
+    // Step 0: Check Google Sheets Registration Database First
+    // ─────────────────────────────────────────────────────────────
+    const sheetWebhookUrl = process.env.GOOGLE_SHEETS_REGISTRATION_WEBHOOK_URL;
+    if (sheetWebhookUrl && role !== 'mentor') {
+      try {
+        const sheetRes = await fetch(sheetWebhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'login',
+            email: accountIdentifier,
+            password: inputPassword,
+          }),
+          redirect: 'follow',
+        });
+
+        const sheetData = await sheetRes.json().catch(() => null);
+
+        if (sheetData?.success && sheetData?.user) {
+          recordAuthSuccess(ip, accountIdentifier);
+          return NextResponse.json({
+            success: true,
+            user: {
+              id: `sheet_${accountIdentifier}`,
+              email: accountIdentifier,
+              fullName: sheetData.user.fullName || accountIdentifier.split('@')[0].toUpperCase(),
+              phone: sheetData.user.phone || '',
+              course: sheetData.user.course || 'Generative AI & LLMs',
+              role: 'student',
+            },
+            authMethod: 'google_sheet',
+          });
+        }
+
+        if (sheetData?.error && sheetData.error.toLowerCase().includes('incorrect password')) {
+          const failure = recordAuthFailure(ip, accountIdentifier);
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Incorrect password. Please enter the password you registered with.',
+              rateLimit: {
+                failedAttempts: failure.failedAttempts,
+                backoffDelayMs: failure.backoffDelayMs,
+                retryAfterSeconds: Math.ceil(failure.backoffDelayMs / 1000),
+              },
+            },
+            { status: 401 }
+          );
+        }
+      } catch (sheetErr) {
+        console.error('[GOOGLE_SHEET_AUTH_ERROR]', sheetErr);
+      }
+    }
+
     // Step 1: Query Supabase DB 'profiles' table first to guarantee database registration!
     let dbProfile: any = null;
     try {
