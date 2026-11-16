@@ -178,7 +178,6 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
           const redirectTarget = params.get('redirect') || '/portal?tab=classroom';
           window.location.href = redirectTarget;
         }, 400);
-      }
     } catch (err: any) {
       const msg = String(err?.message || '').toLowerCase();
       if (msg.includes('incorrect password') || msg.includes('password')) {
@@ -353,11 +352,11 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
       <div className="lg:col-span-5 bg-[#141d2b] text-white p-8 sm:p-12 lg:p-16 flex flex-col justify-between relative overflow-hidden">
         {/* Top Branding: Logo + Name */}
         <div className="flex items-center gap-3 z-10">
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center gap-3">
             <img 
               src="/logo-transparent.png" 
               alt="AI Institute Logo" 
-              className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+              className="h-10 w-auto object-contain"
               onError={(e) => { 
                 (e.currentTarget as HTMLImageElement).src = '/logo-icon.png'; 
               }}
@@ -385,9 +384,6 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
         <div className="z-10 text-xs text-slate-400 font-medium">
           AI Institute Satana
         </div>
-
-        {/* Subtle Background Glow */}
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
@@ -445,7 +441,7 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Your full name"
-                  className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 transition-all"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
                 />
               </div>
 
@@ -461,7 +457,7 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 transition-all"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
                 <div>
@@ -474,7 +470,7 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+91 9876543210"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 transition-all"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
               </div>
@@ -492,7 +488,7 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 transition-all"
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
                     />
                     <button
                       type="button"
@@ -516,7 +512,7 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 transition-all"
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
                     />
                     <button
                       type="button"
@@ -539,7 +535,7 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full mt-4 bg-[#1a68ff] hover:bg-blue-600 active:bg-blue-700 disabled:opacity-50 text-white font-medium py-3 px-4 rounded-lg text-sm transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full mt-4 bg-[#1a68ff] hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 text-white font-medium py-3 px-4 rounded-lg text-sm shadow-sm flex items-center justify-center gap-2 cursor-pointer"
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Account'}
               </button>
@@ -576,7 +572,7 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 transition-all"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
                 />
               </div>
 
@@ -604,7 +600,7 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 transition-all"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
                   />
                   <button
                     type="button"
@@ -621,7 +617,7 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full mt-4 bg-[#1a68ff] hover:bg-blue-600 active:bg-blue-700 disabled:opacity-50 text-white font-medium py-3 px-4 rounded-lg text-sm transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full mt-4 bg-[#1a68ff] hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 text-white font-medium py-3 px-4 rounded-lg text-sm shadow-sm flex items-center justify-center gap-2 cursor-pointer"
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Log in'}
               </button>
@@ -643,7 +639,7 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 text-sm font-medium transition-all shadow-2xs cursor-pointer"
+                className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 text-sm font-medium shadow-2xs cursor-pointer"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
