@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     const isDefaultMentor = defaultMentorEmails.includes(accountIdentifier);
 
     // ─────────────────────────────────────────────────────────────
-    // Step 0: Check Google Sheets Registration Database First
+    // Step 0: STRICT GOOGLE SHEETS AUTHENTICATION (AUTHORITATIVE)
     // ─────────────────────────────────────────────────────────────
     const sheetWebhookUrl = process.env.GOOGLE_SHEETS_REGISTRATION_WEBHOOK_URL;
     if (sheetWebhookUrl && role !== 'mentor') {
@@ -64,6 +64,7 @@ export async function POST(req: NextRequest) {
 
         const sheetData = await sheetRes.json().catch(() => null);
 
+        // 1. SUCCESS: Both Email AND Password match in Google Sheet
         if (sheetData?.success && sheetData?.user) {
           recordAuthSuccess(ip, accountIdentifier);
           return NextResponse.json({
@@ -80,12 +81,30 @@ export async function POST(req: NextRequest) {
           });
         }
 
+        // 2. INCORRECT PASSWORD in Google Sheet
         if (sheetData?.error && sheetData.error.toLowerCase().includes('incorrect password')) {
           const failure = recordAuthFailure(ip, accountIdentifier);
           return NextResponse.json(
             {
               success: false,
-              error: 'Incorrect password. Please enter the password you registered with.',
+              error: 'Incorrect password. Please enter the exact password listed in your Google Sheet records.',
+              rateLimit: {
+                failedAttempts: failure.failedAttempts,
+                backoffDelayMs: failure.backoffDelayMs,
+                retryAfterSeconds: Math.ceil(failure.backoffDelayMs / 1000),
+              },
+            },
+            { status: 401 }
+          );
+        }
+
+        // 3. EMAIL NOT FOUND or Any other rejection from Google Sheet
+        if (sheetData && sheetData.success === false) {
+          const failure = recordAuthFailure(ip, accountIdentifier);
+          return NextResponse.json(
+            {
+              success: false,
+              error: sheetData.error || `Access Denied: No registered account found for ${accountIdentifier} in AI Institute Google Sheet records. Please create an account first.`,
               rateLimit: {
                 failedAttempts: failure.failedAttempts,
                 backoffDelayMs: failure.backoffDelayMs,
@@ -97,6 +116,13 @@ export async function POST(req: NextRequest) {
         }
       } catch (sheetErr) {
         console.error('[GOOGLE_SHEET_AUTH_ERROR]', sheetErr);
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Google Sheet database is temporarily unreachable. Please check your connection and try again.',
+          },
+          { status: 503 }
+        );
       }
     }
 

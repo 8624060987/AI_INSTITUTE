@@ -129,82 +129,38 @@ export function UnifiedAuthPage({ initialMode = 'login' }: UnifiedAuthPageProps)
         return;
       }
 
-      if (authRes.status === 401 || !authRes.ok) {
-        setError(authJson.error || 'Invalid credentials. If you do not have an account yet, please click "Create Account".');
+      if (!authRes.ok || !authJson?.success) {
+        setError(authJson?.error || 'Access Denied: Invalid email or password. Please verify your Google Sheet credentials.');
         setLoading(false);
         return;
       }
 
-      // Check local storage records
-      let savedStudents: any[] = [];
-      try {
-        const raw = localStorage.getItem('lms_registered_students');
-        if (raw) savedStudents = JSON.parse(raw);
-      } catch (_) {}
+      recordDailyDeviceLogin(normalizedEmail);
 
-      const foundLocal = savedStudents.find(
-        (s: any) => s.email?.toLowerCase().trim() === normalizedEmail
-      );
+      // Purge stale sessions
+      localStorage.removeItem('lms_user');
+      localStorage.removeItem('granted_student_user');
+      localStorage.removeItem('lms_mentor_profile');
+      localStorage.removeItem('user_role');
+      localStorage.removeItem('lms_user_logged_in');
 
-      // Check remote Supabase profile
-      let remoteProfile: any = null;
-      try {
-        const { data } = await supabase.from('profiles').select('*').ilike('email', normalizedEmail).single();
-        if (data) remoteProfile = data;
-      } catch (_) {}
-
-      // Supabase direct authentication attempt
-      let authSuccess = false;
-      try {
-        const { data: authData } = await supabase.auth.signInWithPassword({
-          email: normalizedEmail,
-          password: password.trim(),
-        });
-        if (authData?.user) authSuccess = true;
-      } catch (_) {}
-
-      const expectedPassword = foundLocal?.password || remoteProfile?.password;
-      let isValid = Boolean(authJson?.success);
-
-      if (!isValid) {
-        if (foundLocal || remoteProfile || authSuccess) {
-          if (authSuccess || (expectedPassword && expectedPassword === password.trim())) {
-            isValid = true;
-          } else {
-            throw new Error('Incorrect password. Please enter the password you registered with.');
-          }
-        } else {
-          throw new Error('No account found for this email. Please click "Create Account" below to register.');
-        }
-      }
-
-      if (isValid) {
-        recordDailyDeviceLogin(normalizedEmail);
-
-        // Purge stale sessions
-        localStorage.removeItem('lms_user');
-        localStorage.removeItem('granted_student_user');
-        localStorage.removeItem('lms_mentor_profile');
-        localStorage.removeItem('user_role');
-        localStorage.removeItem('lms_user_logged_in');
-
-        const studentProfile = {
-          id: authJson.user?.id || foundLocal?.id || remoteProfile?.id || `stu_${Date.now()}`,
-          email: normalizedEmail,
-          fullName: authJson.user?.fullName || foundLocal?.fullName || remoteProfile?.full_name || normalizedEmail.split('@')[0].toUpperCase(),
-          courseId: authJson.user?.courseId || foundLocal?.courseId || remoteProfile?.course_id || 'course-gen-ai',
-          courseTitle: authJson.user?.course || foundLocal?.courseTitle || 'Generative AI & LLMs',
-          avatarUrl: foundLocal?.avatarUrl || remoteProfile?.avatar_url || '/uploads/siddhi_pawar.jpg',
-          college: foundLocal?.college || remoteProfile?.college || 'AI Institute Scholar',
-          location: foundLocal?.location || remoteProfile?.location || 'Satana / Maharashtra',
-          careerGoal: foundLocal?.careerGoal || remoteProfile?.career_goal || 'AI Engineer',
-          qualification: foundLocal?.qualification || remoteProfile?.qualification || 'Graduate',
-          learningMode: foundLocal?.learningMode || remoteProfile?.learning_mode || 'Live Interactive Online Batch',
-          phone: authJson.user?.phone || foundLocal?.phone || remoteProfile?.phone || '',
-          bio: foundLocal?.bio || remoteProfile?.bio || '',
-          currentYear: foundLocal?.currentYear || 'Final Year (2025/2026)',
-          role: 'student'
-        };
+      const studentProfile = {
+        id: authJson.user?.id || `stu_${Date.now()}`,
+        email: normalizedEmail,
+        fullName: authJson.user?.fullName || normalizedEmail.split('@')[0].toUpperCase(),
+        courseId: authJson.user?.courseId || 'course-gen-ai',
+        courseTitle: authJson.user?.course || 'Generative AI & LLMs',
+        avatarUrl: '/uploads/siddhi_pawar.jpg',
+        college: 'AI Institute Scholar',
+        location: 'Satana / Maharashtra',
+        careerGoal: 'AI Engineer',
+        qualification: 'Graduate',
+        learningMode: 'Live Interactive Online Batch',
+        phone: authJson.user?.phone || '',
+        bio: '',
+        currentYear: 'Final Year (2025/2026)',
+        role: 'student'
+      };
 
         localStorage.setItem('user_role', 'student');
         localStorage.setItem('lms_user_logged_in', 'true');
